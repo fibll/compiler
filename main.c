@@ -1,6 +1,22 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-//void lexer(char* text);
+// fix: MORPHEM.word don't stuck to 30 chars
+// fix: all these global variables 
+
+
+
+// global stuff
+typedef struct morph
+{
+    int id;
+    char* word;
+    char symbol[2];
+    double number;
+}MORPHEM;
+
+static MORPHEM morph;
 
 // Zeichenklassenvector
 static char charClasses[128]=
@@ -39,7 +55,9 @@ char* pointer = NULL;
 int getCharClass();
 void lexer();
 void z0(int toDo);
-int nextInstruction(int state, int class);
+void nextInstruction(int state, int class);
+void schreiben();
+void grossSchreiben();
 
 int main (int argc, char* argv[])
 {
@@ -61,6 +79,8 @@ void lexer()
   }
 }
 
+// sollte eigentlich intiLexer sein und der rest sollte wie die anderen Zustände behandelt werden!!!
+// Leerzeichen werden normal behandelt
 void z0(int toDo)
 {
     int class = 0;
@@ -73,25 +93,17 @@ void z0(int toDo)
             pointer++;
             // set pointer to next char
         }//current char is space or tab
-        
+
         // find out which class the current char is
                                     // if class is null we could catch it here
         // call nextInstruction with given char class
+        //printf("Class: %i", getCharClass());
         nextInstruction(0, getCharClass());
     }
     else
         // execute toDo with function array?
         printf("execute toDo\n");
 }
-
-/*
-z1(input, toDo(lesen, schreiben, beenden))
-{
-    // execute toDo
-    // find out which class the current char is 
-    // call nextInstruction with given char class
-}
-*/
 
 int getCharClass()
 {
@@ -101,10 +113,53 @@ int getCharClass()
         return charClasses[*pointer];
 }
 
-int nextInstruction(int state, int class)
+void nextInstruction(int state, int class)
 {
    // look up which state is next depending on the given state and char class
-   printf("look up state for state %i char %c with class %i\n", state, *pointer, class);
-   printf("Next state: %i\nAction: %i", stateAction[state][class][1], stateAction[state][class][0]);
-   // call next state with input, toDo instruction
+   int nextState = stateAction[state][class][1];
+   int toDo = stateAction[state][class][0];
+   int newClass = 0;
+
+   // call toDo and call nextInstruction with new state
+   switch(toDo)
+   {
+       case 1: printf("beenden\n");
+           break;
+       case 2: schreiben();
+               newClass = lesen();
+               nextInstruction(nextState, newClass);
+          break;
+       case 3: grossSchreiben();
+               newClass = lesen();
+               nextInstruction(nextState, newClass);
+          break;
+       case 4: schreiben();
+               printf("lesen\n");
+               printf("beenden\n");
+          break;
+       default: printf("Something did go wrong!\n");
+   }
+}
+
+int lesen()
+{
+    pointer++;
+    // if "\n"
+        // schreiben("\n");
+        // return 7;
+    // else
+        return getCharClass();
+}
+
+void schreiben()
+{
+    //morph.word = strcat(morph.word,pointer);
+    //printf("%s\n", morph.word);
+}
+
+void grossSchreiben()
+{
+    printf("schreiben\n");
+    //morph.word = strcat(morph.word,"bla");
+    //printf("%s\n", morph.word);
 }
