@@ -53,9 +53,11 @@ static int stateAction[8][9][2] = {
 
 char* pointer = NULL;
 
+
+// functions
 int getCharClass();
 void lexer();
-void z0(int toDo);
+void init();
 void nextInstruction(int state, int class);
 void schreiben();
 void grossSchreiben();
@@ -76,37 +78,21 @@ void lexer()
   //while loop until eof
   {
     // call z0 with input, toDo = 0 and get token back
-    z0(0);
+    init();
     // print token with linebreak
   }
 }
 
 // sollte eigentlich intiLexer sein und der rest sollte wie die anderen Zustände behandelt werden!!!
 // Leerzeichen werden normal behandelt
-void z0(int toDo)
+void init()
 {
-    int class = 0;
+    // read first sign and tell which class it is
+    int class = lesen();
 
-    if(toDo == 0)
-    {
-        /*
-        while(*pointer == 32) // and tab
-        {
-            printf("space\n");
-            pointer++;
-            // set pointer to next char
-        }//current char is space or tab
-        */
-
-        // find out which class the current char is
-                                    // if class is null we could catch it here
-        // call nextInstruction with given char class
-        // printf("Class: %i", getCharClass());
-        nextInstruction(0, getCharClass());
-    }
-    else
-        // execute toDo with function array?
-        printf("execute toDo\n");
+    // call nextInstruction with given char class
+    // printf("Class: %i", getCharClass());
+    nextInstruction(0, getCharClass());
 }
 
 int getCharClass()
