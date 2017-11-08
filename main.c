@@ -40,7 +40,7 @@ static char charClasses[128]=
 //
 // cur. state|input|[lsb, next state]
 static int stateAction[8][9][2] = {
-// soZei      Ziffer     Buchst       :          =          <          >        Sonst  
+// soZei      Ziffer     Buchst       :          =          <          >        Sonst      SPACE
   4 , -1  ,  2 ,  2  ,  3 ,  1  ,  2 ,  3  ,  4 , -1  ,  2 ,  4  ,  2 ,  5  ,  1 , -1  ,  5 ,  0  ,
   1 , -1  ,  2 ,  1  ,  3 ,  1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
   1 , -1  ,  2 ,  2  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
@@ -88,11 +88,7 @@ void lexer()
 // Leerzeichen werden normal behandelt
 void init()
 {
-    // read first sign and tell which class it is
-    int class = lesen();
-
     // call nextInstruction with given char class
-    // printf("Class: %i", getCharClass());
     nextInstruction(0, getCharClass());
 }
 
@@ -106,6 +102,8 @@ int getCharClass()
 
 void nextInstruction(int state, int class)
 {
+    printf("state: %i, class %i", state, class);
+
    // look up which state is next depending on the given state and char class
    int nextState = stateAction[state][class][1];
    int toDo = stateAction[state][class][0];
@@ -114,20 +112,29 @@ void nextInstruction(int state, int class)
    // call toDo and call nextInstruction with new state
    switch(toDo)
    {
+       // beenden
        case 1: printf("beenden\n");
            break;
+
+       // schreiben lesen 
        case 2: schreiben();
                newClass = lesen();
                nextInstruction(nextState, newClass);
           break;
+
+       // großSchreiben lesen
        case 3: grossSchreiben();
                newClass = lesen();
                nextInstruction(nextState, newClass);
           break;
+
+       // schreiben lesen beenden
        case 4: schreiben();
                newClass = lesen();
                beenden();
           break;
+
+       // lesen
        case 5: newClass = lesen();
                nextInstruction(nextState, newClass);
           break;
@@ -149,6 +156,7 @@ int lesen()
 void schreiben()
 {
     printf("schreiben\n");
+
     *tokenPointer = *pointer;
     tokenPointer++;
     printf("%s\n", tokenBuffer);
