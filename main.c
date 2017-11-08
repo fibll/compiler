@@ -4,14 +4,14 @@
 
 // fix: MORPHEM.word don't stuck to 30 chars
 // fix: all these global variables 
-
+// fix: 
 
 
 // global stuff
 typedef struct morph
 {
     int id;
-    char* word;
+    char word[30];
     char symbol[2];
     double number;
 }MORPHEM;
@@ -52,7 +52,8 @@ static int stateAction[8][9][2] = {
 };
 
 char* pointer = NULL;
-
+char tokenBuffer[1024];
+char* tokenPointer = &tokenBuffer[0];
 
 // functions
 int getCharClass();
@@ -148,15 +149,18 @@ int lesen()
 void schreiben()
 {
     printf("schreiben\n");
-    //morph.word = strcat(morph.word,pointer);
-    //printf("%s\n", morph.word);
+    *tokenPointer = *pointer;
+    tokenPointer++;
+    printf("%s\n", tokenBuffer);
 }
 
 void grossSchreiben()
 {
     printf("großschreiben\n");
-    //morph.word = strcat(morph.word,"bla");
-    //printf("%s\n", morph.word);
+    
+    *tokenPointer = *pointer;
+    tokenPointer++;
+    printf("%s\n", tokenBuffer);
 }
 
 void beenden()
