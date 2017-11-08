@@ -2,10 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-// fix: MORPHEM.word don't stuck to 30 chars
+// fix: MORPHEM.word don't stuck to 1024 chars
 // fix: all these global variables 
-// fix: 
-
 
 // global stuff
 typedef struct morph
@@ -51,13 +49,15 @@ static int stateAction[8][9][2] = {
   1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
 };
 
-char* pointer = NULL;
+int input = 0;
 char tokenBuffer[1024];
 char* tokenPointer = &tokenBuffer[0];
 
+FILE* file = NULL;
+
 // functions
 int getCharClass();
-void lexer();
+void lexer(char* fileName);
 void init();
 void nextInstruction(int state, int class);
 void schreiben();
@@ -67,42 +67,54 @@ void beenden();
 int main (int argc, char* argv[])
 {
 	// Variabeln
-    // call lexer function with given argument
-    pointer = argv[1];
-    lexer();
+    lexer(argv[1]);
 
 	return 0;
 }
 
-void lexer()
+void lexer(char* fileName)
 {
-  //while loop until eof
-  {
-    // call z0 with input, toDo = 0 and get token back
-    init();
-    // print token with linebreak
-  }
+    // open file to read
+    file = fopen(fileName, "r");
+    
+    // erstes Zeichen einlesen
+    int class = lesen();
+        
+    while(input != 59)
+    {
+        // call z0 with input, toDo = 0 and get token back
+        init();
+        // print token with linebreak
+    }
 }
 
 // sollte eigentlich intiLexer sein und der rest sollte wie die anderen Zustände behandelt werden!!!
 // Leerzeichen werden normal behandelt
 void init()
 {
-    // call nextInstruction with given char class
-    nextInstruction(0, getCharClass());
+    if(file != NULL)
+    {
+        // call nextInstruction with given char class
+        nextInstruction(0, getCharClass());
+    }
+    else
+    {
+        printf("file could not been opened");
+        exit(0);
+    }
 }
 
 int getCharClass()
 {
-    if (*pointer > 127)
+    if (input > 127)
         return 7;
     else
-        return charClasses[*pointer];
+        return charClasses[input];
 }
 
 void nextInstruction(int state, int class)
 {
-    printf("state: %i, class %i", state, class);
+    // printf("state: %i, class %i", state, class);
 
    // look up which state is next depending on the given state and char class
    int nextState = stateAction[state][class][1];
@@ -113,7 +125,7 @@ void nextInstruction(int state, int class)
    switch(toDo)
    {
        // beenden
-       case 1: printf("beenden\n");
+       case 1: beenden();
            break;
 
        // schreiben lesen 
@@ -145,19 +157,17 @@ void nextInstruction(int state, int class)
 int lesen()
 {
     printf("lesen\n");
-    pointer++;
-    // if "\n"
-        // schreiben("\n");
-        // return 7;
-    // else
-        return getCharClass();
+    
+    input = fgetc(file);
+    
+    return getCharClass();
 }
 
 void schreiben()
 {
     printf("schreiben\n");
 
-    *tokenPointer = *pointer;
+    *tokenPointer = input;
     tokenPointer++;
     printf("%s\n", tokenBuffer);
 }
@@ -166,12 +176,23 @@ void grossSchreiben()
 {
     printf("großschreiben\n");
     
-    *tokenPointer = *pointer;
+    *tokenPointer = input;
     tokenPointer++;
     printf("%s\n", tokenBuffer);
 }
 
 void beenden()
 {
-    printf("beenden");
+    printf("Token: %s\n", tokenBuffer);
+
+    // create out of the tokenBuffer a new token
+
+    // empty tokenBuffer
+    memset(tokenBuffer, 0, strlen(tokenBuffer));
+    //tokenBuffer = "";
+
+    // set tokenPointer to beginnig of tokenBuffer
+    tokenPointer = &tokenBuffer[0];
+
+    printf("beenden\n");
 }
