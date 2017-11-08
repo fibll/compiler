@@ -24,7 +24,7 @@ static char charClasses[128]=
 /*­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­*/
 /* 0*/{7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,/* 0*/
 /*10*/ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,/*10*/
-/*20*/ 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,/*20*/
+/*20*/ 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,/*20*/
 /*30*/ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 0, 5, 4, 6, 0,/*30*/
 /*40*/ 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,/*40*/
 /*50*/ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0,/*50*/
@@ -36,18 +36,19 @@ static char charClasses[128]=
 //  2 s l
 //  3 sg l
 //  4 s l b
+//  5 l
 //
 // cur. state|input|[lsb, next state]
-static int stateAction[8][8][2] = {
+static int stateAction[8][9][2] = {
 // soZei      Ziffer     Buchst       :          =          <          >        Sonst  
-  4 , -1  ,  2 ,  2  ,  3 ,  1  ,  2 ,  3  ,  4 , -1  ,  2 ,  4  ,  2 ,  5  ,  1 , -1  ,
-  1 , -1  ,  2 ,  1  ,  3 ,  1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  2 ,  2  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  6  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  7  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  8  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  4 , -1  ,  2 ,  2  ,  3 ,  1  ,  2 ,  3  ,  4 , -1  ,  2 ,  4  ,  2 ,  5  ,  1 , -1  ,  5 ,  0  ,
+  1 , -1  ,  2 ,  1  ,  3 ,  1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  2 ,  2  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  6  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  7  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  8  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
 };
 
 char* pointer = NULL;
@@ -58,6 +59,7 @@ void z0(int toDo);
 void nextInstruction(int state, int class);
 void schreiben();
 void grossSchreiben();
+void beenden();
 
 int main (int argc, char* argv[])
 {
@@ -87,17 +89,19 @@ void z0(int toDo)
 
     if(toDo == 0)
     {
+        /*
         while(*pointer == 32) // and tab
         {
             printf("space\n");
             pointer++;
             // set pointer to next char
         }//current char is space or tab
+        */
 
         // find out which class the current char is
                                     // if class is null we could catch it here
         // call nextInstruction with given char class
-        //printf("Class: %i", getCharClass());
+        // printf("Class: %i", getCharClass());
         nextInstruction(0, getCharClass());
     }
     else
@@ -108,7 +112,7 @@ void z0(int toDo)
 int getCharClass()
 {
     if (*pointer > 127)
-        return 0;
+        return 7;
     else
         return charClasses[*pointer];
 }
@@ -134,8 +138,11 @@ void nextInstruction(int state, int class)
                nextInstruction(nextState, newClass);
           break;
        case 4: schreiben();
-               printf("lesen\n");
-               printf("beenden\n");
+               newClass = lesen();
+               beenden();
+          break;
+       case 5: newClass = lesen();
+               nextInstruction(nextState, newClass);
           break;
        default: printf("Something did go wrong!\n");
    }
@@ -143,6 +150,7 @@ void nextInstruction(int state, int class)
 
 int lesen()
 {
+    printf("lesen\n");
     pointer++;
     // if "\n"
         // schreiben("\n");
@@ -153,13 +161,19 @@ int lesen()
 
 void schreiben()
 {
+    printf("schreiben\n");
     //morph.word = strcat(morph.word,pointer);
     //printf("%s\n", morph.word);
 }
 
 void grossSchreiben()
 {
-    printf("schreiben\n");
+    printf("großschreiben\n");
     //morph.word = strcat(morph.word,"bla");
     //printf("%s\n", morph.word);
+}
+
+void beenden()
+{
+    printf("beenden");
 }
