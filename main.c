@@ -2,8 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-// fix: MORPHEM.word don't stuck to 1024 chars
+// fix: MORPHEM.word don't stuck to 1024 chars (malloc and realloc)
 // fix: all these global variables 
+// fix: detection of float number??
+// todo: save tokens
+// todo: save tokens with identifier (symbol, word, number)
+// todo: writeCapital: save just capital letters
+// todo: array of tokens?
 
 // global stuff
 typedef struct morph
@@ -22,7 +27,7 @@ static char charClasses[128]=
 /*­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­*/
 /* 0*/{7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,/* 0*/
 /*10*/ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,/*10*/
-/*20*/ 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,/*20*/
+/*20*/ 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,/*20*/
 /*30*/ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 0, 5, 4, 6, 0,/*30*/
 /*40*/ 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,/*40*/
 /*50*/ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0,/*50*/
@@ -37,16 +42,16 @@ static char charClasses[128]=
 //  5 l
 //
 // cur. state|input|[lsb, next state]
-static int stateAction[8][9][2] = {
-// soZei      Ziffer     Buchst       :          =          <          >        Sonst      SPACE
-  4 , -1  ,  2 ,  2  ,  3 ,  1  ,  2 ,  3  ,  4 , -1  ,  2 ,  4  ,  2 ,  5  ,  1 , -1  ,  5 ,  0  ,
-  1 , -1  ,  2 ,  1  ,  3 ,  1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  2 ,  2  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  6  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  7  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  8  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+static int stateAction[8][8][2] = {
+// soZei      Ziffer     Buchst       :          =          <          >        Sonst
+  4 , -1  ,  2 ,  2  ,  3 ,  1  ,  2 ,  3  ,  4 , -1  ,  2 ,  4  ,  2 ,  5  ,  5 ,  0  ,
+  1 , -1  ,  2 ,  1  ,  3 ,  1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  2 ,  2  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  6  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  7  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  8  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
 };
 
 int input = 0;
@@ -57,40 +62,34 @@ FILE* file = NULL;
 
 // functions
 int getCharClass();
-void lexer(char* fileName);
+void lexer();
 void init();
 void nextInstruction(int state, int class);
-void schreiben();
-void grossSchreiben();
+void write();
+void writeCapital();
 void beenden();
 
 int main (int argc, char* argv[])
 {
 	// Variabeln
-    lexer(argv[1]);
 
-	return 0;
-}
-
-void lexer(char* fileName)
-{
     // open file to read
-    file = fopen(fileName, "r");
+    file = fopen(argv[1], "r");
     
-    // erstes Zeichen einlesen
-    int class = lesen();
+    // init with first char
+    read();
         
-    while(input != 59)
+    while(input != -1)
     {
-        // call z0 with input, toDo = 0 and get token back
-        init();
+        // call init for a new token
+        lexer();
         // print token with linebreak
     }
+
+    return 0;
 }
 
-// sollte eigentlich intiLexer sein und der rest sollte wie die anderen Zustände behandelt werden!!!
-// Leerzeichen werden normal behandelt
-void init()
+void lexer()
 {
     if(file != NULL)
     {
@@ -106,15 +105,27 @@ void init()
 
 int getCharClass()
 {
-    if (input > 127)
-        return 7;
+    printf("input: %i\n", input);
+
+    if (input >= 127 || input < 0)
+    {
+        printf("Failure: Unaccapted character!\n");
+        input = -1;
+        return -1;
+    }
     else
         return charClasses[input];
 }
 
 void nextInstruction(int state, int class)
 {
-    // printf("state: %i, class %i", state, class);
+   printf("state: %i, class: %i\n", state, class);
+
+   // catch eof and unaccapted characters
+   if(class < 0)
+   {
+       return;
+   }
 
    // look up which state is next depending on the given state and char class
    int nextState = stateAction[state][class][1];
@@ -128,53 +139,53 @@ void nextInstruction(int state, int class)
        case 1: beenden();
            break;
 
-       // schreiben lesen 
-       case 2: schreiben();
-               newClass = lesen();
+       // write read 
+       case 2: write();
+               newClass = read();
                nextInstruction(nextState, newClass);
           break;
 
-       // großSchreiben lesen
-       case 3: grossSchreiben();
-               newClass = lesen();
+       // write capital read
+       case 3: writeCapital();
+               newClass = read();
                nextInstruction(nextState, newClass);
           break;
 
-       // schreiben lesen beenden
-       case 4: schreiben();
-               newClass = lesen();
+       // write read beenden
+       case 4: write();
+               newClass = read();
                beenden();
           break;
 
-       // lesen
-       case 5: newClass = lesen();
+       // read
+       case 5: newClass = read();
                nextInstruction(nextState, newClass);
           break;
        default: printf("Something did go wrong!\n");
    }
 }
 
-int lesen()
+int read()
 {
-    printf("lesen\n");
+    printf("read\n");
     
     input = fgetc(file);
     
     return getCharClass();
 }
 
-void schreiben()
+void write()
 {
-    printf("schreiben\n");
+    printf("write\n");
 
     *tokenPointer = input;
     tokenPointer++;
     printf("%s\n", tokenBuffer);
 }
 
-void grossSchreiben()
+void writeCapital()
 {
-    printf("großschreiben\n");
+    printf("write capital\n");
     
     *tokenPointer = input;
     tokenPointer++;
@@ -183,7 +194,8 @@ void grossSchreiben()
 
 void beenden()
 {
-    printf("Token: %s\n", tokenBuffer);
+    printf("beenden\n");
+    printf("\n\n----------------------\nToken: %s\n\n\n", tokenBuffer);
 
     // create out of the tokenBuffer a new token
 
@@ -193,6 +205,4 @@ void beenden()
 
     // set tokenPointer to beginnig of tokenBuffer
     tokenPointer = &tokenBuffer[0];
-
-    printf("beenden\n");
 }
