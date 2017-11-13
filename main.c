@@ -4,23 +4,13 @@
 
 // fix: MORPHEM.word don't stuck to 1024 chars (malloc and realloc)
 // fix: all these global variables 
-// fix: detection of float number??
 // todo: save tokens
 // todo: save tokens with identifier (symbol, word, number)
 // todo: writeCapital: save just capital letters
+    // letters that are already capital could fuck up
 // todo: array of tokens?
 
 // global stuff
-typedef struct morph
-{
-    int id;
-    char word[30];
-    char symbol[2];
-    double number;
-}MORPHEM;
-
-static MORPHEM morph;
-
 // Zeichenklassenvector
 static char charClasses[128]=
 /*      0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F     */
@@ -58,6 +48,20 @@ int input = 0;
 char tokenBuffer[1024];
 char* tokenPointer = &tokenBuffer[0];
 
+typedef struct morph
+{
+    int id;
+    char word[30];
+    char symbol[2];
+    double number;
+}MORPHEM;
+
+static MORPHEM morph;
+
+MORPHEM* morphArray;
+
+size_t morphArraySize = 0;
+
 FILE* file = NULL;
 
 // functions
@@ -75,7 +79,12 @@ int main (int argc, char* argv[])
 
     // open file to read
     file = fopen(argv[1], "r");
-    
+
+    morphArray = (MORPHEM*)malloc(0 * sizeof(MORPHEM));
+
+    //morphArray = (MORPHEM*) realloc(morphArray, 17 * sizeof(MORPHEM));
+    //printf("\ntest\n");
+
     // init with first char
     read();
         
@@ -85,6 +94,17 @@ int main (int argc, char* argv[])
         lexer();
         // print token with linebreak
     }
+
+    // print all tokens
+    int i = 0;
+
+    for(i = 0; i < morphArraySize;i++)
+    {
+        printf("ASDDmorphArray[%i].word = %s\n", i, morphArray[i].word);
+    }
+
+    printf("free\n");
+    free(morphArray);
 
     return 0;
 }
@@ -105,7 +125,7 @@ void lexer()
 
 int getCharClass()
 {
-    printf("input: %i\n", input);
+    //printf("input: %i\n", input);
 
     if (input >= 127 || input < 0)
     {
@@ -119,7 +139,7 @@ int getCharClass()
 
 void nextInstruction(int state, int class)
 {
-   printf("state: %i, class: %i\n", state, class);
+   //printf("state: %i, class: %i\n", state, class);
 
    // catch eof and unaccapted characters
    if(class < 0)
@@ -162,12 +182,13 @@ void nextInstruction(int state, int class)
                nextInstruction(nextState, newClass);
           break;
        default: printf("Something did go wrong!\n");
+                input = -1;
    }
 }
 
 int read()
 {
-    printf("read\n");
+    //printf("read\n");
     
     input = fgetc(file);
     
@@ -176,28 +197,38 @@ int read()
 
 void write()
 {
-    printf("write\n");
+    //printf("write\n");
 
     *tokenPointer = input;
     tokenPointer++;
-    printf("%s\n", tokenBuffer);
+    //printf("%s\n", tokenBuffer);
 }
 
 void writeCapital()
 {
-    printf("write capital\n");
-    
+    //printf("write capital\n");
+    if(input > 90)
+        input -= 32;
+
     *tokenPointer = input;
+    
+
     tokenPointer++;
-    printf("%s\n", tokenBuffer);
+    //printf("%s\n", tokenBuffer);
 }
 
 void beenden()
 {
+    int index = sizeof(morphArray)-1;
+
     printf("beenden\n");
     printf("\n\n----------------------\nToken: %s\n\n\n", tokenBuffer);
 
-    // create out of the tokenBuffer a new token
+    // create out of the tokenBuffer a new morphem
+    morphArraySize++;
+    morphArray = (MORPHEM*) realloc(morphArray, morphArraySize * sizeof(MORPHEM));
+    strcpy(morphArray[morphArraySize-1].word, tokenBuffer);
+    printf("Saved in morphArray\n");
 
     // empty tokenBuffer
     memset(tokenBuffer, 0, strlen(tokenBuffer));
