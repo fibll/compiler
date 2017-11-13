@@ -4,11 +4,6 @@
 
 // fix: MORPHEM.word don't stuck to 1024 chars (malloc and realloc)
 // fix: all these global variables 
-// todo: save tokens
-// todo: save tokens with identifier (symbol, word, number)
-// todo: writeCapital: save just capital letters
-    // letters that are already capital could fuck up
-// todo: array of tokens?
 
 // global stuff
 // Zeichenklassenvector
@@ -71,7 +66,8 @@ void init();
 void nextInstruction(int state, int class);
 void write();
 void writeCapital();
-void beenden();
+void beenden(int id);
+void saveMorph(int id);
 
 int main (int argc, char* argv[])
 {
@@ -98,9 +94,19 @@ int main (int argc, char* argv[])
     // print all tokens
     int i = 0;
 
-    for(i = 0; i < morphArraySize;i++)
+    for(i = 0; i < morphArraySize; i++)
     {
-        printf("ASDDmorphArray[%i].word = %s\n", i, morphArray[i].word);
+        switch(morphArray[i].id)
+        {
+            case 0:
+                printf("morphArray[%i].word = %s\n", i, morphArray[i].word);
+                break;
+            case 1:
+                printf("morphArray[%i].symbol = %s\n", i, morphArray[i].symbol);
+                break;
+            default:
+                printf("morphArray[%i].number = %i\n", i, morphArray[i].number);
+        }
     }
 
     printf("free\n");
@@ -156,7 +162,7 @@ void nextInstruction(int state, int class)
    switch(toDo)
    {
        // beenden
-       case 1: beenden();
+       case 1: beenden(state);
            break;
 
        // write read 
@@ -174,7 +180,7 @@ void nextInstruction(int state, int class)
        // write read beenden
        case 4: write();
                newClass = read();
-               beenden();
+               beenden(state);
           break;
 
        // read
@@ -217,18 +223,14 @@ void writeCapital()
     //printf("%s\n", tokenBuffer);
 }
 
-void beenden()
+void beenden(int id)
 {
     int index = sizeof(morphArray)-1;
 
     printf("beenden\n");
     printf("\n\n----------------------\nToken: %s\n\n\n", tokenBuffer);
 
-    // create out of the tokenBuffer a new morphem
-    morphArraySize++;
-    morphArray = (MORPHEM*) realloc(morphArray, morphArraySize * sizeof(MORPHEM));
-    strcpy(morphArray[morphArraySize-1].word, tokenBuffer);
-    printf("Saved in morphArray\n");
+    saveMorph(id);
 
     // empty tokenBuffer
     memset(tokenBuffer, 0, strlen(tokenBuffer));
@@ -236,4 +238,40 @@ void beenden()
 
     // set tokenPointer to beginnig of tokenBuffer
     tokenPointer = &tokenBuffer[0];
+}
+
+void saveMorph(int id)
+{
+    // create out of the tokenBuffer a new morphem
+    morphArraySize++;
+    morphArray = (MORPHEM*) realloc(morphArray, morphArraySize * sizeof(MORPHEM));
+   
+    if(id < 0 || id > 8)
+    {
+        printf("Something did go wrong");
+        input = -1;
+        return;
+    }
+
+    switch(id)
+    {
+        // word
+        case 1:
+                morphArray[morphArraySize-1].id = 0;
+                strcpy(morphArray[morphArraySize-1].word, tokenBuffer);
+            break;
+        // number
+        case 2:
+                morphArray[morphArraySize-1].id = 2;
+                morphArray[morphArraySize-1].number = atoi(tokenBuffer);
+            break;
+        // symbol
+        default:
+                morphArray[morphArraySize-1].id = 1;
+                strcpy(morphArray[morphArraySize-1].symbol, tokenBuffer);
+            break;
+    }
+     
+    printf("Saved in morphArray\n");
+    
 }
