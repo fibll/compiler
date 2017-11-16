@@ -48,14 +48,29 @@ int main (int argc, char* argv[])
 {
 	// Variabeln
 
+    // is there an argument?
+    if(argc < 2)
+    {
+        printf("Fehlendes Argument: PL0 Datei!\n");
+        exit(-1);
+    }
+
     // open file to read
     file = fopen(argv[1], "r");
+    if(file == NULL)
+    {
+        printf("Datei kann nicht geöffnet werden!\n");
+        exit(-1);
+    }
     
     // start lexer
+    // init lexer
+    read();
+
     morph = lexer(file);
 
     // print all tokens
-    /*
+    
     // stop executing lexer if return value.id = -1
     while(morph.id != -1)
     {
@@ -67,11 +82,18 @@ int main (int argc, char* argv[])
             case 1:
                 printf("morph.symbol = %s\n", morph.symbol);
                 break;
-            default:
+            case 2:
                 printf("morph.number = %i\n", morph.number);
+            case 3:
+                printf("morph.keyword = %s\n", morph.keyword);
+                break;
+            default:
+                printf("ERROR!");
+                exit(0);
+
         }
         morph = lexer(file);
-    }*/
+    }
 
     fclose(file);
     return 0;

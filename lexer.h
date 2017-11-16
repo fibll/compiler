@@ -15,7 +15,8 @@ typedef struct morph
     int id;
     char word[30];
     char symbol[2];
-    double number;
+    int number;
+    char keyword[30];
 }MORPHEM;
 
 static MORPHEM morph;
@@ -53,6 +54,25 @@ static int stateAction[8][8][2] = {
   1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
 };
 
+
+int keywordFirstLetter[] = {
+/*  a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z*/
+    -1,0, 1, 2, 3,-1,-1,-1, 4,-1,-1,-1,-1,-1, 5, 6,-1,-1,-1, 7,-1, 8, 9,-1, -1,-1 
+};
+
+int keywordLength[] = {
+    5, -1, 2, 3, 2, 3, 9, 4, 3, 5
+};
+
+
+// keyword array
+char* keywords[11]/*[2]*/ = {
+    "BEGIN","CALL","CONST","DO","END","IF","ODD","PROCEDURE","THEN","VAR","WHILE"
+        /*,
+      "0"  , "1",    "2",   "3", "4",  "5", "6",  "7",        "8",   "9",  "10"  */
+};
+
+
 int input = 0;
 char tokenBuffer[1024];
 char* tokenPointer = &tokenBuffer[0];
@@ -74,7 +94,7 @@ void debugPrint(char* message);
 MORPHEM lexer(FILE* file)
 {
     // init with first char
-    read();
+    //read();
    
     if(file != NULL)
     {
@@ -86,27 +106,6 @@ MORPHEM lexer(FILE* file)
         debugPrint("file could not been opened");
         exit(0);
     }
-
-    //return morphem
-   
-    /*
-    // print all tokens
-    int i = 0;
-
-    for(i = 0; i < morphArraySize; i++)
-    {
-        switch(morphArray[i].id)
-        {
-            case 0:
-                printf("morphArray[%i].word = %s\n", i, morphArray[i].word);
-                break;
-            case 1:
-                printf("morphArray[%i].symbol = %s\n", i, morphArray[i].symbol);
-                break;
-            default:
-                printf("morphArray[%i].number = %i\n", i, morphArray[i].number);
-        }
-    }*/
 
     return morph;
 }
@@ -229,6 +228,10 @@ void beenden(int id)
 
 void saveMorph(int id)
 {
+    char firstChar = 0;
+    int lengthOK = 0;
+    int keyword = 0;
+
     // create out of the tokenBuffer a new morphem
     //morphArraySize++;
     //morphArray = (MORPHEM*) realloc(morphArray, morphArraySize * sizeof(MORPHEM));
@@ -245,8 +248,55 @@ void saveMorph(int id)
     {
         // word
         case 1:
-                morph.id = 0;
-                strcpy(morph.word, tokenBuffer);
+                // check if keyword
+                firstChar = tokenBuffer[0];
+                //printf("firstChar: %c\n", firstChar);
+                
+                // check with the first letter if it could be a keyword
+                lengthOK = keywordFirstLetter[firstChar-65]; 
+                //printf("\n\nstrlen: %i\n", strlen(tokenBuffer));
+
+                // check if firstLetter is correct
+                if(lengthOK > -1)
+                {
+                    if(lengthOK == 1 && strlen(tokenBuffer) > 3 && strlen(tokenBuffer) < 6)
+                    {
+                        keyword = 1;
+                    }
+                    else if(strlen(tokenBuffer) == keywordLength[lengthOK])
+                    {
+                        keyword = 1;
+                    }
+                }
+                
+
+                if(keyword == 1)
+                {
+                    printf("\n\npotential keyword\n");
+                    
+                    int i = 0;
+
+                    // find keyword in the keyword array
+                    for(i = 0; i < 11; i++)
+                    {
+                        if(strcmp(tokenBuffer, keywords[i]) == 0)
+                        {
+                            morph.id = 3;
+                            strcpy(morph.keyword, tokenBuffer);
+                            i = 11;
+                        }
+                        else
+                        {
+                            morph.id = 0;
+                            strcpy(morph.word, tokenBuffer);
+                        }
+                    }
+                }
+                else
+                {
+                    morph.id = 0;
+                    strcpy(morph.word, tokenBuffer);
+                }
             break;
         // number
         case 2:
