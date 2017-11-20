@@ -28,23 +28,23 @@ edge programm[] = {
 // block
 edge block[] = {
 /*Num    type       ,            union               , action, next, alt */
-/* 0*/  {edgeSymbol , {(unsigned long)"CONST"}       , NULL  ,   1 ,  0 },
+/* 0*/  {edgeSymbol , {(unsigned long)"CONST"}       , NULL  ,   1 ,  6 },
 /* 1*/  {edgeMorphem, {(unsigned long)morphemIdent}  , NULL  ,   2 ,  0 },
 /* 2*/  {edgeSymbol , {(unsigned long)'='}           , NULL  ,   3 ,  0 },
-/* 3*/  {edgeMorphem, {(unsigned long)morphemNumeral}, NULL  ,   4 ,  5 },
+/* 3*/  {edgeMorphem, {(unsigned long)morphemNumeral}, NULL  ,   4 ,  0 },
 /* 4*/  {edgeSymbol , {(unsigned long)','}           , NULL  ,   1 ,  5 },
-/* 5*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,   7 , 11 },
-/* 6*/  {edgeNil    , {(unsigned long)0}             , NULL  ,   7 , 11 },
-/* 7*/  {edgeSymbol , {(unsigned long)"VAR"}         , NULL  ,   8 ,  0 },
-/* 8*/  {edgeMorphem, {(unsigned long)morphemIdent}  , NULL  ,   9 , 10 },
-/* 9*/  {edgeSymbol , {(unsigned long)','}           , NULL  ,   8 ,  0 },
-/*10*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  12 , 17 },
-/*11*/  {edgeNil    , {(unsigned long)0}             , NULL  ,  12 , 17 },
-/*12*/  {edgeSymbol , {(unsigned long)"PROCEDURE"}   , NULL  ,  13 ,  0 },
+/* 5*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,   7 ,  0 },
+/* 6*/  {edgeNil    , {(unsigned long)0}             , NULL  ,   7 ,  0 },
+/* 7*/  {edgeSymbol , {(unsigned long)"VAR"}         , NULL  ,   8 , 11 },
+/* 8*/  {edgeMorphem, {(unsigned long)morphemIdent}  , NULL  ,   9 ,  0 },
+/* 9*/  {edgeSymbol , {(unsigned long)','}           , NULL  ,   8 , 10 },
+/*10*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  12 ,  0 },
+/*11*/  {edgeNil    , {(unsigned long)0}             , NULL  ,  12 ,  0 },
+/*12*/  {edgeSymbol , {(unsigned long)"PROCEDURE"}   , NULL  ,  13 , 17 },
 /*13*/  {edgeMorphem, {(unsigned long)morphemIdent}  , NULL  ,  14 ,  0 },
 /*14*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  15 ,  0 },
 /*15*/  {edgeGraph  , {(unsigned long)block}         , NULL  ,  16 ,  0 },
-/*16*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  12 , 17 },
+/*16*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  12 ,  0 },
 /*17*/  {edgeNil    , {(unsigned long)0}             , NULL  ,  18 ,  0 },
 /*18*/  {edgeGraph  , {(unsigned long)statement}     , NULL  ,   0 ,  0 },
 };
@@ -52,15 +52,13 @@ edge block[] = {
 // expression
 edge expression[] = {
 /*Num    type         ,            union               , action, next, alt */
-/* 0*/  {edgeSymbol   , {(unsigned long)'-'}           , NULL  ,   2 ,  0 },
+/* 0*/  {edgeSymbol   , {(unsigned long)'-'}           , NULL  ,   2 ,  1 },
 /* 1*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   2 ,  0 },
 /* 2*/  {edgeGraph    , {(unsigned long)term}          , NULL  ,   3 ,  0 },
-
-// what to do with 2 alternative bows?
-/* 3*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   4 ,  6 },
-/* 4*/  {edgeSymbol   , {(unsigned long)'+'}          , NULL  ,   5 ,  8 },
+/* 3*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   4 ,  0 },
+/* 4*/  {edgeSymbol   , {(unsigned long)'+'}           , NULL  ,   5 ,  6 },
 /* 5*/  {edgeGraph    , {(unsigned long)term}          , NULL  ,   3 ,  0 },
-/* 6*/  {edgeSymbol   , {(unsigned long)'-'}          , NULL  ,   7 ,  8 },
+/* 6*/  {edgeSymbol   , {(unsigned long)'-'}           , NULL  ,   7 ,  8 },
 /* 7*/  {edgeGraph    , {(unsigned long)term}          , NULL  ,   3 ,  0 },
 /* 8*/  {edgeGraphEnd , {(unsigned long)0}             , NULL  ,   0 ,  0 },
 };
@@ -69,21 +67,14 @@ edge expression[] = {
 edge term[] = {
 /*Num    type         ,            union               , action, next, alt */
 /* 0*/  {edgeGraph    , {(unsigned long)factor}        , NULL  ,   1 ,  0 },
-/* 1*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   2 ,  4 },
-/* 2*/  {edgeSymbol   , {(unsigned long)'*'}           , NULL  ,   3 ,  6 },
+/* 1*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   2 ,  0 },
+/* 2*/  {edgeSymbol   , {(unsigned long)'*'}           , NULL  ,   3 ,  4 },
 /* 3*/  {edgeGraph    , {(unsigned long)factor}        , NULL  ,   1 ,  0 },
 /* 4*/  {edgeSymbol   , {(unsigned long)'/'}           , NULL  ,   5 ,  6 },
 /* 5*/  {edgeGraph    , {(unsigned long)factor}        , NULL  ,   1 ,  0 },
 /* 6*/  {edgeGraphEnd , {(unsigned long)0}             , NULL  ,   0 ,  0 },
 };
 
-
-/*
- * ====================================
- * Could be wrong that the alternative edge of 0 is 3
- * Check that!!
- * Correct it in expression and term as well
- * */
 
 // statement
 edge statement[] = {
@@ -100,28 +91,24 @@ edge statement[] = {
 /* 9*/  {edgeSymbol   , {(unsigned long)"DO"}          , NULL  ,  10 ,  0 },
 /*10*/  {edgeGraph    , {(unsigned long)statement}     , NULL  ,   0 ,  0 },
 /*11*/  {edgeSymbol   , {(unsigned long)"BEGIN"}       , NULL  ,  12 , 15 },
-/*12*/  {edgeGraph    , {(unsigned long)statement}     , NULL  ,  13 , 14 },
+/*12*/  {edgeGraph    , {(unsigned long)statement}     , NULL  ,  13 ,  0 },
 /*13*/  {edgeSymbol   , {(unsigned long)';'}           , NULL  ,  12 ,  0 },
 /*14*/  {edgeSymbol   , {(unsigned long)"END"}         , NULL  ,   0 ,  0 },
-
-// not sure about alternatives anymore, I'll leave it be from here
-/*15*/  {edgeSymbol   , {(unsigned long)"CALL"}        , NULL  ,  16 ,  0 },
+/*15*/  {edgeSymbol   , {(unsigned long)"CALL"}        , NULL  ,  16 , 17 },
 /*16*/  {edgeMorphem  , {(unsigned long)morphemIdent}  , NULL  ,   0 ,  0 },
-/*17*/  {edgeSymbol   , {(unsigned long)'?'}           , NULL  ,  18 ,  0 },
+/*17*/  {edgeSymbol   , {(unsigned long)'?'}           , NULL  ,  18 , 19 },
 /*18*/  {edgeMorphem  , {(unsigned long)morphemIdent}  , NULL  ,   0 ,  0 },
-/*19*/  {edgeSymbol   , {(unsigned long)'!'}           , NULL  ,  20 ,  0 },
+/*19*/  {edgeSymbol   , {(unsigned long)'!'}           , NULL  ,  20 , 21 },
 /*20*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   0 ,  0 },
-
-// NIL OR GRAPH END EDGE?
-/*21*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   0 ,  0 },
+/*21*/  {edgeGraphEnd , {(unsigned long)0}             , NULL  ,   0 ,  0 },
 };
 
 
 // factor
 edge factor[] = {
 /*Num    type         ,            union               , action, next, alt */
-/* 0*/  {edgeMorphem  , {(unsigned long)morphemNumeral}, NULL  ,   0 ,  0 },
-/* 1*/  {edgeSymbol   , {(unsigned long)'('}           , NULL  ,   2 ,  0 },
+/* 0*/  {edgeMorphem  , {(unsigned long)morphemNumeral}, NULL  ,   0 ,  1 },
+/* 1*/  {edgeSymbol   , {(unsigned long)'('}           , NULL  ,   2 ,  4 },
 /* 2*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   3 ,  0 },
 /* 3*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   0 ,  0 },
 /* 4*/  {edgeMorphem  , {(unsigned long)morphemIdent}  , NULL  ,   0 ,  0 },
@@ -131,14 +118,14 @@ edge factor[] = {
 // condition
 edge condition[] = {
 /*Num    type         ,            union               , action, next, alt */
-/* 0*/  {edgeSymbol   , {(unsigned long)"ODD"}         , NULL  ,   1 ,  0 },
+/* 0*/  {edgeSymbol   , {(unsigned long)"ODD"}         , NULL  ,   1 ,  2 },
 /* 1*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   0 ,  0 },
 /* 2*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   3 ,  0 },
-/* 3*/  {edgeSymbol   , {(unsigned long)'='}           , NULL  ,   9 ,  0 },
-/* 4*/  {edgeSymbol   , {(unsigned long)'#'}           , NULL  ,   9 ,  0 },
-/* 5*/  {edgeSymbol   , {(unsigned long)'<'}           , NULL  ,   9 ,  0 },
-/* 6*/  {edgeSymbol   , {(unsigned long)'>'}           , NULL  ,   9 ,  0 },
-/* 7*/  {edgeSymbol   , {(unsigned long)"<="}          , NULL  ,   9 ,  0 },
+/* 3*/  {edgeSymbol   , {(unsigned long)'='}           , NULL  ,   9 ,  4 },
+/* 4*/  {edgeSymbol   , {(unsigned long)'#'}           , NULL  ,   9 ,  5 },
+/* 5*/  {edgeSymbol   , {(unsigned long)'<'}           , NULL  ,   9 ,  6 },
+/* 6*/  {edgeSymbol   , {(unsigned long)'>'}           , NULL  ,   9 ,  7 },
+/* 7*/  {edgeSymbol   , {(unsigned long)"<="}          , NULL  ,   9 ,  8 },
 /* 8*/  {edgeSymbol   , {(unsigned long)">="}          , NULL  ,   9 ,  0 },
 /* 9*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   0 ,  0 },
 };
