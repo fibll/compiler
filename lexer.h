@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "types.h"
 
 // fix: MORPHEM.word don't stuck to 1024 chars (malloc and realloc)
 // fix: all these global variables 
@@ -8,16 +9,6 @@
 // global stuff
 int debug = 0;
 
-
-// morphem
-typedef struct morph
-{
-    int id;
-    char word[30];
-    char symbol[2];
-    int number;
-    char keyword[30];
-}MORPHEM;
 
 static MORPHEM morph;
 
@@ -66,8 +57,8 @@ int keywordLength[] = {
 
 
 // keyword array
-char* keywords[11]/*[2]*/ = {
-    "BEGIN","CALL","CONST","DO","END","IF","ODD","PROCEDURE","THEN","VAR","WHILE"
+char* keywords[12]/*[2]*/ = {
+    "BEGIN","","DO","END","IF","ODD","PROCEDURE","THEN","VAR","WHILE","CALL","CONST"
         /*,
       "0"  , "1",    "2",   "3", "4",  "5", "6",  "7",        "8",   "9",  "10"  */
 };
@@ -232,10 +223,6 @@ void saveMorph(int id)
     int lengthOK = 0;
     int keyword = 0;
 
-    // create out of the tokenBuffer a new morphem
-    //morphArraySize++;
-    //morphArray = (MORPHEM*) realloc(morphArray, morphArraySize * sizeof(MORPHEM));
-   
     if(id < 0 || id > 8)
     {
         debugPrint("Something did go wrong");
@@ -250,39 +237,47 @@ void saveMorph(int id)
         case 1:
                 // check if keyword
                 firstChar = tokenBuffer[0];
-                //printf("firstChar: %c\n", firstChar);
                 
                 // check with the first letter if it could be a keyword
                 lengthOK = keywordFirstLetter[firstChar-65]; 
-                //printf("\n\nstrlen: %i\n", strlen(tokenBuffer));
 
                 // check if firstLetter is correct
                 if(lengthOK > -1)
                 {
+                    // if word starts with c
                     if(lengthOK == 1 && strlen(tokenBuffer) > 3 && strlen(tokenBuffer) < 6)
                     {
-                        keyword = 1;
+                        if(strcmp(tokenBuffer, keywords[10]) == 0
+                                || strcmp(tokenBuffer, keywords[11]) == 0)
+                            keyword = 1;
+                        else
+                            keyword = 0;
                     }
+                    // any other of the keyword letters
                     else if(strlen(tokenBuffer) == keywordLength[lengthOK])
                     {
-                        keyword = 1;
+                        if(strcmp(tokenBuffer, keywords[lengthOK]) == 0)
+                            keyword = 1;
+                        else
+                            keyword = 0;
                     }
                 }
                 
 
                 if(keyword == 1)
                 {
-                    printf("\n\npotential keyword\n");
-                    
+                    /*
                     int i = 0;
-
-                    // find keyword in the keyword array
-                    for(i = 0; i < 11; i++)
-                    {
-                        if(strcmp(tokenBuffer, keywords[i]) == 0)
-                        {
+                    if(lenghtOK == 1)
+                        lengthOK = 9; 
+                    
+                    //for(i = lengthOK; i < 11; i++)
+                    //{
+                        if(strcmp(tokenBuffer, keywords[lengthOK]) == 0)
+                        {*/
                             morph.id = 3;
                             strcpy(morph.keyword, tokenBuffer);
+                            /*
                             i = 11;
                         }
                         else
@@ -290,7 +285,7 @@ void saveMorph(int id)
                             morph.id = 0;
                             strcpy(morph.word, tokenBuffer);
                         }
-                    }
+                    }*/
                 }
                 else
                 {
