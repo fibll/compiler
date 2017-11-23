@@ -209,27 +209,29 @@ int parser(edge* graph)
         // always success
     
     // Symbol edge (1):
-        // check if the symbol is equal to the token value
+        // check if the symbol is equal to the morph.Symbol
+        // success = true;
+        // success = false;
 
     // Morphem edge(2):
-        // check if the current morphem is equal to the token morphem.id 
+        // check if the morphem code (ident or number) is equal to morph.id of the token
+        // success = true;
+        // success = false;
         // clear the token, so the next parser action can get it's own new next token
 
     // Graph edge (3):
         // success is the return value of the parse function with the given graph 
+        // success = parse(graph)
 
     // Graph End edge (4):
-        // return success 
+        // return success
 
+    // find out what action to do
+    // if null, success = 1, else success is defined by action
 
+    // is success true?
+        //no: if alternative edge is not 0 (otherwise exit without success)
+            // try alternative edge
 
-
-
-
-    // verarbeiten des ersten Knotens, dessen kondition und weiter führende aktion
-    // edge array
-    
-    //   nextEdge, alternative Edge
-    // {
-    //                              } 
+        //yes: go further with the next edge
 }
