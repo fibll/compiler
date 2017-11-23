@@ -131,11 +131,19 @@ edge condition[] = {
 };
 
 
-void parser(/*morphArray*/);
+int parser(edge* graph);
 
 int main (int argc, char* argv[])
 {
 	// Variabeln
+    // init morphem
+    /*
+    morph.id = -1;
+    morph.word = "";
+    morph.symbol = 0;
+    morph.number = 0;
+    morph.keyword = "";
+    */
 
     // is there an argument?
     if(argc < 2)
@@ -169,12 +177,10 @@ int main (int argc, char* argv[])
                 printf("morph.word = %s\n", morph.word);
                 break;
             case 1:
-                printf("morph.symbol = %s\n", morph.symbol);
+                printf("morph.allSymbol = %i\n", morph.allSymbols);
                 break;
             case 2:
                 printf("morph.number = %i\n", morph.number);
-            case 3:
-                printf("morph.keyword = %s\n", morph.keyword);
                 break;
             default:
                 printf("ERROR!");
@@ -189,8 +195,37 @@ int main (int argc, char* argv[])
     return 0;
 }
 
-void parser(/*morphArray*/)
+int parser(edge* graph)
 {
+    // function is executed for every single edge
+    
+    // init success variable
+
+    // get token if lexer wasn't used yet or the old one was already processed
+    
+    // switch case with different edge types
+
+    // nil edge (0):
+        // always success
+    
+    // Symbol edge (1):
+        // check if the symbol is equal to the token value
+
+    // Morphem edge(2):
+        // check if the current morphem is equal to the token morphem.id 
+        // clear the token, so the next parser action can get it's own new next token
+
+    // Graph edge (3):
+        // success is the return value of the parse function with the given graph 
+
+    // Graph End edge (4):
+        // return success 
+
+
+
+
+
+
     // verarbeiten des ersten Knotens, dessen kondition und weiter führende aktion
     // edge array
     

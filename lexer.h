@@ -34,15 +34,15 @@ static char charClasses[128]=
 //
 // cur. state|input|[lsb, next state]
 static int stateAction[8][8][2] = {
-// soZei      Ziffer     Buchst       :          =          <          >        Sonst
-  4 , -1  ,  2 ,  2  ,  3 ,  1  ,  2 ,  3  ,  4 , -1  ,  2 ,  4  ,  2 ,  5  ,  5 ,  0  ,
-  1 , -1  ,  2 ,  1  ,  3 ,  1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  2 ,  2  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  6  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  7  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  8  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
-  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+//       soZei      Ziffer     Buchst       :          =          <          >        Sonst
+/*Z0*/  4 , -1  ,  2 ,  2  ,  3 ,  1  ,  2 ,  3  ,  4 , -1  ,  2 ,  4  ,  2 ,  5  ,  5 ,  0  ,
+/*Z1*/  1 , -1  ,  2 ,  1  ,  3 ,  1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+/*Z2*/  1 , -1  ,  2 ,  2  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+/*Z3*/  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  6  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+/*Z4*/  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  7  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+/*Z5*/  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  2 ,  8  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+/*Z6*/  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
+/*Z7*/  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,  1 , -1  ,
 };
 
 
@@ -247,9 +247,16 @@ void saveMorph(int id)
                     // if word starts with c
                     if(lengthOK == 1 && strlen(tokenBuffer) > 3 && strlen(tokenBuffer) < 6)
                     {
-                        if(strcmp(tokenBuffer, keywords[10]) == 0
-                                || strcmp(tokenBuffer, keywords[11]) == 0)
+                        if(strcmp(tokenBuffer, keywords[10]) == 0)
+                        {
                             keyword = 1;
+                            morph.symbol = 131 + 10;
+                        }
+                        else if(strcmp(tokenBuffer, keywords[11]) == 0)
+                        {
+                            keyword = 1;
+                            morph.symbol = 131 + 11;
+                        }
                         else
                             keyword = 0;
                     }
@@ -257,35 +264,18 @@ void saveMorph(int id)
                     else if(strlen(tokenBuffer) == keywordLength[lengthOK])
                     {
                         if(strcmp(tokenBuffer, keywords[lengthOK]) == 0)
+                        {
                             keyword = 1;
+                            morph.symbol = 131 + lengthOK;
+                        }
                         else
                             keyword = 0;
                     }
                 }
-                
 
                 if(keyword == 1)
                 {
-                    /*
-                    int i = 0;
-                    if(lenghtOK == 1)
-                        lengthOK = 9; 
-                    
-                    //for(i = lengthOK; i < 11; i++)
-                    //{
-                        if(strcmp(tokenBuffer, keywords[lengthOK]) == 0)
-                        {*/
-                            morph.id = 3;
-                            strcpy(morph.keyword, tokenBuffer);
-                            /*
-                            i = 11;
-                        }
-                        else
-                        {
-                            morph.id = 0;
-                            strcpy(morph.word, tokenBuffer);
-                        }
-                    }*/
+                    morph.id = 1;
                 }
                 else
                 {
@@ -301,12 +291,22 @@ void saveMorph(int id)
         // symbol
         default:
                 morph.id = 1;
-                strcpy(morph.symbol, tokenBuffer);
-            break;
+
+                if(strlen(tokenBuffer) > 1)
+                {
+                    // switch for double symbol detection
+                    if(strcmp(tokenBuffer,"<=") == 0)
+                        morph.symbol = 128;
+                    else if(strcmp(tokenBuffer,">=") == 0)
+                        morph.symbol = 129;
+                    else if(strcmp(tokenBuffer,":=") == 0)
+                        morph.symbol = 130;
+                }
+                else
+                    morph.symbol = tokenBuffer[0];
     }
-     
+
     debugPrint("Saved in morph\n");
-    
 }
 void debugPrint(char* message)
 {
