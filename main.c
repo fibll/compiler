@@ -8,6 +8,7 @@
 
 // global stuff
 static MORPHEM morph;
+//int debugParser = 1;
 
 // graph arrays
 edge block[];
@@ -80,7 +81,7 @@ edge term[] = {
 edge statement[] = {
 /*Num    type         ,            union               , action, next, alt */
 /* 0*/  {edgeMorphem  , {(unsigned long)morphemIdent}  , NULL  ,   1 ,  3 },
-/* 1*/  {edgeSymbol   , {(unsigned long)130}           , NULL  ,   2 ,  0 },/*:=*/
+/* 1*/  {edgeSymbol   , {(unsigned long)130}/*:=*/     , NULL  ,   2 ,  0 },
 /* 2*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   0 ,  0 },
 /* 3*/  {edgeSymbol   , {(unsigned long)IF}            , NULL  ,   4 ,  7 },
 /* 4*/  {edgeGraph    , {(unsigned long)condition}     , NULL  ,   5 ,  0 },
@@ -125,13 +126,14 @@ edge condition[] = {
 /* 4*/  {edgeSymbol   , {(unsigned long)'#'}           , NULL  ,   9 ,  5 },
 /* 5*/  {edgeSymbol   , {(unsigned long)'<'}           , NULL  ,   9 ,  6 },
 /* 6*/  {edgeSymbol   , {(unsigned long)'>'}           , NULL  ,   9 ,  7 },
-/* 7*/  {edgeSymbol   , {(unsigned long)128}           , NULL  ,   9 ,  8 },/*<=*/
-/* 8*/  {edgeSymbol   , {(unsigned long)129}           , NULL  ,   9 ,  0 },/*>=*/
+/* 7*/  {edgeSymbol   , {(unsigned long)128}/*<=*/     , NULL  ,   9 ,  8 },
+/* 8*/  {edgeSymbol   , {(unsigned long)129}/*>=*/     , NULL  ,   9 ,  0 },
 /* 9*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   0 ,  0 },
 };
 
 
 int parser(edge* graph);
+//void debugPrintParser(char* message);
 
 int main (int argc, char* argv[])
 {
@@ -200,36 +202,40 @@ int parser(edge* graph)
 
     while(1)
     {
-        printf("Next cycle\n");
+        debugPrintParser("Next cycle\n");
         // switch case with different edge types
         switch(currentGraph->type){
             case edgeNil:
                     success = 1;
-                    printf("Nil\n");
+                    debugPrintParser("taking Nil edge\n");
                 break;
 
             case edgeSymbol:
-                    if(currentGraph->edgeValue.morphemID == morph.symbol)
+                    if(currentGraph->edgeValue.morphemID == morph.symbol){
                         success = 1;
-                    else
+                        debugPrintParser("Symbol found: accepted\n");
+                     }else{
                         success = 0;
-                        printf("Symbol\n");
+                        debugPrintParser("Symbol found: not accepted\n");
+                     }
                 break;
 
             case edgeMorphem:            
                     if(currentGraph->edgeValue.morphemID == morph.id){
                         success = 1;
-                        printf("Morphem found: accepted\n");
+                        debugPrintParser("Morphem found: accepted\n");
                      }else{
                         success = 0;
-                        printf("Morphem found: not accepted\n");
+                        debugPrintParser("Morphem found: not accepted\n");
                      }
                 break;
 
             case edgeGraph:
-                    printf("\n==========================\nNew Graph\n");
+                    debugPrintParser("\n==========================\nNew Graph\n");
                     success = parser(currentGraph->edgeValue.graphAdress);
-                    printf("\nsuccess = %i\nleaving Graph\n--------------------------\n\n", success);
+                    
+                    if(debugParser)
+                        printf("\nsuccess = %i\nleaving Graph\n--------------------------\n\n", success);
                 break;
 
             case edgeGraphEnd:
@@ -247,7 +253,7 @@ int parser(edge* graph)
                 return 0;
 
             // why " + pGraph"
-            printf("Alternative edge\n");
+            debugPrintParser("Alternative edge\n");
             currentGraph = graph + currentGraph->alternativeEdge;
         }
         else
@@ -255,27 +261,32 @@ int parser(edge* graph)
             if(currentGraph->type == edgeSymbol || currentGraph->type == edgeMorphem)
             {
                 morph = lexer(file);
+                debugPrintParser("get new token: ");
         
                 switch(morph.id)
                 {
                     case 0:
-                        printf("morph.word = %s\n", morph.word);
+                        if(debugParser)
+                            printf("morph.word = %s\n", morph.word);
                         break;
                     case 1:
-                        printf("morph.allSymbol = %i\n", morph.symbol);
+                        if(debugParser)
+                            printf("morph.symbol = %i\n", morph.symbol);
                         break;
                     case 2:
-                        printf("morph.number = %i\n", morph.number);
+                        if(debugParser)
+                            printf("morph.number = %i\n", morph.number);
                         break;
                     default:
-                        printf("ERROR!");
+                        if(debugParser)
+                            printf("ERROR!");
                 }
             }
 
             if(currentGraph->nextEdge == 0)
                 return success;
 
-            printf("\nNext edge\n");
+            debugPrintParser("\nNext edge\n");
             currentGraph = graph + currentGraph->nextEdge;
         }
         if(morph.id == -1)
@@ -312,3 +323,14 @@ int parser(edge* graph)
 
         //yes: go further with the next edge
 }
+
+/*
+void debugPrintParser(char* message)
+{
+    if(debugParser > 0)
+    {
+        printf("%s", message);
+    }
+    return;
+}
+*/

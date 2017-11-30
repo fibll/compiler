@@ -8,6 +8,7 @@
 
 // global stuff
 int debug = 0;
+int debugParser = 0;
 
 
 static MORPHEM morph;
@@ -82,6 +83,7 @@ void writeCapital();
 void beenden(int id);
 void saveMorph(int id);
 void debugPrint(char* message);
+void debugPrintParser(char* message);
 
 MORPHEM lexer(FILE* file)
 {
@@ -309,9 +311,19 @@ void saveMorph(int id)
 
     debugPrint("Saved in morph\n");
 }
+
 void debugPrint(char* message)
 {
     if(debug > 0)
+    {
+        printf("%s", message);
+    }
+    return;
+}
+
+void debugPrintParser(char* message)
+{
+    if(debugParser > 0)
     {
         printf("%s", message);
     }
