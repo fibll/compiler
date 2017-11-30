@@ -5,8 +5,6 @@ typedef struct morph
     char word[30];
     int symbol;
     int number;
-    //char keyword[30];
-    //char symbol[2];
 }MORPHEM;
 
 // symbols enum
@@ -27,8 +25,20 @@ typedef struct morph
  * 142 = "CONST"
 */
 
-//enum{
-//}
+typedef enum SYMBOLS
+{
+    BEGIN = 131,
+    DO = 133,
+    END = 134,
+    IF = 135,
+    ODD = 136,
+    PROCEDURE = 137,
+    THEN = 138,
+    VAR = 139,
+    WHILE = 140,
+    CALL = 141,
+    CONST = 142
+}symbols;
 
 // edgeType
 typedef enum EDGE_TYPE
@@ -45,21 +55,21 @@ typedef struct EDGE
 {
     edgeType type;  
     
-    union edgeValue 
+    union EDGE_VALUE 
     {
         unsigned long unionLengthVar;       // guarantees that the union save space is long enough 
         int           symbol;               // symbol ( '(', ')' )
         int           morphemID;            // Morphem id (number, word, etc)
         void *        graphAdress;          // pointer to following Graph 
-    }   edgeDescription;
+    }   edgeValue;
 
-    int (*funktionPointer)(void); 
+    int (*functionPointer)(void); 
     int nextEdge; 
     int alternativeEdge; 
 }edge;
 
 enum
 {
-    morphemIdent, 
-    morphemNumeral,
+    morphemIdent = 0, 
+    morphemNumeral = 2,
 };

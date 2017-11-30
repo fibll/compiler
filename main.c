@@ -21,26 +21,26 @@ edge condition[];
 edge programm[] = {
 /*Num    type        ,           union         , action, next, alt */
 /* 0*/  {edgeGraph   , {(unsigned long)block}  , NULL  ,   1 ,  0 },
-/* 1*/  {edgeGraphEnd, {(unsigned long)0    }  , NULL  ,   0 ,  0 },
+/* 1*/  {edgeGraphEnd, {(unsigned long)'.'}    , NULL  ,   0 ,  0 },
 };
 
 
 // block
 edge block[] = {
 /*Num    type       ,            union               , action, next, alt */
-/* 0*/  {edgeSymbol , {(unsigned long)"CONST"}       , NULL  ,   1 ,  6 },
+/* 0*/  {edgeSymbol , {(unsigned long)CONST}         , NULL  ,   1 ,  6 },
 /* 1*/  {edgeMorphem, {(unsigned long)morphemIdent}  , NULL  ,   2 ,  0 },
 /* 2*/  {edgeSymbol , {(unsigned long)'='}           , NULL  ,   3 ,  0 },
 /* 3*/  {edgeMorphem, {(unsigned long)morphemNumeral}, NULL  ,   4 ,  0 },
 /* 4*/  {edgeSymbol , {(unsigned long)','}           , NULL  ,   1 ,  5 },
 /* 5*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,   7 ,  0 },
 /* 6*/  {edgeNil    , {(unsigned long)0}             , NULL  ,   7 ,  0 },
-/* 7*/  {edgeSymbol , {(unsigned long)"VAR"}         , NULL  ,   8 , 11 },
+/* 7*/  {edgeSymbol , {(unsigned long)VAR}           , NULL  ,   8 , 11 },
 /* 8*/  {edgeMorphem, {(unsigned long)morphemIdent}  , NULL  ,   9 ,  0 },
 /* 9*/  {edgeSymbol , {(unsigned long)','}           , NULL  ,   8 , 10 },
 /*10*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  12 ,  0 },
 /*11*/  {edgeNil    , {(unsigned long)0}             , NULL  ,  12 ,  0 },
-/*12*/  {edgeSymbol , {(unsigned long)"PROCEDURE"}   , NULL  ,  13 , 17 },
+/*12*/  {edgeSymbol , {(unsigned long)PROCEDURE}     , NULL  ,  13 , 17 },
 /*13*/  {edgeMorphem, {(unsigned long)morphemIdent}  , NULL  ,  14 ,  0 },
 /*14*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  15 ,  0 },
 /*15*/  {edgeGraph  , {(unsigned long)block}         , NULL  ,  16 ,  0 },
@@ -80,21 +80,21 @@ edge term[] = {
 edge statement[] = {
 /*Num    type         ,            union               , action, next, alt */
 /* 0*/  {edgeMorphem  , {(unsigned long)morphemIdent}  , NULL  ,   1 ,  3 },
-/* 1*/  {edgeSymbol   , {(unsigned long)":="}          , NULL  ,   2 ,  0 },
+/* 1*/  {edgeSymbol   , {(unsigned long)130}           , NULL  ,   2 ,  0 },/*:=*/
 /* 2*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   0 ,  0 },
-/* 3*/  {edgeSymbol   , {(unsigned long)"IF"}          , NULL  ,   4 ,  7 },
+/* 3*/  {edgeSymbol   , {(unsigned long)IF}            , NULL  ,   4 ,  7 },
 /* 4*/  {edgeGraph    , {(unsigned long)condition}     , NULL  ,   5 ,  0 },
-/* 5*/  {edgeSymbol   , {(unsigned long)"THEN"}        , NULL  ,   6 ,  0 },
+/* 5*/  {edgeSymbol   , {(unsigned long)THEN}          , NULL  ,   6 ,  0 },
 /* 6*/  {edgeGraph    , {(unsigned long)statement}     , NULL  ,   0 ,  0 },
-/* 7*/  {edgeSymbol   , {(unsigned long)"WHILE"}       , NULL  ,   8 , 11 },
+/* 7*/  {edgeSymbol   , {(unsigned long)WHILE}         , NULL  ,   8 , 11 },
 /* 8*/  {edgeGraph    , {(unsigned long)condition}     , NULL  ,   9 ,  0 },
-/* 9*/  {edgeSymbol   , {(unsigned long)"DO"}          , NULL  ,  10 ,  0 },
+/* 9*/  {edgeSymbol   , {(unsigned long)DO}            , NULL  ,  10 ,  0 },
 /*10*/  {edgeGraph    , {(unsigned long)statement}     , NULL  ,   0 ,  0 },
-/*11*/  {edgeSymbol   , {(unsigned long)"BEGIN"}       , NULL  ,  12 , 15 },
+/*11*/  {edgeSymbol   , {(unsigned long)BEGIN}         , NULL  ,  12 , 15 },
 /*12*/  {edgeGraph    , {(unsigned long)statement}     , NULL  ,  13 ,  0 },
-/*13*/  {edgeSymbol   , {(unsigned long)';'}           , NULL  ,  12 ,  0 },
-/*14*/  {edgeSymbol   , {(unsigned long)"END"}         , NULL  ,   0 ,  0 },
-/*15*/  {edgeSymbol   , {(unsigned long)"CALL"}        , NULL  ,  16 , 17 },
+/*13*/  {edgeSymbol   , {(unsigned long)';'}           , NULL  ,  12 , 14 },
+/*14*/  {edgeSymbol   , {(unsigned long)END}           , NULL  ,   0 ,  0 },
+/*15*/  {edgeSymbol   , {(unsigned long)CALL}          , NULL  ,  16 , 17 },
 /*16*/  {edgeMorphem  , {(unsigned long)morphemIdent}  , NULL  ,   0 ,  0 },
 /*17*/  {edgeSymbol   , {(unsigned long)'?'}           , NULL  ,  18 , 19 },
 /*18*/  {edgeMorphem  , {(unsigned long)morphemIdent}  , NULL  ,   0 ,  0 },
@@ -118,15 +118,15 @@ edge factor[] = {
 // condition
 edge condition[] = {
 /*Num    type         ,            union               , action, next, alt */
-/* 0*/  {edgeSymbol   , {(unsigned long)"ODD"}         , NULL  ,   1 ,  2 },
+/* 0*/  {edgeSymbol   , {(unsigned long)ODD}           , NULL  ,   1 ,  2 },
 /* 1*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   0 ,  0 },
 /* 2*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   3 ,  0 },
 /* 3*/  {edgeSymbol   , {(unsigned long)'='}           , NULL  ,   9 ,  4 },
 /* 4*/  {edgeSymbol   , {(unsigned long)'#'}           , NULL  ,   9 ,  5 },
 /* 5*/  {edgeSymbol   , {(unsigned long)'<'}           , NULL  ,   9 ,  6 },
 /* 6*/  {edgeSymbol   , {(unsigned long)'>'}           , NULL  ,   9 ,  7 },
-/* 7*/  {edgeSymbol   , {(unsigned long)"<="}          , NULL  ,   9 ,  8 },
-/* 8*/  {edgeSymbol   , {(unsigned long)">="}          , NULL  ,   9 ,  0 },
+/* 7*/  {edgeSymbol   , {(unsigned long)128}           , NULL  ,   9 ,  8 },/*<=*/
+/* 8*/  {edgeSymbol   , {(unsigned long)129}           , NULL  ,   9 ,  0 },/*>=*/
 /* 9*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   0 ,  0 },
 };
 
@@ -135,16 +135,8 @@ int parser(edge* graph);
 
 int main (int argc, char* argv[])
 {
-	// Variabeln
-    // init morphem
-    /*
-    morph.id = -1;
-    morph.word = "";
-    morph.symbol = 0;
-    morph.number = 0;
-    morph.keyword = "";
-    */
-
+    // Variabeln
+    
     // is there an argument?
     if(argc < 2)
     {
@@ -163,11 +155,13 @@ int main (int argc, char* argv[])
     // init lexer one time only
     read();
 
-    // start lexer
+    // init morph with first token
     morph = lexer(file);
 
-    // print all tokens
+    // parse tokens
+    printf("Parser result: %i", parser(programm));
 
+    /*
     // stop executing lexer if return value.id = -1
     while(morph.id != -1)
     {
@@ -177,7 +171,7 @@ int main (int argc, char* argv[])
                 printf("morph.word = %s\n", morph.word);
                 break;
             case 1:
-                printf("morph.allSymbol = %i\n", morph.allSymbols);
+                printf("morph.allSymbol = %i\n", morph.symbol);
                 break;
             case 2:
                 printf("morph.number = %i\n", morph.number);
@@ -189,8 +183,8 @@ int main (int argc, char* argv[])
         }
         morph = lexer(file);
     }
-
-
+    */
+    
     fclose(file);
     return 0;
 }
@@ -198,12 +192,95 @@ int main (int argc, char* argv[])
 int parser(edge* graph)
 {
     // function is executed for every single edge
+
+    edge* currentGraph = graph;
     
     // init success variable
+    int success = 0;
 
-    // get token if lexer wasn't used yet or the old one was already processed
-    
-    // switch case with different edge types
+    while(1)
+    {
+        printf("Next cycle\n");
+        // switch case with different edge types
+        switch(currentGraph->type){
+            case edgeNil:
+                    success = 1;
+                    printf("Nil\n");
+                break;
+
+            case edgeSymbol:
+                    if(currentGraph->edgeValue.morphemID == morph.symbol)
+                        success = 1;
+                    else
+                        success = 0;
+                        printf("Symbol\n");
+                break;
+
+            case edgeMorphem:            
+                    if(currentGraph->edgeValue.morphemID == morph.id){
+                        success = 1;
+                        printf("Morphem found: accepted\n");
+                     }else{
+                        success = 0;
+                        printf("Morphem found: not accepted\n");
+                     }
+                break;
+
+            case edgeGraph:
+                    printf("\n==========================\nNew Graph\n");
+                    success = parser(currentGraph->edgeValue.graphAdress);
+                    printf("\nsuccess = %i\nleaving Graph\n--------------------------\n\n", success);
+                break;
+
+            case edgeGraphEnd:
+                    return 1;
+                break;
+        }
+
+        // find out what action to do
+        if(currentGraph->functionPointer != NULL)
+            success = currentGraph->functionPointer();
+
+        if(success == 0)
+        {
+            if(currentGraph->alternativeEdge == 0)
+                return 0;
+
+            // why " + pGraph"
+            printf("Alternative edge\n");
+            currentGraph = graph + currentGraph->alternativeEdge;
+        }
+        else
+        {
+            if(currentGraph->type == edgeSymbol || currentGraph->type == edgeMorphem)
+            {
+                morph = lexer(file);
+        
+                switch(morph.id)
+                {
+                    case 0:
+                        printf("morph.word = %s\n", morph.word);
+                        break;
+                    case 1:
+                        printf("morph.allSymbol = %i\n", morph.symbol);
+                        break;
+                    case 2:
+                        printf("morph.number = %i\n", morph.number);
+                        break;
+                    default:
+                        printf("ERROR!");
+                }
+            }
+
+            if(currentGraph->nextEdge == 0)
+                return success;
+
+            printf("\nNext edge\n");
+            currentGraph = graph + currentGraph->nextEdge;
+        }
+        if(morph.id == -1)
+            return success;
+    }
 
     // nil edge (0):
         // always success

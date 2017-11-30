@@ -1,3 +1,3 @@
-a; begin call blaga xajk;
+a; "§begin call blaga xajk;
 BEGIN DO END IF ODD PROCEDURE THEN VAR WHILE CALL CONST
 
