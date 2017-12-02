@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lexer.h"
+#include "list.h"
 
 // fix: MORPHEM.word don't stuck to 1024 chars (malloc and realloc)
 // fix: all these global variables 
@@ -161,32 +162,20 @@ int main (int argc, char* argv[])
     morph = lexer(file);
 
     // parse tokens
-    printf("Parser result: %i", parser(programm));
-
-    /*
-    // stop executing lexer if return value.id = -1
-    while(morph.id != -1)
-    {
-        switch(morph.id)
-        {
-            case 0:
-                printf("morph.word = %s\n", morph.word);
-                break;
-            case 1:
-                printf("morph.allSymbol = %i\n", morph.symbol);
-                break;
-            case 2:
-                printf("morph.number = %i\n", morph.number);
-                break;
-            default:
-                printf("ERROR!");
-                exit(0);
-
-        }
-        morph = lexer(file);
-    }
-    */
+    //printf("Parser result: %i", parser(programm));
     
+    // create list
+    list *nameList = createList();
+
+    int i = 0;
+
+    // add node
+    insertTail(nameList, &morph);
+    
+    MORPHEM *tmpMorph = getFirst(nameList);
+
+    printf("First Token id: %i\n", tmpMorph->id);
+
     fclose(file);
     return 0;
 }
@@ -334,3 +323,27 @@ void debugPrintParser(char* message)
     return;
 }
 */
+
+    /*
+    // stop executing lexer if return value.id = -1
+    while(morph.id != -1)
+    {
+        switch(morph.id)
+        {
+            case 0:
+                printf("morph.word = %s\n", morph.word);
+                break;
+            case 1:
+                printf("morph.allSymbol = %i\n", morph.symbol);
+                break;
+            case 2:
+                printf("morph.number = %i\n", morph.number);
+                break;
+            default:
+                printf("ERROR!");
+                exit(0);
+
+        }
+        morph = lexer(file);
+    }
+    */
