@@ -13,9 +13,7 @@ typedef struct
 		node *current;
 	}list;
 
-    /*
-
-// namelist item
+// namelist node
 typedef struct{
     int id;
     short prodecureIndex;
@@ -28,14 +26,14 @@ typedef struct{
 typedef struct{
     int id;
     int offset;
-}nameListVariable;
+}namelistVariable;
 
 // namelist constant
 typedef struct{
     int id;
     long value;
     int index;
-}nameListConstant;
+}namelistConst;
 
 // namelist procedure
 typedef struct NAME_LIST_PROCEDURE{
@@ -44,5 +42,4 @@ typedef struct NAME_LIST_PROCEDURE{
     struct NAME_LIST_PROCEDURE *pParentProcedure;
     list *pList;
     int variableCounter;
-}nameListProcedure;
-*/
+}namelistProcedure;

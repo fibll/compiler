@@ -2,13 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lexer.h"
-#include "list.h"
+#include "namelist.c"
 
 // fix: MORPHEM.word don't stuck to 1024 chars (malloc and realloc)
 // fix: all these global variables 
 
 // global stuff
 static MORPHEM morph;
+
 //int debugParser = 1;
 
 // graph arrays
@@ -134,12 +135,11 @@ edge condition[] = {
 
 
 int parser(edge* graph);
-//void debugPrintParser(char* message);
 
 int main (int argc, char* argv[])
 {
     // Variabeln
-    
+
     // is there an argument?
     if(argc < 2)
     {
@@ -162,7 +162,8 @@ int main (int argc, char* argv[])
     morph = lexer(file);
 
     // parse tokens
-    //printf("Parser result: %i", parser(programm));
+    //int parserReturn = parser(programm);
+    //printf("Parser result: %i", parserReturn);
     
     // create list
     list *nameList = createList();
@@ -171,11 +172,12 @@ int main (int argc, char* argv[])
 
     // add node
     insertTail(nameList, &morph);
-    
+
     MORPHEM *tmpMorph = getFirst(nameList);
 
-    printf("First Token id: %i\n", tmpMorph->id);
 
+    printf("First Token id: %i\n", tmpMorph->id);
+   
     fclose(file);
     return 0;
 }
