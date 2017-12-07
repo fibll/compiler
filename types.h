@@ -1,3 +1,4 @@
+// lexer types ---
 // morphem
 typedef struct morph
 {
@@ -40,6 +41,7 @@ typedef enum SYMBOLS
     CONST = 142
 }symbols;
 
+// graph types ---
 // edgeType
 typedef enum EDGE_TYPE
 {
@@ -60,7 +62,7 @@ typedef struct EDGE
         unsigned long unionLengthVar;       // guarantees that the union save space is long enough 
         int           symbol;               // symbol ( '(', ')' )
         int           morphemID;            // Morphem id (number, word, etc)
-        void *        graphAdress;          // pointer to following Graph 
+        void         *graphAdress;          // pointer to following Graph 
     }   edgeValue;
 
     int (*functionPointer)(void); 
@@ -73,3 +75,51 @@ enum
     morphemIdent = 0, 
     morphemNumeral = 2,
 };
+
+// namelist types ---
+
+// namelist node
+typedef struct NODE
+	{
+		struct NODE *next;
+		void *item;	
+	}node;
+
+// namelist
+typedef struct
+	{
+		node *first;
+		node *last;
+		node *current;
+	}list;
+
+// namelist item
+typedef struct{
+    int id;
+    short prodecureIndex;
+    void *pObjekt;
+    int length;
+    char *pName;
+}namelistNode;
+
+// namelist variable
+typedef struct{
+    int id;
+    int offset;
+}nameListVariable;
+
+// namelist constant
+typedef struct{
+    int id;
+    long value;
+    int index;
+}nameListConstant;
+
+// namelist procedure
+typedef struct NAME_LIST_PROCEDURE{
+    int id;
+    short procedureIndex;
+    struct NAME_LIST_PROCEDURE;
+    list *pList;
+    int variableCounter;
+}nameListProcedure;
