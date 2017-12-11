@@ -138,26 +138,27 @@ int parser(edge* graph);
 
 int main (int argc, char* argv[])
 {
-    // FRAGE: Warum gibt createNamelistVariabel keinen Pointer zurück?
-
+    // FRAGE: Warum soll createNamelistVariable keinen Pointer zurück geben?
+    //
     // Variabeln
     long *constArray = malloc(sizeof(long));
     constArray[0] = 0;
+    // namelistProcedure *parentProcedure;
+    // parentProcedure->procedureIndex = 2;
+    // namelistProcedure *nullPointer = NULL;
 
-    namelistProcedure *pProcedure;
-    pProcedure->variableCounter = 12;
+    namelistProcedure *pProcedure = createNamelistProcedure(NULL);
+    printf("id: %d\nprocedureIndex: %d\nvariableCounter: %d\n", pProcedure->id, pProcedure->procedureIndex, pProcedure->variableCounter);
 
-    namelistVariable *pVariable = createNamelistVariable(pProcedure);
-    printf("varOffset: %d\nvarCounter: %d\n", pVariable->offset, pProcedure->variableCounter);
-    /*
-    printf("val of const: %ld\nid: %d\nindex: %d", pVariable->value, pVariable->id, pVariable->index);
-    printf("constArray size: %ld\nconstArray last item:%ld", constArray[0], constArray[constArray[0]]);
-    */
-    if(deleteNamelistVariable(pVariable) == 0)
-        printf("node was deleted!\n");
-    else
-        printf("node was NOT deleted!\n");
-    
+    insertTail(pProcedure->pList, createNamelistNode("firstNode"));
+    insertTail(pProcedure->pList, createNamelistNode("secondNode"));
+
+    namelistNode *pNode = getFirst(pProcedure->pList);
+    printf("name: %s\n", pNode->pName);
+
+    pNode = getNext(pProcedure->pList);
+    printf("name: %s\n", pNode->pName);
+
 
     // is there an argument?
     if(argc < 2)
@@ -181,21 +182,8 @@ int main (int argc, char* argv[])
     morph = lexer(file);
 
     // parse tokens
-    //int parserReturn = parser(programm);
-    //printf("Parser result: %i", parserReturn);
-    
-    // create list
-    list *nameList = createList();
-
-    int i = 0;
-
-    // add node
-    insertTail(nameList, &morph);
-
-    MORPHEM *tmpMorph = getFirst(nameList);
-
-
-    printf("First Token id: %i\n", tmpMorph->id);
+    int parserReturn = parser(programm);
+    printf("Parser result: %i\n", parserReturn);
    
     fclose(file);
     return 0;

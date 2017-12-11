@@ -37,7 +37,7 @@ int insertTail(list *pList, namelistNode *itemIns)
 	return (int)pTmp;
 }
 
-void *getFirst (list *pList)
+namelistNode *getFirst (list *pList)
 {
 	pNode *pTmp;
 	pTmp = pList->first;
@@ -52,7 +52,7 @@ void *getFirst (list *pList)
 	}
 }
 
-void *getNext(list *pList)
+namelistNode *getNext(list *pList)
 {
 	pNode *pTmp;
 	pTmp = pList->current;
@@ -161,7 +161,7 @@ namelistProcedure *createNamelistProcedure(namelistProcedure *pParentProcedure)
 	*/
 	pProcedure->id = procedure;
 	
-	if(pProcedure == NULL){
+	if(pParentProcedure == NULL){
 		pProcedure->procedureIndex = 0;
 		pProcedure->pParentProcedure = NULL;
 	}
