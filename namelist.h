@@ -1,18 +1,3 @@
-// namelist node
-typedef struct NODE
-	{
-		struct NODE *next;
-		void *item;	
-	}pNode;
-
-// namelist
-typedef struct
-	{
-		pNode *first;
-		pNode *last;
-		pNode *current;
-	}list;
-
 // namelist node aka tBez
 typedef struct{
     int id;
@@ -34,6 +19,24 @@ typedef struct{
     long value;
     int index;
 }namelistConst;
+
+// Basic list types ---
+// namelist node
+typedef struct NODE
+{
+    struct NODE *next;
+    namelistNode *item;	
+}pNode;
+
+// namelist
+typedef struct
+{
+    pNode *first;
+    pNode *last;
+    pNode *current;
+}list;
+// End Basic list types ---
+
 
 // namelist procedure
 typedef struct NAME_LIST_PROCEDURE{

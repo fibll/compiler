@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "namelist.h"
 
+// Basic List Functions ---
 list *createList(void)
 {
 	list *pTmp;
@@ -13,7 +14,7 @@ list *createList(void)
 	return pTmp;
 }
 
-int insertTail(list *pList, void *itemIns)
+int insertTail(list *pList, namelistNode *itemIns)
 {
 	pNode *pTmp = malloc(sizeof(pNode));
 	pTmp->next = NULL;
@@ -24,8 +25,6 @@ int insertTail(list *pList, void *itemIns)
 		{
 			// Liste ist noch Leer
 			pList->first = pList->last = pTmp;
-			//pList->first = pTmp;
-			//pList->last = pTmp;
 		}
 		else
 		{
@@ -71,6 +70,8 @@ void *getNext(list *pList)
 	}
 }
 
+
+// Namelist Functions ---
 namelistNode *createNamelistNode(char *nodeName)
 {
 	// create space for new node with size of struct
@@ -198,7 +199,7 @@ int deleteNamelistVariable(namelistVariable *pVariable){
 	return 0;
 }
 
-int deleteNamelistProcedure(void){
+int deleteNamelistProcedure(namelistProcedure *pProcedure){
 	return 0;
 }
 
@@ -207,9 +208,49 @@ int deleteNamelistNode(namelistNode *pNode){
 	return 0;
 }
 
-int deleteNamelist(void){
+int deleteList_NOT_READY(list *pList){
+	
+	// set first item of list as current
+	getFirst(pList);
+
+	// go with for loog through list until current->next is NULL
+	while(pList->current != NULL)
+		// on current list item:
+		// free var, const or proc
+		/*
+		switch(pList->current->item->pObject->id)
+		{
+			case 1:
+				deleteNamelistProcedure(pList->current->item);
+				break;
+			case 2:
+				deleteNamelistVariable(pList->current->item);
+				break;
+			case 3:
+				deleteNamelistConst(pList->current->item);
+				break;
+			default:
+				perror("Error on deleteList!");
+				exit(-1);
+		}
+		*/
+
+		// free item (namelistNode)
+		free(pList->current->item);
+
+		// set next node as current node of list
+		pNode *pTmp = pList->current;
+		pList->current = pList->current->next;
+
+		// free node
+		free(pTmp);
+
+	// free list
+	free(pList);
+
 	return 0;
 }
+
 /*
 bl1()
 
