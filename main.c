@@ -139,25 +139,29 @@ int parser(edge* graph);
 int main (int argc, char* argv[])
 {
     // FRAGE: Warum soll createNamelistVariable keinen Pointer zurück geben?
-    //
+    // FRAGE: Wie findet man heraus welches object ein namelist node hat (->löschen)
+    
     // Variabeln
     long *constArray = malloc(sizeof(long));
     constArray[0] = 0;
-    // namelistProcedure *parentProcedure;
-    // parentProcedure->procedureIndex = 2;
-    // namelistProcedure *nullPointer = NULL;
 
+    /*
     namelistProcedure *pProcedure = createNamelistProcedure(NULL);
-    printf("id: %d\nprocedureIndex: %d\nvariableCounter: %d\n", pProcedure->id, pProcedure->procedureIndex, pProcedure->variableCounter);
+    printf("id: %d\nprocedureIndex: %d\nvariableCounter: %d\n", 
+            pProcedure->id, 
+            pProcedure->procedureIndex, 
+            pProcedure->variableCounter);
 
     insertTail(pProcedure->pList, createNamelistNode("firstNode"));
+    pProcedure->pList->current->item->pObject = 
+            createNamelistVariable(pProcedure);
+
+    printf("varCounter: %d", pProcedure->variableCounter);
+    
     insertTail(pProcedure->pList, createNamelistNode("secondNode"));
-
-    namelistNode *pNode = getFirst(pProcedure->pList);
-    printf("name: %s\n", pNode->pName);
-
-    pNode = getNext(pProcedure->pList);
-    printf("name: %s\n", pNode->pName);
+    pProcedure->pList->current->item->pObject =
+            createNamelistVariable(pProcedure);
+    */
 
 
     // is there an argument?
@@ -185,6 +189,7 @@ int main (int argc, char* argv[])
     int parserReturn = parser(programm);
     printf("Parser result: %i\n", parserReturn);
    
+    free(constArray);
     fclose(file);
     return 0;
 }

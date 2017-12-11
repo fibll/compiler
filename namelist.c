@@ -189,21 +189,19 @@ namelistNode *searchNamelistNodeGlobal(char *nodeName)
 }
 
 // delete functions?
-int deleteNamelistConst(namelistConst *pConst){
-	free(pConst);
-	return 0;
-}
-
-int deleteNamelistVariable(namelistVariable *pVariable){
-	free(pVariable);
-	return 0;
-}
-
 int deleteNamelistProcedure(namelistProcedure *pProcedure){
+	// delete pList
+	// delete
 	return 0;
 }
 
 int deleteNamelistNode(namelistNode *pNode){
+	if(pNode->pObject->id == 1){
+		deleteNamelistProcedure(pNode->pObject);
+	}
+	else {
+		free(pNode->pObject);
+	}
 	free(pNode);
 	return 0;
 }
@@ -215,28 +213,9 @@ int deleteList_NOT_READY(list *pList){
 
 	// go with for loog through list until current->next is NULL
 	while(pList->current != NULL)
-		// on current list item:
-		// free var, const or proc
-		/*
-		switch(pList->current->item->pObject->id)
-		{
-			case 1:
-				deleteNamelistProcedure(pList->current->item);
-				break;
-			case 2:
-				deleteNamelistVariable(pList->current->item);
-				break;
-			case 3:
-				deleteNamelistConst(pList->current->item);
-				break;
-			default:
-				perror("Error on deleteList!");
-				exit(-1);
-		}
-		*/
-
+	{
 		// free item (namelistNode)
-		free(pList->current->item);
+		deleteNamelistNode(pList->current->item);
 
 		// set next node as current node of list
 		pNode *pTmp = pList->current;
@@ -244,7 +223,7 @@ int deleteList_NOT_READY(list *pList){
 
 		// free node
 		free(pTmp);
-
+	}
 	// free list
 	free(pList);
 
@@ -256,4 +235,16 @@ bl1()
 
 
 
+*/
+
+/*
+int deleteNamelistConst(namelistConst *pConst){
+	free(pConst);
+	return 0;
+}
+
+int deleteNamelistVariable(namelistVariable *pVariable){
+	free(pVariable);
+	return 0;
+}
 */
