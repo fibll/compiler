@@ -3,21 +3,21 @@ typedef struct NODE
 	{
 		struct NODE *next;
 		void *item;	
-	}node;
+	}pNode;
 
 // namelist
 typedef struct
 	{
-		node *first;
-		node *last;
-		node *current;
+		pNode *first;
+		pNode *last;
+		pNode *current;
 	}list;
 
 // namelist node
 typedef struct{
     int id;
     short prodecureIndex;
-    void *pObjekt;
+    void *pObject;
     int length;
     char *pName;
 }namelistNode;
@@ -43,3 +43,12 @@ typedef struct NAME_LIST_PROCEDURE{
     list *pList;
     int variableCounter;
 }namelistProcedure;
+
+
+// id enum
+enum {
+  node = 0,
+  procedure = 1,
+  variable = 2,
+  constant = 3
+};

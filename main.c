@@ -138,7 +138,26 @@ int parser(edge* graph);
 
 int main (int argc, char* argv[])
 {
+    // FRAGE: Warum gibt createNamelistVariabel keinen Pointer zurück?
+
     // Variabeln
+    long *constArray = malloc(sizeof(long));
+    constArray[0] = 0;
+
+    namelistProcedure *pProcedure;
+    pProcedure->variableCounter = 12;
+
+    namelistVariable *pVariable = createNamelistVariable(pProcedure);
+    printf("varOffset: %d\nvarCounter: %d\n", pVariable->offset, pProcedure->variableCounter);
+    /*
+    printf("val of const: %ld\nid: %d\nindex: %d", pVariable->value, pVariable->id, pVariable->index);
+    printf("constArray size: %ld\nconstArray last item:%ld", constArray[0], constArray[constArray[0]]);
+    */
+    if(deleteNamelistVariable(pVariable) == 0)
+        printf("node was deleted!\n");
+    else
+        printf("node was NOT deleted!\n");
+    
 
     // is there an argument?
     if(argc < 2)
