@@ -147,17 +147,33 @@ namelistVariable *createNamelistVariable(namelistProcedure *pProcedure)
 	return pVariable;
 }
 
-namelistProcedure *createNamelistProcedure(namelistProcedure pParentProcedure)
+namelistProcedure *createNamelistProcedure(namelistProcedure *pParentProcedure)
 {
 	// create space for new procedure with size of struct
+	namelistProcedure *pProcedure = malloc(sizeof(namelistProcedure));
+	
 	/* initialize id (procedure), 
 			procedure index (parentIndex + 1)
 			parent,
 			pList (new list), 
 			variableCounter = 0
 	*/
+	pProcedure->id = procedure;
+	
+	if(pProcedure == NULL){
+		pProcedure->procedureIndex = 0;
+		pProcedure->pParentProcedure = NULL;
+	}
+	else{
+		pProcedure->procedureIndex = pParentProcedure->procedureIndex + 1;
+		pProcedure->pParentProcedure = pParentProcedure;
+	}
+
+	pProcedure->pList = createList();
+	pProcedure->variableCounter = 0;
+
 	// return procedure
-	;
+	return	pProcedure;
 }
 
 

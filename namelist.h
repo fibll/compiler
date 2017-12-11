@@ -13,7 +13,7 @@ typedef struct
 		pNode *current;
 	}list;
 
-// namelist node
+// namelist node aka tBez
 typedef struct{
     int id;
     short prodecureIndex;
