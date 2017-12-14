@@ -68,26 +68,25 @@ namelistNode *getNext(list *pList)
 			return pList->current->item;
 		}
 	}
+	return NULL;
 }
 
-
 // Namelist Functions ---
-namelistNode *createNamelistNode(char *nodeName)
+namelistNode *createNamelistNode(char *nodeName, int inputId)
 {
 	// create space for new node with size of struct
 	namelistNode *pNode = malloc(sizeof(namelistNode));
 	if(pNode == NULL)
 		return NULL;
 
-	// initialize id (node), name (nodeName)
-	pNode->id = node;
+	// initialize id (input id: what it really is), name (nodeName)
+	pNode->id = inputId;
 	pNode->pName = nodeName;
 
 	// return node
 	return pNode;
 }
 
-// FIX
 namelistConst *createNamelistConst(long value, long *constArray)
 {
 	// create space for new const with size of struct
@@ -99,14 +98,10 @@ namelistConst *createNamelistConst(long value, long *constArray)
 	pConst->id = constant;
 	pConst->value = value;
 
-	//=============
-
-	
 	// search in constArray for an constant with the same value?
 	int i = 0;
 	for(i = 0; i < constArray[0]; i++)
 	{
-
 		// if there is one:
 		if(constArray[i + 1] == value)
 		{
@@ -137,20 +132,6 @@ namelistConst *createNamelistConst(long value, long *constArray)
 	return pConst;
 }
 
-namelistConst *searchConst(long value, list *pList)
-{
-	// init first list node
-
-	// loop: go through current list
-		// check pObject to be an constant (id)
-		// yes: 
-			// compare value/name
-			// correct:
-				// return constant struct
-		// init next list node
-	// loop end
-}
-
 namelistVariable *createNamelistVariable(namelistProcedure *pProcedure)
 {
 	// create space for new variable with size of struct
@@ -173,7 +154,7 @@ namelistProcedure *createNamelistProcedure(namelistProcedure *pParentProcedure)
 	// create space for new procedure with size of struct
 	namelistProcedure *pProcedure = malloc(sizeof(namelistProcedure));
 	
-	/* initialize id (procedure), 
+	/* initialize id (procedure),
 			procedure index (parentIndex + 1)
 			parent,
 			pList (new list), 
@@ -197,26 +178,75 @@ namelistProcedure *createNamelistProcedure(namelistProcedure *pParentProcedure)
 	return	pProcedure;
 }
 
-
-namelistNode *searchNamelistNode(namelistProcedure pProcedure, char *nodeName)
+namelistConst *searchConst(long value, list *pList)
 {
-	;
+	// init first list node
+
+	// loop: go through current list
+		// check pObject to be an constant (id)
+		// yes: 
+			// compare value/name
+			// correct:
+				// return constant struct
+		// init next list node
+	// loop end
+
+	return NULL;
 }
 
-namelistNode *searchNamelistNodeGlobal(char *nodeName)
+namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName)
 {
-	;
+	// set namelist pointer to first list item of given procedure namelist
+	getFirst(pProcedure->pList);
+	if(pProcedure->pList->current->item->pName == nodeName)
+		return pProcedure->pList->current->item;
+
+	// go through list with loop until your through the list...:
+	while(getNext(pProcedure->pList)){		
+		// check if nodeName is name of current item (namelist node)
+		if(pProcedure->pList->current->item->pName == nodeName)
+			return pProcedure->pList->current->item;
+	}
+	
+	// return not found
+	return NULL;
+}
+
+namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *nodeName)
+{
+	// set currentProcedure to input procedure
+	namelistProcedure *currentProcedure = pProcedure;
+	namelistNode *searchResult = NULL;
+
+	// search with loop until search function until parentProcedure is NULL (do while):
+	do{
+		// search in currentProcedure
+		searchResult = searchNamelistNode(currentProcedure, nodeName);
+
+		// if return of search is not null:
+		if(searchResult != NULL)
+			return searchResult;
+
+		// set currentProcedure to parentProcedure	
+		currentProcedure = currentProcedure->pParentProcedure;
+
+	}while(currentProcedure != NULL);
+	
+	// node not found
+	return NULL;
 }
 
 // delete functions?
 int deleteNamelistProcedure(namelistProcedure *pProcedure){
 	// delete pList
+
 	// delete
 	return 0;
 }
 
 int deleteNamelistNode(namelistNode *pNode){
-	if(pNode->pObject->id == 1){
+
+	if(pNode->id == 1){
 		deleteNamelistProcedure(pNode->pObject);
 	}
 	else {
@@ -226,7 +256,7 @@ int deleteNamelistNode(namelistNode *pNode){
 	return 0;
 }
 
-int deleteList_NOT_READY(list *pList){
+int deleteList(list *pList){
 	
 	// set first item of list as current
 	getFirst(pList);

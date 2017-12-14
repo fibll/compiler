@@ -55,3 +55,22 @@ enum {
   variable = 2,
   constant = 3
 };
+
+list *createList(void);
+int insertTail(list *pList, namelistNode *itemIns);
+namelistNode *getFirst (list *pList);
+namelistNode *getNext(list *pList);
+
+// namelist functions
+namelistNode *createNamelistNode(char *nodeName, int inputId);
+namelistConst *createNamelistConst(long value, long *constArray);
+namelistVariable *createNamelistVariable(namelistProcedure *pProcedure);
+namelistProcedure *createNamelistProcedure(namelistProcedure *pParentProcedure);
+
+namelistConst *searchConst(long value, list *pList);
+namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName);
+namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *nodeName);
+// delete functions
+int deleteNamelistProcedure(namelistProcedure *pProcedure);
+int deleteNamelistNode(namelistNode *pNode);
+int deleteList(list *pList);

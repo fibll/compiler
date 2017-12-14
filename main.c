@@ -7,6 +7,8 @@
 // fix: MORPHEM.word don't stuck to 1024 chars (malloc and realloc)
 // fix: all these global variables 
 
+// bl steht für block
+
 // global stuff
 static MORPHEM morph;
 
@@ -138,9 +140,6 @@ int parser(edge* graph);
 
 int main (int argc, char* argv[])
 {
-    // FRAGE: Warum soll createNamelistVariable keinen Pointer zurück geben?
-    // FRAGE: Wie findet man heraus welches object ein namelist node hat (->löschen)
-    
     // Variabeln
     long *constArray = malloc(sizeof(long));
     constArray[0] = 0;
@@ -188,7 +187,7 @@ int main (int argc, char* argv[])
     // parse tokens
     int parserReturn = parser(programm);
     printf("Parser result: %i\n", parserReturn);
-   
+
     free(constArray);
     fclose(file);
     return 0;
@@ -197,7 +196,6 @@ int main (int argc, char* argv[])
 int parser(edge* graph)
 {
     // function is executed for every single edge
-
     edge* currentGraph = graph;
     
     // init success variable
