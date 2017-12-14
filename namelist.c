@@ -87,6 +87,7 @@ namelistNode *createNamelistNode(char *nodeName)
 	return pNode;
 }
 
+// FIX
 namelistConst *createNamelistConst(long value, long *constArray)
 {
 	// create space for new const with size of struct
@@ -98,22 +99,42 @@ namelistConst *createNamelistConst(long value, long *constArray)
 	pConst->id = constant;
 	pConst->value = value;
 
+	//=============
+
+	
+	// search in constArray for an constant with the same value?
+	int i = 0;
+	for(i = 0; i < constArray[0]; i++)
+	{
+
+		// if there is one:
+		if(constArray[i + 1] == value)
+		{
+			// take index from existing constant and write it into const.index
+			// initialize const index with array index
+			pConst->index = constArray[i + 1];
+
+			// return const
+			return pConst;
+		}
+	}
+	
+	// if there is no constant with the same value:
 	// save constant to dynamic constant array and initialize index
-		// first item of the constArray is length
-		// new item for constArray current length is on index 0
-		// update length of array in item 0
-		constArray[0]++;
-		constArray = realloc(constArray, constArray[0] * sizeof(long));
+	// first item of the constArray is length
+	// new item for constArray current length is on index 0
+	// update length of array in item 0
+	constArray[0]++;
+	constArray = realloc(constArray, constArray[0] * sizeof(long));
 
-		// add constant to the list
-		constArray[constArray[0]] = value;
+	// add constant to the array
+	constArray[constArray[0]] = value;
 
-		// initialize const index with array index
-		pConst->index = constArray[0];
+	// initialize const index with array index
+	pConst->index = constArray[0];
 
 	// return const
 	return pConst;
-	;
 }
 
 namelistConst *searchConst(long value, list *pList)
@@ -128,7 +149,6 @@ namelistConst *searchConst(long value, list *pList)
 				// return constant struct
 		// init next list node
 	// loop end
-	;
 }
 
 namelistVariable *createNamelistVariable(namelistProcedure *pProcedure)
@@ -211,7 +231,7 @@ int deleteList_NOT_READY(list *pList){
 	// set first item of list as current
 	getFirst(pList);
 
-	// go with for loog through list until current->next is NULL
+	// go with for loop through list until current->next is NULL
 	while(pList->current != NULL)
 	{
 		// free item (namelistNode)
