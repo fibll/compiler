@@ -247,18 +247,13 @@ namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *node
 	return NULL;
 }
 
-// delete functions?
-int deleteNamelistProcedure(namelistProcedure *pProcedure){
-	// delete pList
-
-	// delete
-	return 0;
-}
-
+// delete functions --
 int deleteNamelistNode(namelistNode *pNode){
 
 	if(pNode->id == 1){
-		deleteNamelistProcedure(pNode->pObject);
+		// delete namelist in Procedure
+		namelistProcedure *pProcedure = pNode->pObject;
+		deleteList(pProcedure->pList);
 	}
 	else {
 		free(pNode->pObject);

@@ -70,7 +70,7 @@ namelistProcedure *createNamelistProcedure(namelistProcedure *pParentProcedure);
 namelistConst *searchConst(long value, list *pList);
 namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName);
 namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *nodeName);
+
 // delete functions
-int deleteNamelistProcedure(namelistProcedure *pProcedure);
 int deleteNamelistNode(namelistNode *pNode);
 int deleteList(list *pList);
