@@ -181,15 +181,26 @@ namelistProcedure *createNamelistProcedure(namelistProcedure *pParentProcedure)
 namelistConst *searchConst(long value, list *pList)
 {
 	// init first list node
+	if(getFirst(pList) == NULL)
+		return NULL;
 
 	// loop: go through current list
+	do {
 		// check pObject to be an constant (id)
-		// yes: 
-			// compare value/name
-			// correct:
-				// return constant struct
+		// yes:
+		if(pList->current->item->id == constant){	
+				namelistConst *tmpConst = pList->current->item->pObject;
+				// compare value/name
+				// correct:
+				if(value == tmpConst->value){
+					// return constant struct
+					return tmpConst;
+				}
+		}
 		// init next list node
-	// loop end
+		getNext(pList);
+
+	} while(pList->current != pList->last);
 
 	return NULL;
 }
