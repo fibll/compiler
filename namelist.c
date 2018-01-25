@@ -234,6 +234,7 @@ namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName)
 	return NULL;
 }
 
+
 namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *nodeName)
 {
 	// set currentProcedure to input procedure

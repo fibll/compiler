@@ -147,11 +147,9 @@ int main (int argc, char* argv[])
 
     // Test ===
     namelistProcedure *pProcedure = createNamelistProcedure(NULL);
-    printf("pProcedure: %i\n", pProcedure->procedureIndex);
 
     // create Bez +  create Const
     insertTail(pProcedure->pList, createNamelistNode("NodeConst1", constant));
-    printf("Node ID: %i\nNode Name: %s\n", pProcedure->pList->current->item->id, pProcedure->pList->current->item->pName);
     pProcedure->pList->current->item->pObject = createNamelistConst(10);
     namelistConst *tmpConst = pProcedure->pList->current->item->pObject;
 
@@ -170,42 +168,46 @@ int main (int argc, char* argv[])
 
     // create Var
     insertTail(pProcedure->pList, createNamelistNode("NodeVar5", variable));
-    printf("Node ID: %i\nNode Name: %s\n", pProcedure->pList->current->item->id, pProcedure->pList->current->item->pName);
     pProcedure->pList->current->item->pObject = createNamelistVariable(pProcedure);
+    // to read you need a tmpVar
     namelistVariable *tmpVar = pProcedure->pList->current->item->pObject;
-    printf("Var ID: %i\nVar offset: %i\n", tmpVar->id, tmpVar->offset);
     
     insertTail(pProcedure->pList, createNamelistNode("NodeVar6", variable));
-    printf("Node ID: %i\nNode Name: %s\n", pProcedure->pList->current->item->id, pProcedure->pList->current->item->pName);
     pProcedure->pList->current->item->pObject = createNamelistVariable(pProcedure);
     namelistVariable *tmpVar2 = pProcedure->pList->current->item->pObject;
-    printf("Var ID: %i\nVar offset: %i\n", tmpVar2->id, tmpVar2->offset);
-    printf("Var Counter: %i\n\n", pProcedure->variableCounter);
 
     // create Proc
     insertTail(pProcedure->pList, createNamelistNode("NodeProcedure7", procedure));
-    printf("Node ID: %i\nNode Name: %s\n", pProcedure->pList->current->item->id, pProcedure->pList->current->item->pName);
-    pProcedure->pList->current->item->pObject = createNamelistConst(5);
+    pProcedure->pList->current->item->pObject = createNamelistProcedure(pProcedure);
     
     namelistProcedure *tmpProc = pProcedure->pList->current->item->pObject;
-    printf("Proc Index: %i\nProc VarCounter: %i\n", tmpProc->procedureIndex, tmpProc->variableCounter);
+    printf("Proc VarCounter: %i\n", tmpProc->variableCounter);
+
+        insertTail(tmpProc->pList, createNamelistNode("NodeConst12", constant));
+        tmpProc->pList->current->item->pObject = createNamelistConst(20);
+        tmpConst = tmpProc->pList->current->item->pObject;
+
+        insertTail(tmpProc->pList, createNamelistNode("NodeVar16", variable));
+        tmpProc->pList->current->item->pObject = createNamelistVariable(tmpProc);
+        tmpVar = tmpProc->pList->current->item->pObject;
+        printf("Proc VarCounter: %i\n", tmpProc->variableCounter);
+
 
     // search Bez
-
+    namelistNode *tmpNode = searchNamelistNode(pProcedure, "NodeConst3");
+    //printf("TmpNode: id: %i   name: %s\n", tmpNode->id, tmpNode->pName);
 
     // search Bez Global
-
-
-    // test
-    int i = 0;
-    printf("Constarray: \n");
-    for(i = 0; i < constArraySize; i++){
-        printf("Index: %i  Value: %ld\n", i, constArray[i]);
-    }
+    tmpNode = searchNamelistNodeGlobal(tmpProc, "NodeConst2");
+    if(tmpNode == NULL)
+        printf("failure\n");
+    else
+        printf("TmpNode: id: %i   name: %s\n", tmpNode->id, tmpNode->pName);
 
 
     deleteList(pProcedure->pList);
     //printf("pProcedure: %s\n", pProcedure->pList->first->item->pName);
+    printf("deleted all\n");
 
     // Test End ===
 
