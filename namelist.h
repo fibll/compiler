@@ -63,7 +63,7 @@ namelistNode *getNext(list *pList);
 
 // namelist functions
 namelistNode *createNamelistNode(char *nodeName, int inputId);
-namelistConst *createNamelistConst(long value, long *constArray);
+namelistConst *createNamelistConst(long value);
 namelistVariable *createNamelistVariable(namelistProcedure *pProcedure);
 namelistProcedure *createNamelistProcedure(namelistProcedure *pParentProcedure);
 

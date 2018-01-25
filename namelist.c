@@ -3,6 +3,7 @@
 #include "namelist.h"
 
 static int constArraySize;
+static long *constArray;
 
 // Basic List Functions ---
 list *createList(void)
@@ -89,10 +90,8 @@ namelistNode *createNamelistNode(char *nodeName, int inputId)
 	return pNode;
 }
 
-namelistConst *createNamelistConst(long value, long *constArray)
+namelistConst *createNamelistConst(long value)
 {
-	printf("sub 1: constArraySize: %i\n", constArraySize);
-
 	// create space for new const with size of struct
 	namelistConst *pConst = malloc(sizeof(namelistConst));
 	if(pConst == NULL)
@@ -141,7 +140,6 @@ namelistConst *createNamelistConst(long value, long *constArray)
 	pConst->index = constArraySize;
 
 	// return const
-	printf("sub 2: constArray[0]: %ld\n", constArraySize);
 	return pConst;
 }
 
