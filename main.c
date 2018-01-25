@@ -13,6 +13,7 @@
 static MORPHEM morph;
 static int constArraySize = 0;
 static long *constArray;
+static namelistProcedure *currentProcedure;
 
 //int debugParser = 1;
 
@@ -146,6 +147,7 @@ int main (int argc, char* argv[])
     constArray = (long*) malloc(constArraySize * sizeof(long));
 
     // Test ===
+    /*
     namelistProcedure *pProcedure = createNamelistProcedure(NULL);
 
     // create Bez +  create Const
@@ -208,8 +210,8 @@ int main (int argc, char* argv[])
     deleteList(pProcedure->pList);
     //printf("pProcedure: %s\n", pProcedure->pList->first->item->pName);
     printf("deleted all\n");
-
     // Test End ===
+    */
 
 
     // is there an argument?

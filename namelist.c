@@ -4,6 +4,7 @@
 
 static int constArraySize;
 static long *constArray;
+static namelistProcedure *currentProcedure;
 
 // Basic List Functions ---
 list *createList(void)
@@ -36,6 +37,9 @@ int insertTail(list *pList, namelistNode *itemIns)
 			pList->last = pTmp;	
 		}
 		pList->current = pTmp;
+	}
+	else{
+		return -1;
 	}
 	return (int)pTmp;
 }
@@ -265,6 +269,8 @@ int deleteNamelistNode(namelistNode *pNode){
 	if(pNode->id == 1){
 		// delete namelist in Procedure
 		namelistProcedure *pProcedure = pNode->pObject;
+
+		// FIX: check if the pProcedure->pList is already free;
 		deleteList(pProcedure->pList);
 	}
 	else {
@@ -298,21 +304,118 @@ int deleteList(list *pList){
 	return 0;
 }
 
-/*
-bl1()
+// bl1
+void blockAcceptConstantIdentifier(char *nodeName) {
+	int ret;
 
+	// search for the nodeName
+	namelistNode *tmpNode = searchNamelistNode(currentProcedure, nodeName);
 
+	if(tmpNode != NULL){
+		// return failure
+		printf("Error: Identifier exists already");
+		exit(-1);
+	}
+	else {
+		// create new node with name
+		tmpNode = createNamelistNode(nodeName, constant);
 
-*/
-
-/*
-int deleteNamelistConst(namelistConst *pConst){
-	free(pConst);
-	return 0;
+		// insert the new node into the list of the current procedure list
+		ret = insertTail(currentProcedure->pList, tmpNode);
+		if(ret == -1){
+			printf("Error: Insert did not work!\n");
+			exit(-1);
+		}
+	}
 }
 
-int deleteNamelistVariable(namelistVariable *pVariable){
-	free(pVariable);
-	return 0;
+// bl2
+void blockAcceptConstantValue(long value) {
+	// write pointer of constNode into node
+	currentProcedure->pList->current->item->pObject = createNamelistConst(value);
+	if(currentProcedure->pList->current->item->pObject == NULL){
+		printf("Error: Constant couldn't be created!\n");
+		exit(-1);
+	}
 }
-*/
+
+// bl3
+void blockAcceptVariable(char *nodeName) {
+	int ret;
+
+	// search for nodeName
+	namelistNode *tmpNode = searchNamelistNode(currentProcedure, nodeName);
+	
+	if(tmpNode != NULL){
+		// return failure
+		printf("Error: Identifier exists already");
+		exit(-1);
+	}
+	else{
+		// create node with nodeName
+		ret = insertTail(currentProcedure->pList, tmpNode);
+		if(ret == -1){
+			printf("Error: Insert did not work!\n");
+			exit(-1);
+		}
+	}
+
+	// write pointer of varNode into node
+	currentProcedure->pList->current->item->pObject = createNamelistVariable(currentProcedure);
+	if(currentProcedure->pList->current->item->pObject == NULL){
+		printf("Error: Variable couldn't be created!\n");
+		exit(-1);
+	}
+}
+
+// bl4
+void blockAcceptProcedure(char * nodeName) {
+	int ret;
+
+	// search for nodeName
+	namelistNode *tmpNode = searchNamelistNode(currentProcedure, nodeName);
+	
+	if(tmpNode != NULL){
+		// return failure
+		printf("Error: Identifier exists already");
+		exit(-1);
+	}
+	else{
+		// create node with nodeName
+		ret = insertTail(currentProcedure->pList, tmpNode);
+		if(ret == -1){
+			printf("Error: Insert did not work!\n");
+			exit(-1);
+		}
+	}
+
+	// write pointer of procedureNode into node
+	currentProcedure->pList->current->item->pObject = createNamelistProcedure(currentProcedure);
+	if(currentProcedure->pList->current->item->pObject == NULL){
+		printf("Error: Procedure couldn't be created!\n");
+		exit(-1);
+	}
+	
+	// new procedure is now current procedure
+	currentProcedure = currentProcedure->pList->current->item->pObject;
+}
+
+// bl5
+void blockEndOfProcedureDescription(void) {
+	/*
+		Codegenerierung
+		siehe V5_NameList.pdf
+	*/
+
+	// delete list of current procedure
+	deleteList(currentProcedure->pList);
+
+	// parentProcedure is now current procedure
+	if(currentProcedure->pParentProcedure != NULL){
+		currentProcedure = currentProcedure->pParentProcedure;
+	}
+	else {
+		printf("Reached top procedure!\n");
+		exit(0);
+	}
+}
