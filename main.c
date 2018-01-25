@@ -11,6 +11,7 @@
 
 // global stuff
 static MORPHEM morph;
+static int constArraySize = 0;
 
 //int debugParser = 1;
 
@@ -141,26 +142,71 @@ int parser(edge* graph);
 int main (int argc, char* argv[])
 {
     // Variabeln
-    long *constArray = malloc(sizeof(long));
-    constArray[0] = 0;
+    long *constArray = (long*) malloc(constArraySize * sizeof(long));
 
-    /*
+    // Test ===
     namelistProcedure *pProcedure = createNamelistProcedure(NULL);
-    printf("id: %d\nprocedureIndex: %d\nvariableCounter: %d\n", 
-            pProcedure->id, 
-            pProcedure->procedureIndex, 
-            pProcedure->variableCounter);
+    printf("pProcedure: %i\n", pProcedure->procedureIndex);
 
-    insertTail(pProcedure->pList, createNamelistNode("firstNode"));
-    pProcedure->pList->current->item->pObject = 
-            createNamelistVariable(pProcedure);
+    // create Bez +  create Const
+    insertTail(pProcedure->pList, createNamelistNode("NodeConst1", constant));
+    printf("Node ID: %i\nNode Name: %s\n", pProcedure->pList->current->item->id, pProcedure->pList->current->item->pName);
+    pProcedure->pList->current->item->pObject = createNamelistConst(10, constArray);
+    namelistConst *tmpConst = pProcedure->pList->current->item->pObject;
 
-    printf("varCounter: %d", pProcedure->variableCounter);
+    // search Const
+    insertTail(pProcedure->pList, createNamelistNode("NodeConst2", constant));
+    pProcedure->pList->current->item->pObject = createNamelistConst(20, constArray);
+    tmpConst = pProcedure->pList->current->item->pObject;
+
+    insertTail(pProcedure->pList, createNamelistNode("NodeConst3", constant));
+    pProcedure->pList->last->item->pObject = createNamelistConst(30, constArray);
+    tmpConst = pProcedure->pList->current->item->pObject;
+
+    insertTail(pProcedure->pList, createNamelistNode("NodeConst4", constant));
+    pProcedure->pList->current->item->pObject = createNamelistConst(40, constArray);
+    tmpConst = pProcedure->pList->current->item->pObject;
+
+    // create Var
+    insertTail(pProcedure->pList, createNamelistNode("NodeVar5", variable));
+    printf("Node ID: %i\nNode Name: %s\n", pProcedure->pList->current->item->id, pProcedure->pList->current->item->pName);
+    pProcedure->pList->current->item->pObject = createNamelistVariable(pProcedure);
+    namelistVariable *tmpVar = pProcedure->pList->current->item->pObject;
+    printf("Var ID: %i\nVar offset: %i\n", tmpVar->id, tmpVar->offset);
     
-    insertTail(pProcedure->pList, createNamelistNode("secondNode"));
-    pProcedure->pList->current->item->pObject =
-            createNamelistVariable(pProcedure);
-    */
+    insertTail(pProcedure->pList, createNamelistNode("NodeVar6", variable));
+    printf("Node ID: %i\nNode Name: %s\n", pProcedure->pList->current->item->id, pProcedure->pList->current->item->pName);
+    pProcedure->pList->current->item->pObject = createNamelistVariable(pProcedure);
+    namelistVariable *tmpVar2 = pProcedure->pList->current->item->pObject;
+    printf("Var ID: %i\nVar offset: %i\n", tmpVar2->id, tmpVar2->offset);
+    printf("Var Counter: %i\n\n", pProcedure->variableCounter);
+
+    // create Proc
+    insertTail(pProcedure->pList, createNamelistNode("NodeProcedure7", procedure));
+    printf("Node ID: %i\nNode Name: %s\n", pProcedure->pList->current->item->id, pProcedure->pList->current->item->pName);
+    pProcedure->pList->current->item->pObject = createNamelistConst(5, constArray);
+    
+    namelistProcedure *tmpProc = pProcedure->pList->current->item->pObject;
+    printf("Proc Index: %i\nProc VarCounter: %i\n", tmpProc->procedureIndex, tmpProc->variableCounter);
+
+    // search Bez
+
+
+    // search Bez Global
+
+
+    // test
+    int i = 0;
+    printf("Constarray: \n");
+    for(i = 0; i < constArraySize; i++){
+        printf("Index: %i  Value: %ld\n", i, constArray[i]);
+    }
+
+
+    deleteList(pProcedure->pList);
+    //printf("pProcedure: %s\n", pProcedure->pList->first->item->pName);
+
+    // Test End ===
 
 
     // is there an argument?

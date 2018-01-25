@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "namelist.h"
 
+static int constArraySize;
+
 // Basic List Functions ---
 list *createList(void)
 {
@@ -89,6 +91,8 @@ namelistNode *createNamelistNode(char *nodeName, int inputId)
 
 namelistConst *createNamelistConst(long value, long *constArray)
 {
+	printf("sub 1: constArraySize: %i\n", constArraySize);
+
 	// create space for new const with size of struct
 	namelistConst *pConst = malloc(sizeof(namelistConst));
 	if(pConst == NULL)
@@ -100,35 +104,44 @@ namelistConst *createNamelistConst(long value, long *constArray)
 
 	// search in constArray for an constant with the same value?
 	int i = 0;
-	for(i = 0; i < constArray[0]; i++)
+	for(i = 0; i < constArraySize; i++)
 	{
 		// if there is one:
-		if(constArray[i + 1] == value)
+		if(constArray[i] == value)
 		{
 			// take index from existing constant and write it into const.index
 			// initialize const index with array index
-			pConst->index = constArray[i + 1];
+			pConst->index = i;
 
 			// return const
 			return pConst;
 		}
 	}
-	
+
 	// if there is no constant with the same value:
 	// save constant to dynamic constant array and initialize index
 	// first item of the constArray is length
 	// new item for constArray current length is on index 0
 	// update length of array in item 0
-	constArray[0]++;
-	constArray = realloc(constArray, constArray[0] * sizeof(long));
+	constArraySize++;
+	long* tmpArray = (long* )realloc(constArray, constArraySize * sizeof(long));
+
+	if(tmpArray == NULL){
+		printf("\n\n\nfailure\n\n\n");
+	}
+	else{
+		constArray = tmpArray;
+	}
 
 	// add constant to the array
-	constArray[constArray[0]] = value;
+	constArray[constArraySize-1] = value;
 
+	//printf("test 2\n");
 	// initialize const index with array index
-	pConst->index = constArray[0];
+	pConst->index = constArraySize;
 
 	// return const
+	printf("sub 2: constArray[0]: %ld\n", constArraySize);
 	return pConst;
 }
 
