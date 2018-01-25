@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "namelist.h"
+#include "types.h"
 
+static MORPHEM morph;
 static int constArraySize;
 static long *constArray;
 static namelistProcedure *currentProcedure;
@@ -305,8 +307,9 @@ int deleteList(list *pList){
 }
 
 // bl1
-void blockAcceptConstantIdentifier(char *nodeName) {
+int blockAcceptConstantIdentifier() {
 	int ret;
+	char *nodeName = morph.word;
 
 	// search for the nodeName
 	namelistNode *tmpNode = searchNamelistNode(currentProcedure, nodeName);
@@ -314,7 +317,7 @@ void blockAcceptConstantIdentifier(char *nodeName) {
 	if(tmpNode != NULL){
 		// return failure
 		printf("Error: Identifier exists already");
-		exit(-1);
+		return -1;
 	}
 	else {
 		// create new node with name
@@ -324,24 +327,28 @@ void blockAcceptConstantIdentifier(char *nodeName) {
 		ret = insertTail(currentProcedure->pList, tmpNode);
 		if(ret == -1){
 			printf("Error: Insert did not work!\n");
-			exit(-1);
+			return -2;
 		}
 	}
+	return 0;
 }
 
 // bl2
-void blockAcceptConstantValue(long value) {
+int blockAcceptConstantValue() {
+	long value = morph.number;
+
 	// write pointer of constNode into node
 	currentProcedure->pList->current->item->pObject = createNamelistConst(value);
 	if(currentProcedure->pList->current->item->pObject == NULL){
 		printf("Error: Constant couldn't be created!\n");
-		exit(-1);
+		return -1;
 	}
 }
 
 // bl3
-void blockAcceptVariable(char *nodeName) {
+int blockAcceptVariable() {
 	int ret;
+	char *nodeName = morph.word;
 
 	// search for nodeName
 	namelistNode *tmpNode = searchNamelistNode(currentProcedure, nodeName);
@@ -349,14 +356,14 @@ void blockAcceptVariable(char *nodeName) {
 	if(tmpNode != NULL){
 		// return failure
 		printf("Error: Identifier exists already");
-		exit(-1);
+		return -1;
 	}
 	else{
 		// create node with nodeName
 		ret = insertTail(currentProcedure->pList, tmpNode);
 		if(ret == -1){
 			printf("Error: Insert did not work!\n");
-			exit(-1);
+			return -2;
 		}
 	}
 
@@ -364,13 +371,14 @@ void blockAcceptVariable(char *nodeName) {
 	currentProcedure->pList->current->item->pObject = createNamelistVariable(currentProcedure);
 	if(currentProcedure->pList->current->item->pObject == NULL){
 		printf("Error: Variable couldn't be created!\n");
-		exit(-1);
+		return -3;
 	}
 }
 
 // bl4
-void blockAcceptProcedure(char * nodeName) {
+int blockAcceptProcedure() {
 	int ret;
+	char *nodeName = morph.word;
 
 	// search for nodeName
 	namelistNode *tmpNode = searchNamelistNode(currentProcedure, nodeName);
@@ -378,14 +386,14 @@ void blockAcceptProcedure(char * nodeName) {
 	if(tmpNode != NULL){
 		// return failure
 		printf("Error: Identifier exists already");
-		exit(-1);
+		return -1;
 	}
 	else{
 		// create node with nodeName
 		ret = insertTail(currentProcedure->pList, tmpNode);
 		if(ret == -1){
 			printf("Error: Insert did not work!\n");
-			exit(-1);
+			return -2;
 		}
 	}
 
@@ -393,7 +401,7 @@ void blockAcceptProcedure(char * nodeName) {
 	currentProcedure->pList->current->item->pObject = createNamelistProcedure(currentProcedure);
 	if(currentProcedure->pList->current->item->pObject == NULL){
 		printf("Error: Procedure couldn't be created!\n");
-		exit(-1);
+		return -3;
 	}
 	
 	// new procedure is now current procedure
@@ -401,7 +409,7 @@ void blockAcceptProcedure(char * nodeName) {
 }
 
 // bl5
-void blockEndOfProcedureDescription(void) {
+int blockEndOfProcedureDescription(void) {
 	/*
 		Codegenerierung
 		siehe V5_NameList.pdf

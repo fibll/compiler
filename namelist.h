@@ -74,3 +74,10 @@ namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *node
 // delete functions
 int deleteNamelistNode(namelistNode *pNode);
 int deleteList(list *pList);
+
+// block functions
+int blockAcceptConstantIdentifier(void); // aus morphem holen
+int blockAcceptConstantValue(void); // aus morphem holen
+int blockAcceptVariable(void); // aus morphem holen
+int blockAcceptProcedure(void); // aus morphem holen
+int blockEndOfProcedureDescription(void);

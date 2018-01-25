@@ -1,3 +1,6 @@
+#ifndef TYPES_H 
+#define TYPES_H 
+
 // lexer types ---
 // morphem
 typedef struct morph
@@ -75,3 +78,5 @@ enum
     morphemIdent = 0, 
     morphemNumeral = 2,
 };
+
+#endif
