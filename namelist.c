@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "namelist.h"
 #include "types.h"
 
@@ -90,7 +91,8 @@ namelistNode *createNamelistNode(char *nodeName, int inputId)
 
 	// initialize id (input id: what it really is), name (nodeName)
 	pNode->id = inputId;
-	pNode->pName = nodeName;
+	pNode->pName = malloc(sizeof(char) * strlen(nodeName));
+	strcpy(pNode->pName, nodeName);
 
 	// return node
 	return pNode;
@@ -228,13 +230,14 @@ namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName)
 	getFirst(pProcedure->pList);
 	if(pProcedure->pList->current == NULL)
 		return NULL;
-
+	
 	if(pProcedure->pList->current->item->pName == nodeName)
 		return pProcedure->pList->current->item;
 
 	// go through list with loop until your through the list...:
 	while(getNext(pProcedure->pList)){		
 		// check if nodeName is name of current item (namelist node)
+			printf("Searching for '%s', current '%s'\n", pProcedure->pList->current->item->pName, nodeName);
 		if(pProcedure->pList->current->item->pName == nodeName)
 			return pProcedure->pList->current->item;
 	}
@@ -282,6 +285,8 @@ int deleteNamelistNode(namelistNode *pNode){
 		free(pNode->pObject);
 	}
 	free(pNode);
+
+	// cause success should be 1 if everything worked good
 	return 0;
 }
 
@@ -313,14 +318,15 @@ int deleteList(list *pList){
 int blockAcceptConstantIdentifier() {
 	printf("blockAcceptConstantIdentifier\n");
 	int ret;
-	char *nodeName = morph.word;
+	char *nodeName;
+	strcpy(nodeName, morph.word);
 
 	// search for the nodeName
 	namelistNode *tmpNode = searchNamelistNode(currentProcedure, nodeName);
 
 	if(tmpNode != NULL){
 		// return failure
-		printf("Error: Identifier exists already");
+		printf("Error: Const:Identifier exists already\n");
 		return -1;
 	}
 	else {
@@ -334,7 +340,9 @@ int blockAcceptConstantIdentifier() {
 			return -2;
 		}
 	}
-	return 0;
+	
+	// cause success should be 1 if everything worked good
+	return 1;
 }
 
 // bl2
@@ -353,19 +361,24 @@ int blockAcceptConstantValue() {
 // bl3
 int blockAcceptVariable() {
 	
-	printf("blockAcceptVariable\n");
+	printf("blockAcceptVariable----------\n");
 	int ret;
-	char *nodeName = morph.word;
+	char nodeName[strlen(morph.word)];
+	strcpy(nodeName, morph.word);
+
+	// test
+	printf("Ident: %s\n", nodeName);
 
 	// search for nodeName
 	namelistNode *tmpNode = searchNamelistNode(currentProcedure, nodeName);
-	
+
 	if(tmpNode != NULL){
 		// return failure
-		printf("Error: Identifier exists already");
+		printf("Error: Var:Identifier exists already\n");
 		return -1;
 	}
 	else{
+		printf("test\n");
 		// create node with nodeName
 		tmpNode = createNamelistNode(nodeName, variable);
 
@@ -384,21 +397,26 @@ int blockAcceptVariable() {
 		return -3;
 	}
 
-	return 0;
+	if(currentProcedure->pList->last != NULL)
+		printf("Last list element: %s\n", currentProcedure->pList->last->item->pName);
+
+	// cause success should be 1 if everything worked good
+	return 1;
 }
 
 // bl4
 int blockAcceptProcedure() {
 	printf("blockAcceptProcedure\n");
 	int ret;
-	char *nodeName = morph.word;
+	char *nodeName;
+	strcpy(nodeName, morph.word);
 
 	// search for nodeName
 	namelistNode *tmpNode = searchNamelistNode(currentProcedure, nodeName);
 	
 	if(tmpNode != NULL){
 		// return failure
-		printf("Error: Identifier exists already");
+		printf("Error: Proc:Identifier exists already\n");
 		return -1;
 	}
 	else{
@@ -422,6 +440,9 @@ int blockAcceptProcedure() {
 	
 	// new procedure is now current procedure
 	currentProcedure = currentProcedure->pList->current->item->pObject;
+
+	// cause success should be 1 if everything worked good
+	return 1;
 }
 
 // bl5
@@ -441,6 +462,8 @@ int blockEndOfProcedureDescription(void) {
 	}
 	else {
 		printf("Reached top procedure!\n");
-		exit(0);
 	}
+
+	// cause success should be 1 if everything worked good
+	return 1;
 }
