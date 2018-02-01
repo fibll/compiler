@@ -218,7 +218,6 @@ namelistConst *searchConst(long value, list *pList)
 		}
 		// init next list node
 		getNext(pList);
-
 	} while(pList->current != pList->last);
 
 	return NULL;
@@ -237,7 +236,6 @@ namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName)
 	// go through list with loop until your through the list...:
 	while(getNext(pProcedure->pList)){		
 		// check if nodeName is name of current item (namelist node)
-			printf("Searching for '%s', current '%s'\n", pProcedure->pList->current->item->pName, nodeName);
 		if(pProcedure->pList->current->item->pName == nodeName)
 			return pProcedure->pList->current->item;
 	}
@@ -378,7 +376,6 @@ int blockAcceptVariable() {
 		return -1;
 	}
 	else{
-		printf("test\n");
 		// create node with nodeName
 		tmpNode = createNamelistNode(nodeName, variable);
 
@@ -397,9 +394,6 @@ int blockAcceptVariable() {
 		return -3;
 	}
 
-	if(currentProcedure->pList->last != NULL)
-		printf("Last list element: %s\n", currentProcedure->pList->last->item->pName);
-
 	// cause success should be 1 if everything worked good
 	return 1;
 }
@@ -408,7 +402,7 @@ int blockAcceptVariable() {
 int blockAcceptProcedure() {
 	printf("blockAcceptProcedure\n");
 	int ret;
-	char *nodeName;
+	char nodeName[strlen(morph.word)];
 	strcpy(nodeName, morph.word);
 
 	// search for nodeName
