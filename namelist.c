@@ -226,6 +226,9 @@ namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName)
 {
 	// set namelist pointer to first list item of given procedure namelist
 	getFirst(pProcedure->pList);
+	if(pProcedure->pList->current == NULL)
+		return NULL;
+
 	if(pProcedure->pList->current->item->pName == nodeName)
 		return pProcedure->pList->current->item;
 
@@ -243,8 +246,8 @@ namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName)
 
 namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *nodeName)
 {
-	// set currentProcedure to input procedure
-	namelistProcedure *currentProcedure = pProcedure;
+	// set input procedure as currentProcedure
+	currentProcedure = pProcedure;
 	namelistNode *searchResult = NULL;
 
 	// search with loop until search function until parentProcedure is NULL (do while):
@@ -308,6 +311,7 @@ int deleteList(list *pList){
 
 // bl1
 int blockAcceptConstantIdentifier() {
+	printf("blockAcceptConstantIdentifier\n");
 	int ret;
 	char *nodeName = morph.word;
 
@@ -335,6 +339,7 @@ int blockAcceptConstantIdentifier() {
 
 // bl2
 int blockAcceptConstantValue() {
+	printf("blockAcceptConstantValue\n");
 	long value = morph.number;
 
 	// write pointer of constNode into node
@@ -347,6 +352,8 @@ int blockAcceptConstantValue() {
 
 // bl3
 int blockAcceptVariable() {
+	
+	printf("blockAcceptVariable\n");
 	int ret;
 	char *nodeName = morph.word;
 
@@ -360,6 +367,9 @@ int blockAcceptVariable() {
 	}
 	else{
 		// create node with nodeName
+		tmpNode = createNamelistNode(nodeName, variable);
+
+		// add tmpNode to list
 		ret = insertTail(currentProcedure->pList, tmpNode);
 		if(ret == -1){
 			printf("Error: Insert did not work!\n");
@@ -373,10 +383,13 @@ int blockAcceptVariable() {
 		printf("Error: Variable couldn't be created!\n");
 		return -3;
 	}
+
+	return 0;
 }
 
 // bl4
 int blockAcceptProcedure() {
+	printf("blockAcceptProcedure\n");
 	int ret;
 	char *nodeName = morph.word;
 
@@ -390,6 +403,9 @@ int blockAcceptProcedure() {
 	}
 	else{
 		// create node with nodeName
+		tmpNode = createNamelistNode(nodeName, procedure);
+
+		// add tmpNode to list
 		ret = insertTail(currentProcedure->pList, tmpNode);
 		if(ret == -1){
 			printf("Error: Insert did not work!\n");
@@ -410,6 +426,7 @@ int blockAcceptProcedure() {
 
 // bl5
 int blockEndOfProcedureDescription(void) {
+	printf("blockEndOfProcedureDescription\n");
 	/*
 		Codegenerierung
 		siehe V5_NameList.pdf

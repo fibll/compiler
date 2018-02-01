@@ -146,9 +146,15 @@ int main (int argc, char* argv[])
     // Variabeln
     constArray = (long*) malloc(constArraySize * sizeof(long));
 
+    namelistProcedure *pProcedure = createNamelistProcedure(NULL);
+    currentProcedure = pProcedure;
+
+
+	if(currentProcedure->pList == NULL)
+		printf("currentProcedure->pList is null\n");
+
     // Test ===
     /*
-    namelistProcedure *pProcedure = createNamelistProcedure(NULL);
 
     // create Bez +  create Const
     insertTail(pProcedure->pList, createNamelistNode("NodeConst1", constant));
