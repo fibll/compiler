@@ -307,7 +307,7 @@ int deleteList(list *pList){
 		free(pTmp);
 	}
 	// free list
-	free(pList);
+	//free(pList);
 
 	return 0;
 }
@@ -316,7 +316,7 @@ int deleteList(list *pList){
 int blockAcceptConstantIdentifier() {
 	printf("blockAcceptConstantIdentifier\n");
 	int ret;
-	char *nodeName;
+	char nodeName[strlen(morph.word)];
 	strcpy(nodeName, morph.word);
 
 	// search for the nodeName
@@ -354,6 +354,9 @@ int blockAcceptConstantValue() {
 		printf("Error: Constant couldn't be created!\n");
 		return -1;
 	}
+
+	// cause success should be 1 if everything worked good
+	return 1;
 }
 
 // bl3
@@ -455,7 +458,7 @@ int blockEndOfProcedureDescription(void) {
 		currentProcedure = currentProcedure->pParentProcedure;
 	}
 	else {
-		printf("Reached top procedure!\n");
+		printf("ERR: Already at top procedure!\n");
 	}
 
 	// cause success should be 1 if everything worked good
