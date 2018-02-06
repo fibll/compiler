@@ -20,6 +20,14 @@ typedef struct{
     int index;
 }namelistConst;
 
+// labels for codegeneration
+typedef struct tLABEL
+{
+    int id;
+    long iJmp;
+}tLabel;
+
+
 // Basic list types ---
 // namelist node
 typedef struct NODE
@@ -35,6 +43,21 @@ typedef struct
     pNode *last;
     pNode *current;
 }list;
+
+// label list ---
+typedef struct LABELNODE
+{
+    struct LABELNODE *next;
+    tLabel *item;	
+}pLabelNode;
+
+// namelist
+typedef struct
+{
+    pLabelNode *first;
+    pLabelNode *last;
+    pLabelNode *current;
+}labellist;
 // End Basic list types ---
 
 
@@ -56,10 +79,17 @@ enum {
   constant = 3
 };
 
+// namelist
 list *createList(void);
 int insertTail(list *pList, namelistNode *itemIns);
 namelistNode *getFirst (list *pList);
 namelistNode *getNext(list *pList);
+
+// labellist
+labellist *createLabellist(void);
+int insertTailLabel(labellist *pList, tLabel *itemIns);
+tLabel *getFirstLabel(labellist *pList);
+tLabel *getNextLabel(labellist *pList);
 
 // namelist functions
 namelistNode *createNamelistNode(char *nodeName, int inputId);

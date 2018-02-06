@@ -14,6 +14,7 @@ static MORPHEM morph;
 static int constArraySize = 0;
 static long *constArray;
 static namelistProcedure *currentProcedure;
+static short codeLength;
 
 //int debugParser = 1;
 
@@ -152,72 +153,6 @@ int main (int argc, char* argv[])
 
 	if(currentProcedure->pList == NULL)
 		printf("currentProcedure->pList is null\n");
-
-    // Test ===
-    /*
-
-    // create Bez +  create Const
-    insertTail(pProcedure->pList, createNamelistNode("NodeConst1", constant));
-    pProcedure->pList->current->item->pObject = createNamelistConst(10);
-    namelistConst *tmpConst = pProcedure->pList->current->item->pObject;
-
-    // search Const
-    insertTail(pProcedure->pList, createNamelistNode("NodeConst2", constant));
-    pProcedure->pList->current->item->pObject = createNamelistConst(20);
-    tmpConst = pProcedure->pList->current->item->pObject;
-
-    insertTail(pProcedure->pList, createNamelistNode("NodeConst3", constant));
-    pProcedure->pList->last->item->pObject = createNamelistConst(30);
-    tmpConst = pProcedure->pList->current->item->pObject;
-
-    insertTail(pProcedure->pList, createNamelistNode("NodeConst4", constant));
-    pProcedure->pList->current->item->pObject = createNamelistConst(40);
-    tmpConst = pProcedure->pList->current->item->pObject;
-
-    // create Var
-    insertTail(pProcedure->pList, createNamelistNode("NodeVar5", variable));
-    pProcedure->pList->current->item->pObject = createNamelistVariable(pProcedure);
-    // to read you need a tmpVar
-    namelistVariable *tmpVar = pProcedure->pList->current->item->pObject;
-    
-    insertTail(pProcedure->pList, createNamelistNode("NodeVar6", variable));
-    pProcedure->pList->current->item->pObject = createNamelistVariable(pProcedure);
-    namelistVariable *tmpVar2 = pProcedure->pList->current->item->pObject;
-
-    // create Proc
-    insertTail(pProcedure->pList, createNamelistNode("NodeProcedure7", procedure));
-    pProcedure->pList->current->item->pObject = createNamelistProcedure(pProcedure);
-    
-    namelistProcedure *tmpProc = pProcedure->pList->current->item->pObject;
-    printf("Proc VarCounter: %i\n", tmpProc->variableCounter);
-
-        insertTail(tmpProc->pList, createNamelistNode("NodeConst12", constant));
-        tmpProc->pList->current->item->pObject = createNamelistConst(20);
-        tmpConst = tmpProc->pList->current->item->pObject;
-
-        insertTail(tmpProc->pList, createNamelistNode("NodeVar16", variable));
-        tmpProc->pList->current->item->pObject = createNamelistVariable(tmpProc);
-        tmpVar = tmpProc->pList->current->item->pObject;
-        printf("Proc VarCounter: %i\n", tmpProc->variableCounter);
-
-
-    // search Bez
-    namelistNode *tmpNode = searchNamelistNode(pProcedure, "NodeConst3");
-    //printf("TmpNode: id: %i   name: %s\n", tmpNode->id, tmpNode->pName);
-
-    // search Bez Global
-    tmpNode = searchNamelistNodeGlobal(tmpProc, "NodeConst2");
-    if(tmpNode == NULL)
-        printf("failure\n");
-    else
-        printf("TmpNode: id: %i   name: %s\n", tmpNode->id, tmpNode->pName);
-
-
-    deleteList(pProcedure->pList);
-    //printf("pProcedure: %s\n", pProcedure->pList->first->item->pName);
-    printf("deleted all\n");
-    // Test End ===
-    */
 
 
     // is there an argument?

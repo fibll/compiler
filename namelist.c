@@ -8,6 +8,7 @@ static MORPHEM morph;
 static int constArraySize;
 static long *constArray;
 static namelistProcedure *currentProcedure;
+static short codeLength;
 
 // Basic List Functions ---
 list *createList(void)
@@ -47,6 +48,35 @@ int insertTail(list *pList, namelistNode *itemIns)
 	return (int)pTmp;
 }
 
+/*
+int insertHead(list *pList, namelistNode *itemIns)
+{
+	pNode *pTmp = malloc(sizeof(pNode));
+	pTmp->next = NULL;
+
+	if(pTmp)
+	{
+		pTmp->item = itemIns;
+		if(pList->first == NULL)
+		{
+			// Liste ist noch Leer
+			pList->first = pList->last = pTmp;
+		}
+		else
+		{
+			// Liste enthält schon etwas
+			pTmp->next = pList->first;
+			pList->first = pTmp;
+		}
+		pList->current = pTmp;
+	}
+	else{
+		return -1;
+	}
+	return (int)pTmp;
+}
+*/
+
 namelistNode *getFirst (list *pList)
 {
 	pNode *pTmp;
@@ -80,6 +110,82 @@ namelistNode *getNext(list *pList)
 	}
 	return NULL;
 }
+
+
+// label list Functions ---
+// Basic List Functions ---
+labellist *createLabellist(void)
+{
+	labellist *pTmp;
+	pTmp = malloc(sizeof(list));
+	if(pTmp != NULL)
+	{
+		pTmp->first = pTmp->last = pTmp->current = NULL;
+	}
+	return pTmp;
+}
+
+int insertHeadLabel(labellist *pList, tLabel *itemIns)
+{
+	pLabelNode *pTmp = malloc(sizeof(pNode));
+	pTmp->next = NULL;
+
+	if(pTmp)
+	{
+		pTmp->item = itemIns;
+		if(pList->first == NULL)
+		{
+			// Liste ist noch Leer
+			pList->first = pList->last = pTmp;
+		}
+		else
+		{
+			// Liste enthält schon etwas
+			pTmp->next = pList->first;
+			pList->first = pTmp;
+		}
+		pList->current = pTmp;
+	}
+	else{
+		return -1;
+	}
+	return (int)pTmp;
+}
+
+tLabel *getFirstLabel(labellist *pList)
+{
+	pLabelNode *pTmp;
+	pTmp = pList->first;
+	if(pTmp)
+	{
+		pList->current = pTmp;
+		return pTmp->item;	
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+tLabel *getNextLabel(labellist *pList)
+{
+	pLabelNode *pTmp;
+	pTmp = pList->current;
+	if(pTmp)
+	{
+		if(pTmp == pList->last)
+		{
+			return 0;
+		}
+		else
+		{
+			pList->current = pTmp->next;
+			return pList->current->item;
+		}
+	}
+	return NULL;
+}
+
 
 // Namelist Functions ---
 namelistNode *createNamelistNode(char *nodeName, int inputId)
@@ -312,6 +418,7 @@ int deleteList(list *pList){
 	return 0;
 }
 
+// block functions ========================================
 // bl1
 int blockAcceptConstantIdentifier() {
 	printf("blockAcceptConstantIdentifier\n");
@@ -446,8 +553,10 @@ int blockAcceptProcedure() {
 int blockEndOfProcedureDescription(void) {
 	printf("blockEndOfProcedureDescription\n");
 	/*
-		Codegenerierung
-		siehe V5_NameList.pdf
+		Codegenerierung:
+		// retProc
+		// renew the codeLength
+		// codeLength = new codeLength (cause in the beginning you don't know how long the proc is gonna be)
 	*/
 
 	// delete list of current procedure
@@ -462,5 +571,200 @@ int blockEndOfProcedureDescription(void) {
 	}
 
 	// cause success should be 1 if everything worked good
+	return 1;
+}
+
+// bl6
+int startStatement(void){
+	// initialize write code buffer
+	// code generation:
+	// entryProc(codeLen, indexProc, varLength)
+	// => entryProc(codeLength (with 0 cause you will update it later), currentProcedure->Index, currentProcedure->variableCounter)
+
+	// für codeLength muss noch Lösung gefunden werden, am besten trägt man die relative Adresse ein, 
+	// so dass man später einfach über diese wieder darauf zugreifen kann um nach dem durchlaufen der
+	// Procedur beschreibung die wirkliche Länge einzutragen.
+
+	return 1;
+}
+
+// statement functions ========================================
+// st1
+int st1(void){
+	// search name local
+	// not found
+		// Error handling
+		// return
+	
+	// node is variable?
+	// if not
+		// Error handling
+		// return
+	
+	// code generation:
+		// PushAdrVarLocal
+		// PushAdrVarMain
+		// PushAdrVarGlobal
+	return 1;
+}
+
+int st2(void){
+	// code generation: store value
+
+	return 1;
+}
+
+int st9(void) {
+	// search node global
+	// not found
+		// Error handling
+		// return
+
+	// node is variable?
+	// if not
+		// Error handling
+		// return
+	
+	// code generation:
+		// PushAdrVarLocal
+		// PushAdrVarMain
+		// PushAdrVarGlobal
+	
+		// getVal
+
+	return 1;
+}
+
+int st10(void){
+	// code generation: putVal
+
+	return 1;
+}
+
+// expression functions ========================================
+int ex1(void){
+	// code generation: vzMinus
+
+	return 1;
+}
+
+int ex2(void){
+	// code generation: opAdd
+
+	return 1;
+}
+
+int ex3(void){
+	// code generation: opSub
+
+	return 1;
+}
+
+// term functions ========================================
+int te1(void){
+	// code generation: opMul
+
+	return 1;
+}
+
+int te2(void){
+	// code generation: opDiv
+
+	return 1;
+}
+
+// factor functions ========================================
+int fa1(void){
+	// Numberal
+
+	// search const
+	// not found
+		// insert constant (just in array)
+
+	// code generation: putConst(ConstIndex)
+
+	return 1;
+}
+
+int fa2(void){
+	// Ident
+	
+	// search node global
+	// not found
+		// error handling
+		// return
+
+	// is node of type variable or constant?
+	// if not
+		// Error handling
+		// return
+
+	// code generation:
+	// node is var:
+		// puValVrLocl(displ)
+		// puValVrMain(displ)
+		// puValVrGlob(displ, ProcedureNr)
+	
+	// node is const
+		// puConst(index)
+
+	return 1;
+}
+
+
+// condition functions ========================================
+int co1(void){
+
+	// code generation: odd
+
+	return 1;
+}
+
+int co2(void){
+
+	// code generation: save compare operator '='
+
+	return 1;
+}
+
+int co3(void){
+
+	// save compare operator '#'
+
+	return 1;
+}
+
+int co4(void){
+
+	// save compare operator '<'
+
+	return 1;
+}
+
+int co5(void){
+
+	// save compare operator '<='
+
+	return 1;
+}
+
+int co6(void){
+
+	// save compare operator '>'
+
+	return 1;
+}
+
+int co7(void){
+
+	// save compare operator '>='
+
+	return 1;
+}
+
+int co8(void){
+
+	// code generation: compare operator (before saved)
+
 	return 1;
 }
