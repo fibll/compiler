@@ -278,7 +278,7 @@ namelistConst *createNamelistConst(long value)
 
 	//printf("test 2\n");
 	// initialize const index with array index
-	pConst->index = constArraySize;
+	pConst->index = constArraySize-1;
 
 	// return const
 	return pConst;
@@ -635,15 +635,30 @@ int startStatement(void){
 // statement functions ========================================
 // st1
 int st1(void){
+	int ret = 0;
+	char nodeName[strlen(morph.word)];
+	strcpy(nodeName, morph.word);
+
 	// search name local
+	namelistNode *tmpNode = searchNamelistNode(currentProcedure, nodeName);
+
 	// not found
+	if(tmpNode == NULL){
 		// Error handling
+		printf("Error: Identifier does not exist!\n");
+
 		// return
+		return -1;
+	}
 	
 	// node is variable?
-	// if not
+	if(tmpNode->id != variable){
 		// Error handling
+		printf("Error: Identifier is not of type variable!\n");
+
 		// return
+		return -1;
+	}
 	
 	// code generation:
 		// PushAdrVarLocal
@@ -712,16 +727,30 @@ int st7(void){
 
 // while nach statement
 int st8(void){
+	int ret = 0;
+	char nodeName[strlen(morph.word)];
+	strcpy(nodeName, morph.word);
 
-	// search name global
+	// search name local
+	namelistNode *tmpNode = searchNamelistNodeGlobal(currentProcedure, nodeName);
+
 	// not found
-		// error handling
-		// return;
+	if(tmpNode == NULL){
+		// Error handling
+		printf("Error: Identifier does not exist global!\n");
+
+		// return
+		return -1;
+	}
 	
-	// node is procedure?
-	// if not
-		// error handling
-		// return;
+	// node is variable?
+	if(tmpNode->id != variable){
+		// Error handling
+		printf("Error: Identifier is not of type variable!\n");
+
+		// return
+		return -1;
+	}
 
 	// codegeneration: call procedurenumber
 
@@ -730,15 +759,30 @@ int st8(void){
 
 
 int st9(void) {
-	// search node global
-	// not found
-		// Error handling
-		// return
+	int ret = 0;
+	char nodeName[strlen(morph.word)];
+	strcpy(nodeName, morph.word);
 
-	// node is variable?
-	// if not
+	// search name local
+	namelistNode *tmpNode = searchNamelistNodeGlobal(currentProcedure, nodeName);
+
+	// not found
+	if(tmpNode == NULL){
 		// Error handling
+		printf("Error: Identifier does not exist global!\n");
+
 		// return
+		return -1;
+	}
+	
+	// node is variable?
+	if(tmpNode->id != variable){
+		// Error handling
+		printf("Error: Identifier is not of type variable!\n");
+
+		// return
+		return -1;
+	}
 	
 	// code generation:
 		// PushAdrVarLocal
@@ -789,12 +833,41 @@ int te2(void){
 }
 
 // factor functions ========================================
+// Numberal
 int fa1(void){
-	// Numberal
+	int ret = 0;
+	int i = 0;
+	long value = morph.number;
 
 	// search const
+	for(i = 0; i < constArraySize; i++){
+		if(constArray[i] == value){
+			ret = 1;
+			break;
+		}
+	}
+
 	// not found
+	if(ret != 1){
 		// insert constant (just in array)
+		// if there is no constant with the same value:
+		// save constant to dynamic constant array and initialize index
+		// first item of the constArray is length
+		// new item for constArray current length is on index 0
+		// update length of array in item 0
+		constArraySize++;
+		long* tmpArray = (long* )realloc(constArray, constArraySize * sizeof(long));
+
+		if(tmpArray == NULL){
+			printf("\n\n\nfailure\n\n\n");
+		}
+		else{
+			constArray = tmpArray;
+		}
+
+		// add constant to the array
+		constArray[constArraySize-1] = value;
+	}
 
 	// code generation: putConst(ConstIndex)
 
@@ -803,24 +876,46 @@ int fa1(void){
 
 int fa2(void){
 	// Ident
-	
-	// search node global
-	// not found
-		// error handling
-		// return
 
-	// is node of type variable or constant?
-	// if not
+	int ret = 0;
+	char nodeName[strlen(morph.word)];
+	strcpy(nodeName, morph.word);
+
+	// search name local
+	namelistNode *tmpNode = searchNamelistNodeGlobal(currentProcedure, nodeName);
+
+	// not found
+	if(tmpNode == NULL){
 		// Error handling
+		printf("Error: Identifier does not exist global!\n");
+
 		// return
+		return -1;
+	}
+	
+	// node is variable?
+	if(tmpNode->id != variable){
+		// Error handling
+		printf("Error: Identifier is not of type variable!\n");
+
+		// return
+		return -1;
+	}
+	else if(tmpNode->id != constant){
+		// Error handling
+		printf("Error: Identifier is not of type constant!\n");
+
+		// return
+		return -1;
+	}
 
 	// code generation:
-	// node is var:
+	// if(tmpNode->id == variable)
 		// puValVrLocl(displ)
 		// puValVrMain(displ)
 		// puValVrGlob(displ, ProcedureNr)
 	
-	// node is const
+	// if(tmpNode->id == constant)
 		// puConst(index)
 
 	return 1;
