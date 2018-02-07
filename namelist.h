@@ -87,7 +87,8 @@ namelistNode *getNext(list *pList);
 
 // labellist
 labellist *createLabellist(void);
-int insertTailLabel(labellist *pList, tLabel *itemIns);
+int pushTailLabel(labellist *pList, tLabel *itemIns);
+tLabel *popHeadLabel(labellist *pList);
 tLabel *getFirstLabel(labellist *pList);
 tLabel *getNextLabel(labellist *pList);
 

@@ -125,9 +125,9 @@ labellist *createLabellist(void)
 	return pTmp;
 }
 
-int insertHeadLabel(labellist *pList, tLabel *itemIns)
+int pushHeadLabel(labellist *pList, tLabel *itemIns)
 {
-	pLabelNode *pTmp = malloc(sizeof(pNode));
+	pLabelNode *pTmp = malloc(sizeof(pLabelNode));
 	pTmp->next = NULL;
 
 	if(pTmp)
@@ -150,6 +150,32 @@ int insertHeadLabel(labellist *pList, tLabel *itemIns)
 		return -1;
 	}
 	return (int)pTmp;
+}
+
+tLabel *popHeadLabel(labellist *pList)
+{
+	// if list is null
+	if(pList == NULL || pList->first == NULL)
+		return NULL;
+
+	// init pTmp with first
+	pLabelNode *pTmp = pList->first;
+
+	// change list pointer
+	// if list got second
+	if(pList->first->next == NULL){
+		pList->first = NULL;
+		pList->current = NULL;
+		pList->last = NULL;
+	}
+	// else set list->first to second
+	else
+		pList->first = pList->first->next;
+	
+	// return pTmp
+	tLabel *tmpLabel = pTmp->item;
+	free(pTmp);
+	return tmpLabel;
 }
 
 tLabel *getFirstLabel(labellist *pList)
@@ -373,6 +399,23 @@ namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *node
 	
 	// node not found
 	return NULL;
+}
+
+// label function --
+int pushLabel(labellist *listOfLabels, int id, long iJmp){
+	tLabel *pTmp = malloc(sizeof(tLabel));
+	pTmp->id = id;
+	pTmp->iJmp = iJmp;
+
+	return pushHeadLabel(listOfLabels, pTmp);
+}
+
+long popLabel(labellist *listOfLabels){
+	tLabel *pTmp = popHeadLabel(listOfLabels);
+	long iJump = pTmp->iJmp;
+	free(pTmp);
+
+	return iJump;
 }
 
 // delete functions --
