@@ -76,7 +76,8 @@ enum {
   node = 0,
   procedure = 1,
   variable = 2,
-  constant = 3
+  constant = 3,
+  label = 4,
 };
 
 // namelist

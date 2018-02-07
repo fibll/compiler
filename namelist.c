@@ -9,6 +9,7 @@ static int constArraySize;
 static long *constArray;
 static namelistProcedure *currentProcedure;
 static short codeLength;
+static labellist *labelList;
 
 // Basic List Functions ---
 list *createList(void)
@@ -656,6 +657,77 @@ int st2(void){
 
 	return 1;
 }
+
+// if nach condition
+int st3(void){
+	// create label				  iJmp is index of jmp command
+	// pushLabel(labelList, label, iJmp);
+
+	// code generation: jnot mit vorläufiger Relativadresse 0
+
+	return 1;
+}
+
+// if nach statement
+int st4(void){
+	//long tmp = popLabel(labelList);
+	
+	// calculate relative adress
+
+	return 1;
+}
+
+// while
+int st5(void){
+	//pushLabel(labelList, 0, iJmp);
+	
+	// calculate relative adress
+
+	return 1;
+}
+
+// while nach condition
+int st6(void){
+	//pushLabel(labelList, 0, iJmp);
+	
+	// code generation: jnot mit vorläufiger Relativadresse 0
+
+	return 1;
+}
+
+
+// while nach statement
+int st7(void){
+	//popLabel(labelList);
+
+	// calculate relative adress + 3 extra bytes for the jmp-command
+
+	// pop second label
+	//popLabel(labelList);
+
+	// calculate relative adress, so that jmp after the first command gets to condition
+
+	return 1;
+}
+
+// while nach statement
+int st8(void){
+
+	// search name global
+	// not found
+		// error handling
+		// return;
+	
+	// node is procedure?
+	// if not
+		// error handling
+		// return;
+
+	// codegeneration: call procedurenumber
+
+	return 1;
+}
+
 
 int st9(void) {
 	// search node global

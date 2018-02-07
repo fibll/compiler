@@ -15,6 +15,7 @@ static int constArraySize = 0;
 static long *constArray;
 static namelistProcedure *currentProcedure;
 static short codeLength;
+static labellist *labelList;
 
 //int debugParser = 1;
 
@@ -145,11 +146,15 @@ int parser(edge* graph);
 int main (int argc, char* argv[])
 {
     // Variabeln
+    // declare global constArray
     constArray = (long*) malloc(constArraySize * sizeof(long));
 
+    // create base procedure
     namelistProcedure *pProcedure = createNamelistProcedure(NULL);
     currentProcedure = pProcedure;
 
+    // create labelList
+    labelList = createLabellist();
 
 	if(currentProcedure->pList == NULL)
 		printf("currentProcedure->pList is null\n");
@@ -157,7 +162,6 @@ int main (int argc, char* argv[])
 
 
     // test
-    labellist *list1 = createLabellist();
     
     /*
     tLabel *a = malloc(sizeof(tLabel));
@@ -171,6 +175,7 @@ int main (int argc, char* argv[])
     d->id = 1111;
     */
 
+    /*
     pushLabel(list1, 1, 1);
     printf("head: %i\n", list1->first->item->id);
     pushLabel(list1, 11, 11);
@@ -180,13 +185,14 @@ int main (int argc, char* argv[])
     pushLabel(list1, 1111, 1111);
     printf("head: %i\n", list1->first->item->id);
 
-    popLabel(list1);
+    
+    printf("out: %ld\n", popLabel(list1));
     printf("head: %i\n", list1->first->item->id);
-    popLabel(list1);
+    printf("out: %ld\n", popLabel(list1));
     printf("head: %i\n", list1->first->item->id);
-    popLabel(list1);
+    printf("out: %ld\n", popLabel(list1));
     printf("head: %i\n", list1->first->item->id);
-    //
+    */
 
 
     // is there an argument?
