@@ -915,17 +915,10 @@ int fa2(void){
 		exit(EXIT_FAILURE);
 	}
 	
-	// node is variable?
-	if(tmpNode->id != variable){
+	// node is variable or constant?	
+	if(tmpNode->id != variable && tmpNode->id != constant){
 		// Error handling
-		printf("Error: Identifier is not of type variable!\n");
-
-		// return
-		return -1;
-	}
-	else if(tmpNode->id != constant){
-		// Error handling
-		printf("Error: Identifier is not of type constant!\n");
+		printf("Error: Identifier is not of type variable or constant!\n");
 		exit(EXIT_FAILURE);
 	}
 

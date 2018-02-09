@@ -81,9 +81,9 @@ edge term[] = {
 /* 0*/  {edgeGraph    , {(unsigned long)factor}        , NULL  ,   1 ,  0 },
 /* 1*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   2 ,  0 },
 /* 2*/  {edgeSymbol   , {(unsigned long)'*'}           , NULL  ,   3 ,  4 },
-/* 3*/  {edgeGraph    , {(unsigned long)factor}        , NULL  ,   1 ,  0 },
+/* 3*/  {edgeGraph    , {(unsigned long)factor}        , te1  ,   1 ,  0 },
 /* 4*/  {edgeSymbol   , {(unsigned long)'/'}           , NULL  ,   5 ,  6 },
-/* 5*/  {edgeGraph    , {(unsigned long)factor}        , NULL  ,   1 ,  0 },
+/* 5*/  {edgeGraph    , {(unsigned long)factor}        , te2  ,   1 ,  0 },
 /* 6*/  {edgeGraphEnd , {(unsigned long)0}             , NULL  ,   0 ,  0 },
 };
 
@@ -119,11 +119,11 @@ edge statement[] = {
 // factor
 edge factor[] = {
 /*Num    type         ,            union               , action, next, alt */
-/* 0*/  {edgeMorphem  , {(unsigned long)morphemNumeral}, NULL  ,   0 ,  1 },
+/* 0*/  {edgeMorphem  , {(unsigned long)morphemNumeral}, fa1  ,   0 ,  1 },
 /* 1*/  {edgeSymbol   , {(unsigned long)'('}           , NULL  ,   2 ,  4 },
 /* 2*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   3 ,  0 },
 /* 3*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   0 ,  0 },
-/* 4*/  {edgeMorphem  , {(unsigned long)morphemIdent}  , NULL  ,   0 ,  0 },
+/* 4*/  {edgeMorphem  , {(unsigned long)morphemIdent}  , fa2  ,   0 ,  0 },
 };
 
 
@@ -131,15 +131,15 @@ edge factor[] = {
 edge condition[] = {
 /*Num    type         ,            union               , action, next, alt */
 /* 0*/  {edgeSymbol   , {(unsigned long)ODD}           , NULL  ,   1 ,  2 },
-/* 1*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   0 ,  0 },
+/* 1*/  {edgeGraph    , {(unsigned long)expression}    , co1  ,   0 ,  0 },
 /* 2*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   3 ,  0 },
-/* 3*/  {edgeSymbol   , {(unsigned long)'='}           , NULL  ,   9 ,  4 },
-/* 4*/  {edgeSymbol   , {(unsigned long)'#'}           , NULL  ,   9 ,  5 },
-/* 5*/  {edgeSymbol   , {(unsigned long)'<'}           , NULL  ,   9 ,  6 },
-/* 6*/  {edgeSymbol   , {(unsigned long)'>'}           , NULL  ,   9 ,  7 },
-/* 7*/  {edgeSymbol   , {(unsigned long)128}/*<=*/     , NULL  ,   9 ,  8 },
-/* 8*/  {edgeSymbol   , {(unsigned long)129}/*>=*/     , NULL  ,   9 ,  0 },
-/* 9*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   0 ,  0 },
+/* 3*/  {edgeSymbol   , {(unsigned long)'='}           , co2  ,   9 ,  4 },
+/* 4*/  {edgeSymbol   , {(unsigned long)'#'}           , co3  ,   9 ,  5 },
+/* 5*/  {edgeSymbol   , {(unsigned long)'<'}           , co4  ,   9 ,  6 },
+/* 6*/  {edgeSymbol   , {(unsigned long)'>'}           , co5  ,   9 ,  7 },
+/* 7*/  {edgeSymbol   , {(unsigned long)128}/*<=*/     , co6  ,   9 ,  8 },
+/* 8*/  {edgeSymbol   , {(unsigned long)129}/*>=*/     , co7  ,   9 ,  0 },
+/* 9*/  {edgeGraph    , {(unsigned long)expression}    , co8  ,   0 ,  0 },
 };
 
 
