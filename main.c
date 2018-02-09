@@ -3,11 +3,10 @@
 #include <string.h>
 #include "lexer.h"
 #include "namelist.c"
+#include "codeGen.c"
 
 // fix: MORPHEM.word don't stuck to 1024 chars (malloc and realloc)
 // fix: all these global variables 
-
-// bl steht für block
 
 // global stuff
 static MORPHEM morph;
@@ -164,38 +163,7 @@ int main (int argc, char* argv[])
 
 
     // test
-    
-    /*
-    tLabel *a = malloc(sizeof(tLabel));
-    tLabel *b = malloc(sizeof(tLabel));
-    tLabel *c = malloc(sizeof(tLabel));
-    tLabel *d = malloc(sizeof(tLabel));
-
-    a->id = 1;
-    b->id = 11;
-    c->id = 111;
-    d->id = 1111;
-    */
-
-    /*
-    pushLabel(list1, 1, 1);
-    printf("head: %i\n", list1->first->item->id);
-    pushLabel(list1, 11, 11);
-    printf("head: %i\n", list1->first->item->id);
-    pushLabel(list1, 111, 111);
-    printf("head: %i\n", list1->first->item->id);
-    pushLabel(list1, 1111, 1111);
-    printf("head: %i\n", list1->first->item->id);
-
-    
-    printf("out: %ld\n", popLabel(list1));
-    printf("head: %i\n", list1->first->item->id);
-    printf("out: %ld\n", popLabel(list1));
-    printf("head: %i\n", list1->first->item->id);
-    printf("out: %ld\n", popLabel(list1));
-    printf("head: %i\n", list1->first->item->id);
-    */
-
+    //writeCodeToFile("aaaaaaaaaaaaaaaaaaaaaaaaaaa.c");
 
     // is there an argument?
     if(argc < 2)

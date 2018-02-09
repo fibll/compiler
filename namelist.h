@@ -1,3 +1,6 @@
+#ifndef NAMELIST_H
+#define NAMELIST_H
+
 // namelist node aka tBez
 typedef struct{
     int id;
@@ -113,3 +116,5 @@ int blockAcceptConstantValue(void); // aus morphem holen
 int blockAcceptVariable(void); // aus morphem holen
 int blockAcceptProcedure(void); // aus morphem holen
 int blockEndOfProcedureDescription(void);
+
+#endif
