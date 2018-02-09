@@ -369,7 +369,7 @@ namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName)
 	// go through list with loop until your through the list...:
 	while(getNext(pProcedure->pList)){		
 		// check if nodeName is name of current item (namelist node)
-		if(pProcedure->pList->current->item->pName == nodeName)
+		if(strcmp(pProcedure->pList->current->item->pName, nodeName) == 0)
 			return pProcedure->pList->current->item;
 	}
 	
@@ -620,6 +620,7 @@ int blockEndOfProcedureDescription(void) {
 
 // bl6
 int startStatement(void){
+	printf("startStatement\n");
 	// initialize write code buffer
 	// code generation:
 	// entryProc(codeLen, indexProc, varLength)
@@ -635,17 +636,19 @@ int startStatement(void){
 // statement functions ========================================
 // st1
 int st1(void){
+	printf("st1\n");
+
 	int ret = 0;
 	char nodeName[strlen(morph.word)];
 	strcpy(nodeName, morph.word);
 
 	// search name local
-	namelistNode *tmpNode = searchNamelistNode(currentProcedure, nodeName);
+	namelistNode *tmpNode = searchNamelistNodeGlobal(currentProcedure, nodeName);
 
 	// not found
 	if(tmpNode == NULL){
 		// Error handling
-		printf("Error: Identifier does not exist!\n");
+		printf("Error: Identifier does not exist global!\n");
 
 		// return
 		return -1;
@@ -664,10 +667,12 @@ int st1(void){
 		// PushAdrVarLocal
 		// PushAdrVarMain
 		// PushAdrVarGlobal
+		printf("test1\n");
 	return 1;
 }
 
 int st2(void){
+	printf("st2\n");
 	// code generation: store value
 
 	return 1;
@@ -675,6 +680,8 @@ int st2(void){
 
 // if nach condition
 int st3(void){
+	printf("st3\n");
+
 	// create label				  iJmp is index of jmp command
 	// pushLabel(labelList, label, iJmp);
 
@@ -685,6 +692,8 @@ int st3(void){
 
 // if nach statement
 int st4(void){
+	printf("st4\n");
+
 	//long tmp = popLabel(labelList);
 	
 	// calculate relative adress
@@ -694,6 +703,8 @@ int st4(void){
 
 // while
 int st5(void){
+	printf("st5\n");
+
 	//pushLabel(labelList, 0, iJmp);
 	
 	// calculate relative adress
@@ -703,6 +714,7 @@ int st5(void){
 
 // while nach condition
 int st6(void){
+	printf("st6\n");
 	//pushLabel(labelList, 0, iJmp);
 	
 	// code generation: jnot mit vorläufiger Relativadresse 0
@@ -713,6 +725,7 @@ int st6(void){
 
 // while nach statement
 int st7(void){
+	printf("st7\n");
 	//popLabel(labelList);
 
 	// calculate relative adress + 3 extra bytes for the jmp-command
@@ -727,6 +740,7 @@ int st7(void){
 
 // while nach statement
 int st8(void){
+	printf("st8\n");
 	int ret = 0;
 	char nodeName[strlen(morph.word)];
 	strcpy(nodeName, morph.word);
@@ -759,6 +773,7 @@ int st8(void){
 
 
 int st9(void) {
+	printf("st9\n");
 	int ret = 0;
 	char nodeName[strlen(morph.word)];
 	strcpy(nodeName, morph.word);
@@ -795,6 +810,7 @@ int st9(void) {
 }
 
 int st10(void){
+	printf("st10\n");
 	// code generation: putVal
 
 	return 1;
