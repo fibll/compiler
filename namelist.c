@@ -358,19 +358,27 @@ namelistConst *searchConst(long value, list *pList)
 
 namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName)
 {
+	printf("Searching for: %s\n", nodeName);
+
 	// set namelist pointer to first list item of given procedure namelist
 	getFirst(pProcedure->pList);
 	if(pProcedure->pList->current == NULL)
 		return NULL;
 	
-	if(pProcedure->pList->current->item->pName == nodeName)
+	printf("Searching through... %s\n", pProcedure->pList->current->item->pName);
+	if(strcmp(pProcedure->pList->current->item->pName, nodeName) == 0)
 		return pProcedure->pList->current->item;
 
 	// go through list with loop until your through the list...:
-	while(getNext(pProcedure->pList)){		
+	while(getNext(pProcedure->pList)){	
+		printf("Searching through... %s\n", pProcedure->pList->current->item->pName);
+
 		// check if nodeName is name of current item (namelist node)
-		if(strcmp(pProcedure->pList->current->item->pName, nodeName) == 0)
+		if(strcmp(pProcedure->pList->current->item->pName, nodeName) == 0) {
+			printf("found... %s\n", pProcedure->pList->current->item->pName);
 			return pProcedure->pList->current->item;
+		}
+
 	}
 	
 	// return not found
@@ -380,6 +388,9 @@ namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName)
 
 namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *nodeName)
 {
+	// save currentProcedure, so you can restore it later again
+	namelistProcedure * oldCurrentProcedure = currentProcedure;
+
 	// set input procedure as currentProcedure
 	currentProcedure = pProcedure;
 	namelistNode *searchResult = NULL;
@@ -390,13 +401,19 @@ namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *node
 		searchResult = searchNamelistNode(currentProcedure, nodeName);
 
 		// if return of search is not null:
-		if(searchResult != NULL)
+		if(searchResult != NULL){
+			// restore old currentProcedure
+			currentProcedure = oldCurrentProcedure;
 			return searchResult;
+		}
 
 		// set currentProcedure to parentProcedure	
 		currentProcedure = currentProcedure->pParentProcedure;
 
 	}while(currentProcedure != NULL);
+	
+	// restore old currentProcedure
+	currentProcedure = oldCurrentProcedure;
 	
 	// node not found
 	return NULL;
@@ -667,7 +684,6 @@ int st1(void){
 		// PushAdrVarLocal
 		// PushAdrVarMain
 		// PushAdrVarGlobal
-		printf("test1\n");
 	return 1;
 }
 

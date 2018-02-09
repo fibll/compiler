@@ -55,7 +55,7 @@ edge block[] = {
 /*14*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  15 ,  0 },
 /*15*/  {edgeGraph  , {(unsigned long)block}         , NULL  ,  16 ,  0 },
 /*16*/  {edgeSymbol , {(unsigned long)';'}           , blockEndOfProcedureDescription  ,  12 ,  0 },
-/*17*/  {edgeNil    , {(unsigned long)0}             , NULL  ,  18 ,  0 },
+/*17*/  {edgeNil    , {(unsigned long)0}             , startStatement  ,  18 ,  0 },
 /*18*/  {edgeGraph  , {(unsigned long)statement}     , NULL  ,   0 ,  0 },
 };
 
@@ -89,7 +89,7 @@ edge term[] = {
 // statement
 edge statement[] = {
 /*Num    type         ,            union               , action, next, alt */
-/* 0*/  {edgeMorphem  , {(unsigned long)morphemIdent}  , NULL  ,   1 ,  3 },
+/* 0*/  {edgeMorphem  , {(unsigned long)morphemIdent}  , st1  ,   1 ,  3 },
 /* 1*/  {edgeSymbol   , {(unsigned long)130}/*:=*/     , NULL  ,   2 ,  0 },
 /* 2*/  {edgeGraph    , {(unsigned long)expression}    , NULL  ,   0 ,  0 },
 /* 3*/  {edgeSymbol   , {(unsigned long)IF}            , NULL  ,   4 ,  7 },
@@ -277,8 +277,10 @@ int parser(edge* graph)
         }
 
         // find out what action to do
-        if(currentGraph->functionPointer != NULL)
+        if(success == 1 && currentGraph->functionPointer != NULL)
             success = currentGraph->functionPointer();
+        
+        // printf("success: %i\n", success);
 
         if(success == 0)
         {
