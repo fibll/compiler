@@ -358,26 +358,20 @@ namelistConst *searchConst(long value, list *pList)
 
 namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName)
 {
-	printf("Searching for: %s\n", nodeName);
-
 	// set namelist pointer to first list item of given procedure namelist
 	getFirst(pProcedure->pList);
 	if(pProcedure->pList->current == NULL)
 		return NULL;
 	
-	printf("Searching through... %s\n", pProcedure->pList->current->item->pName);
 	if(strcmp(pProcedure->pList->current->item->pName, nodeName) == 0)
 		return pProcedure->pList->current->item;
 
 	// go through list with loop until your through the list...:
 	while(getNext(pProcedure->pList)){	
-		printf("Searching through... %s\n", pProcedure->pList->current->item->pName);
 
 		// check if nodeName is name of current item (namelist node)
-		if(strcmp(pProcedure->pList->current->item->pName, nodeName) == 0) {
-			printf("found... %s\n", pProcedure->pList->current->item->pName);
+		if(strcmp(pProcedure->pList->current->item->pName, nodeName) == 0)
 			return pProcedure->pList->current->item;
-		}
 
 	}
 	
@@ -493,7 +487,7 @@ int blockAcceptConstantIdentifier() {
 	if(tmpNode != NULL){
 		// return failure
 		printf("Error: Const:Identifier exists already\n");
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 	else {
 		// create new node with name
@@ -503,7 +497,7 @@ int blockAcceptConstantIdentifier() {
 		ret = insertTail(currentProcedure->pList, tmpNode);
 		if(ret == -1){
 			printf("Error: Insert did not work!\n");
-			return -2;
+			exit(EXIT_FAILURE);
 		}
 	}
 	
@@ -520,7 +514,7 @@ int blockAcceptConstantValue() {
 	currentProcedure->pList->current->item->pObject = createNamelistConst(value);
 	if(currentProcedure->pList->current->item->pObject == NULL){
 		printf("Error: Constant couldn't be created!\n");
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 
 	// cause success should be 1 if everything worked good
@@ -544,7 +538,7 @@ int blockAcceptVariable() {
 	if(tmpNode != NULL){
 		// return failure
 		printf("Error: Var:Identifier exists already\n");
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 	else{
 		// create node with nodeName
@@ -554,7 +548,7 @@ int blockAcceptVariable() {
 		ret = insertTail(currentProcedure->pList, tmpNode);
 		if(ret == -1){
 			printf("Error: Insert did not work!\n");
-			return -2;
+			exit(EXIT_FAILURE);
 		}
 	}
 
@@ -562,7 +556,7 @@ int blockAcceptVariable() {
 	currentProcedure->pList->current->item->pObject = createNamelistVariable(currentProcedure);
 	if(currentProcedure->pList->current->item->pObject == NULL){
 		printf("Error: Variable couldn't be created!\n");
-		return -3;
+		exit(EXIT_FAILURE);
 	}
 
 	// cause success should be 1 if everything worked good
@@ -582,7 +576,7 @@ int blockAcceptProcedure() {
 	if(tmpNode != NULL){
 		// return failure
 		printf("Error: Proc:Identifier exists already\n");
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 	else{
 		// create node with nodeName
@@ -592,7 +586,7 @@ int blockAcceptProcedure() {
 		ret = insertTail(currentProcedure->pList, tmpNode);
 		if(ret == -1){
 			printf("Error: Insert did not work!\n");
-			return -2;
+			exit(EXIT_FAILURE);
 		}
 	}
 
@@ -600,7 +594,7 @@ int blockAcceptProcedure() {
 	currentProcedure->pList->current->item->pObject = createNamelistProcedure(currentProcedure);
 	if(currentProcedure->pList->current->item->pObject == NULL){
 		printf("Error: Procedure couldn't be created!\n");
-		return -3;
+		exit(EXIT_FAILURE);
 	}
 	
 	// new procedure is now current procedure
@@ -628,7 +622,7 @@ int blockEndOfProcedureDescription(void) {
 		currentProcedure = currentProcedure->pParentProcedure;
 	}
 	else {
-		printf("ERR: Already at top procedure!\n");
+		printf("Error: Already at top procedure!\n");
 	}
 
 	// cause success should be 1 if everything worked good
@@ -666,18 +660,14 @@ int st1(void){
 	if(tmpNode == NULL){
 		// Error handling
 		printf("Error: Identifier does not exist global!\n");
-
-		// return
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 	
 	// node is variable?
 	if(tmpNode->id != variable){
 		// Error handling
 		printf("Error: Identifier is not of type variable!\n");
-
-		// return
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 	
 	// code generation:
@@ -768,15 +758,14 @@ int st8(void){
 	if(tmpNode == NULL){
 		// Error handling
 		printf("Error: Identifier does not exist global!\n");
-
-		// return
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 	
 	// node is variable?
-	if(tmpNode->id != variable){
+	if(tmpNode->id != procedure){
 		// Error handling
-		printf("Error: Identifier is not of type variable!\n");
+		printf("Error: Identifier is not of type procedure!\n");
+		exit(EXIT_FAILURE);
 
 		// return
 		return -1;
@@ -801,18 +790,14 @@ int st9(void) {
 	if(tmpNode == NULL){
 		// Error handling
 		printf("Error: Identifier does not exist global!\n");
-
-		// return
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 	
 	// node is variable?
 	if(tmpNode->id != variable){
 		// Error handling
 		printf("Error: Identifier is not of type variable!\n");
-
-		// return
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 	
 	// code generation:
@@ -920,9 +905,7 @@ int fa2(void){
 	if(tmpNode == NULL){
 		// Error handling
 		printf("Error: Identifier does not exist global!\n");
-
-		// return
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 	
 	// node is variable?
@@ -936,9 +919,7 @@ int fa2(void){
 	else if(tmpNode->id != constant){
 		// Error handling
 		printf("Error: Identifier is not of type constant!\n");
-
-		// return
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 
 	// code generation:
