@@ -63,14 +63,16 @@ edge block[] = {
 edge expression[] = {
 /*Num    type         ,            union               , action, next, alt */
 /* 0*/  {edgeSymbol   , {(unsigned long)'-'}           , NULL  ,   2 ,  1 },
-/* 1*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   2 ,  0 },
-/* 2*/  {edgeGraph    , {(unsigned long)term}          , NULL  ,   3 ,  0 },
+/* 1*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   9 ,  0 },
+/* 2*/  {edgeGraph    , {(unsigned long)term}          , ex1  ,   3 ,  0 },
 /* 3*/  {edgeNil      , {(unsigned long)0}             , NULL  ,   4 ,  0 },
 /* 4*/  {edgeSymbol   , {(unsigned long)'+'}           , NULL  ,   5 ,  6 },
-/* 5*/  {edgeGraph    , {(unsigned long)term}          , NULL  ,   3 ,  0 },
+/* 5*/  {edgeGraph    , {(unsigned long)term}          , ex2  ,   3 ,  0 },
 /* 6*/  {edgeSymbol   , {(unsigned long)'-'}           , NULL  ,   7 ,  8 },
-/* 7*/  {edgeGraph    , {(unsigned long)term}          , NULL  ,   3 ,  0 },
+/* 7*/  {edgeGraph    , {(unsigned long)term}          , ex3  ,   3 ,  0 },
 /* 8*/  {edgeGraphEnd , {(unsigned long)0}             , NULL  ,   0 ,  0 },
+
+/* 9*/  {edgeGraph , {(unsigned long)term}          , NULL  ,   3 ,  0 },
 };
 
 // term

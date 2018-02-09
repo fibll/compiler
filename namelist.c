@@ -819,18 +819,21 @@ int st10(void){
 
 // expression functions ========================================
 int ex1(void){
+	printf("ex1\n");
 	// code generation: vzMinus
 
 	return 1;
 }
 
 int ex2(void){
+	printf("ex2\n");
 	// code generation: opAdd
 
 	return 1;
 }
 
 int ex3(void){
+	printf("ex3\n");
 	// code generation: opSub
 
 	return 1;
@@ -838,12 +841,14 @@ int ex3(void){
 
 // term functions ========================================
 int te1(void){
+	printf("te1\n");
 	// code generation: opMul
 
 	return 1;
 }
 
 int te2(void){
+	printf("te2\n");
 	// code generation: opDiv
 
 	return 1;
@@ -852,6 +857,7 @@ int te2(void){
 // factor functions ========================================
 // Numberal
 int fa1(void){
+	printf("fa1\n");
 	int ret = 0;
 	int i = 0;
 	long value = morph.number;
@@ -892,6 +898,7 @@ int fa1(void){
 }
 
 int fa2(void){
+	printf("fa2\n");
 	// Ident
 
 	int ret = 0;
@@ -937,6 +944,7 @@ int fa2(void){
 
 // condition functions ========================================
 int co1(void){
+	printf("co1\n");
 
 	// code generation: odd
 
@@ -944,6 +952,7 @@ int co1(void){
 }
 
 int co2(void){
+	printf("co2\n");
 
 	// code generation: save compare operator '='
 
@@ -951,6 +960,7 @@ int co2(void){
 }
 
 int co3(void){
+	printf("co3\n");
 
 	// save compare operator '#'
 
@@ -958,6 +968,7 @@ int co3(void){
 }
 
 int co4(void){
+	printf("co4\n");
 
 	// save compare operator '<'
 
@@ -965,6 +976,7 @@ int co4(void){
 }
 
 int co5(void){
+	printf("co5\n");
 
 	// save compare operator '<='
 
@@ -972,6 +984,7 @@ int co5(void){
 }
 
 int co6(void){
+	printf("co6\n");
 
 	// save compare operator '>'
 
@@ -979,6 +992,7 @@ int co6(void){
 }
 
 int co7(void){
+	printf("co7\n");
 
 	// save compare operator '>='
 
@@ -986,6 +1000,7 @@ int co7(void){
 }
 
 int co8(void){
+	printf("co8\n");
 
 	// code generation: compare operator (before saved)
 
