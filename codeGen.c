@@ -29,6 +29,14 @@ int writeCodeToFile(char* fileName){
 
     fwrite(test, sizeof(char), strlen(test), file);
 
+    char test2[] = "more\n";
+
+    fwrite(test2, sizeof(char), strlen(test2), file);
+
+    char test3[] = "after line break\n";
+
+    fwrite(test3, sizeof(char), strlen(test3), file);
+
     // close file
     fclose(file);
 }

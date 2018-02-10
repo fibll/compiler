@@ -9,8 +9,6 @@ void writeToCodeAtPosition(short input,char* pPosition);
 // code function
 int code(tCode virtualCommand, ...);
 
-// writeToCode
-// writeToCodeAtPosition
 // openFile
 // closeFile
 // writeConstblock

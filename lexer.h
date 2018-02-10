@@ -78,6 +78,7 @@ int getCharClass();
 MORPHEM lexer(FILE* file);
 void init();
 void nextInstruction(int state, int class);
+int read();
 void write();
 void writeCapital();
 void beenden(int id);

@@ -10,6 +10,7 @@ static long *constArray;
 static namelistProcedure *currentProcedure;
 static short codeLength;
 static labellist *labelList;
+static int compareCase = 0;
 
 // Basic List Functions ---
 list *createList(void)
@@ -671,6 +672,9 @@ int st1(void){
 	}
 	
 	// code generation:
+		// depends on where it was found - correct?
+		// "found in main" could be checked with checking the index of procedure found in
+
 		// PushAdrVarLocal
 		// PushAdrVarMain
 		// PushAdrVarGlobal
@@ -800,7 +804,10 @@ int st9(void) {
 		exit(EXIT_FAILURE);
 	}
 	
-	// code generation:
+	// code generation:		
+		// depends on where it was found - correct?
+		// "found in main" could be checked with checking the index of procedure found in
+		
 		// PushAdrVarLocal
 		// PushAdrVarMain
 		// PushAdrVarGlobal
@@ -924,6 +931,9 @@ int fa2(void){
 
 	// code generation:
 	// if(tmpNode->id == variable)
+		// depends on where it was found - correct?
+		// "found in main" could be checked with checking the index of procedure found in
+
 		// puValVrLocl(displ)
 		// puValVrMain(displ)
 		// puValVrGlob(displ, ProcedureNr)
@@ -948,6 +958,8 @@ int co2(void){
 	printf("co2\n");
 
 	// code generation: save compare operator '='
+	// cmpEQ
+	compareCase = 2;
 
 	return 1;
 }
@@ -956,6 +968,8 @@ int co3(void){
 	printf("co3\n");
 
 	// save compare operator '#'
+	// cmpNE
+	compareCase = 3;
 
 	return 1;
 }
@@ -964,6 +978,8 @@ int co4(void){
 	printf("co4\n");
 
 	// save compare operator '<'
+	// cmpLT
+	compareCase = 4;
 
 	return 1;
 }
@@ -972,6 +988,8 @@ int co5(void){
 	printf("co5\n");
 
 	// save compare operator '<='
+	// cmpLE
+	compareCase = 5;
 
 	return 1;
 }
@@ -980,6 +998,8 @@ int co6(void){
 	printf("co6\n");
 
 	// save compare operator '>'
+	// cmpGT
+	compareCase = 6;
 
 	return 1;
 }
@@ -988,6 +1008,8 @@ int co7(void){
 	printf("co7\n");
 
 	// save compare operator '>='
+	// cmpGE
+	compareCase = 7;
 
 	return 1;
 }
@@ -995,7 +1017,48 @@ int co7(void){
 int co8(void){
 	printf("co8\n");
 
-	// code generation: compare operator (before saved)
+	// code generation: compare operator (before saved)	
+	switch(compareCase){
+		case 2:
+			// code(cmpEQ);
+
+			break;
+
+		case 3:		
+			// code(cmpNE);
+
+			break;
+
+		case 4:		
+			// code(cmpLT);
+
+			break;
+
+		case 5:		
+			// code(cmpLE);
+
+			break;
+
+		case 6:		
+			// code(cmpGT);
+
+			break;
+
+		case 7:		
+			// code(cmpGE);
+
+			break;
+		
+		default:
+			printf("Error: condition: no legal compareCase!\n");
+			exit(EXIT_FAILURE);
+	}
+
+
+
+
+
+
 
 	return 1;
 }
