@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "namelist.c"
 #include "codeGen.c"
+#include "semanticRoutine.c"
 
 // fix: MORPHEM.word don't stuck to 1024 chars (malloc and realloc)
 // fix: all these global variables 
@@ -61,9 +62,9 @@ edge block[] = {
 /*13*/  {edgeMorphem, {(unsigned long)morphemIdent}  , blockAcceptProcedure  ,  14 ,  0 },
 /*14*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  15 ,  0 },
 /*15*/  {edgeGraph  , {(unsigned long)block}         , NULL  ,  16 ,  0 },
-/*16*/  {edgeSymbol , {(unsigned long)';'}           , blockEndOfProcedureDescription  ,  12 ,  0 },
+/*16*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  12 ,  0 },
 /*17*/  {edgeNil    , {(unsigned long)0}             , startStatement  ,  18 ,  0 },
-/*18*/  {edgeGraph  , {(unsigned long)statement}     , NULL  ,   0 ,  0 },
+/*18*/  {edgeGraph  , {(unsigned long)statement}     , blockEndOfProcedureDescription  ,   0 ,  0 },
 };
 
 // expression
@@ -192,20 +193,6 @@ int main (int argc, char* argv[])
         printf("Error: main: compilerOutput could not be opened!\n");
         exit(EXIT_FAILURE);
     }
-
-
-
-
-    // test
-    /*
-    code(entryProc, 0, 1, 4);
-    code(OpDiv);
-    writeCodeToFile();
-    */
-
-
-
-
     
     // init lexer one time only
     read();
