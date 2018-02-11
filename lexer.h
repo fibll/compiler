@@ -8,7 +8,7 @@
 
 // global stuff
 int debug = 0;
-int debugParser = 0;
+int debugParser = 1;
 
 
 static MORPHEM morph;

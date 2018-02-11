@@ -26,8 +26,6 @@ int writeCodeToFile(){
     // calculate codeOutputLength
     short codeOutputLength = pCode - codeStartAdress;
 
-    printf("%i", codeOutputLength);
-
     // update the procedure length at the front (initialized with 0)
     writeToCodeAtPosition(codeOutputLength, codeStartAdress + 1);
 
