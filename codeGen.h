@@ -3,9 +3,9 @@
 
 #include "virtualCommands.h"
 
+int writeCodeToFile();
 void writeToCode(short input);
-void writeToCodeAtPosition(short input,char* pPosition);
-
+void writeToCodeAtPosition(short input, char *pPosition);
 // code function
 int code(tCode virtualCommand, ...);
 

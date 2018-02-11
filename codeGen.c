@@ -14,31 +14,36 @@ static int indexProcedure;
 static int codeOutputLength;
 static char* codeStartAdress;
 static char* pCode;
+static FILE* outputFile;
+
 
 
 // Functions ===========================================================
 // openFile
 // writeCodeToFile
-int writeCodeToFile(char* fileName){
-    FILE* file = NULL;
+int writeCodeToFile(){
 
-    // open file
-    file = fopen(fileName, "w");
+    // calculate codeOutputLength correctly (not in steps of 1024)
+    codeOutputLength = pCode - codeStartAdress;
 
-    char test[] = "writeTest!";
+    // check if file open
+    if(outputFile == NULL){
+        printf("Error: writeToFile: output file is not open!\n");
+        exit(EXIT_FAILURE);
+    }
 
-    fwrite(test, sizeof(char), strlen(test), file);
+    // write code
+    if(fwrite(codeStartAdress, sizeof(char), codeOutputLength, outputFile) != codeOutputLength){
+        printf("Error: writeToFile: writing into output file did not work!\n");
+        exit(EXIT_FAILURE);
+    }
 
-    char test2[] = "more\n";
+    // reset code pointer (pCode) to the start of the memory (codeStartAdress)
+    //pCode = codeStartAdress;
 
-    fwrite(test2, sizeof(char), strlen(test2), file);
+    // reset codeOutputLength
 
-    char test3[] = "after line break\n";
-
-    fwrite(test3, sizeof(char), strlen(test3), file);
-
-    // close file
-    fclose(file);
+    return 1;
 }
 
 
@@ -48,7 +53,7 @@ void writeToCode(short input){
     *pCode++=(unsigned char)(input >> 8);
 }
 
-void writeToCodeAtPosition(short input,char* pPosition){
+void writeToCodeAtPosition(short input, char *pPosition){
   * pPosition      = (unsigned char)(input & 0xff);
   *(pPosition + 1) = (unsigned char)(input >> 8);
 }
@@ -59,7 +64,23 @@ int code(tCode virtualCommand, ...){
     short currentArgument;
 
     // check if memory space is not enough
+
+    // in the first place:
+    // ... - (... + 81) >= ...
+    if(pCode == NULL){
+        printf("pCode is NULL\n");
+    }
+    if(codeStartAdress == NULL){
+        printf("codeStartAdress is NULL\n");
+    }
+    printf("codeOutputLength = %i\n", codeOutputLength);
+
+
+
+    // ...
     if(pCode - (codeStartAdress + MAX_LEN_OF_CODE) >= codeOutputLength){
+
+        // add 1024 to codeOutputLength
         char* pTemp = realloc(codeStartAdress, (codeOutputLength += 1024));
         if(pTemp == NULL){
             printf("Error: CodeGeneration: Was not possible to realloc memory for codeStartAdress\n");
@@ -68,11 +89,19 @@ int code(tCode virtualCommand, ...){
         
         // get the same offset of pCode to startAdress as before
         pCode = pTemp + (pCode - codeStartAdress);
+
+        // init codeStartAdress
         codeStartAdress = pTemp;
     }
 
-    // increase pCode and initialize it with virtualCommand
-    *pCode++ = (char) virtualCommand;
+    // initialize pCode with virtualCommand and increase it
+    if(pCode == NULL){
+        printf("Error: CodeGeneration: pCode is NULL\n");
+        exit(EXIT_FAILURE);
+    }
+
+    *pCode = (char) virtualCommand;
+    pCode++;
 
     // set the start of the arguments with va_start (function of stdarg.h) and last ordinary argument (virtualCommand)
     va_start(arguments, virtualCommand);

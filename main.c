@@ -15,6 +15,14 @@ static long *constArray;
 static namelistProcedure *currentProcedure;
 static short codeLength;
 static labellist *labelList;
+static FILE* outputFile;
+
+// extra
+static int indexCodeOutput;
+static int indexProcedure;
+static int codeOutputLength;
+static char* codeStartAdress;
+static char* pCode;
 
 //int debugParser = 1;
 
@@ -146,9 +154,14 @@ int parser(edge* graph);
 
 int main (int argc, char* argv[])
 {
-    // Variabeln
+    // Initialization
     // declare global constArray
     constArray = (long*) malloc(constArraySize * sizeof(long));
+
+    // init memory, codepointer, and codeLength
+    codeOutputLength = 1024;
+    pCode = malloc(sizeof(char) * codeOutputLength);
+    codeStartAdress = pCode;
 
     // create base procedure
     namelistProcedure *pProcedure = createNamelistProcedure(NULL);
@@ -156,14 +169,6 @@ int main (int argc, char* argv[])
 
     // create labelList
     labelList = createLabellist();
-
-	if(currentProcedure->pList == NULL)
-		printf("currentProcedure->pList is null\n");
-
-
-
-    // test
-    //writeCodeToFile("aaaaaaaaaaaaaaaaaaaaaaaaaaa.c");
 
     // is there an argument?
     if(argc < 2)
@@ -176,9 +181,30 @@ int main (int argc, char* argv[])
     file = fopen(argv[1], "r");
     if(file == NULL)
     {
-        printf("Datei kann nicht geöffnet werden!\n");
-        exit(-1);
+        printf("Error: main: input file could not be opened!\n");
+        exit(EXIT_FAILURE);
     }
+
+    // open file to write
+    outputFile = fopen("compilerOutput.pl0", "w");
+    if(outputFile == NULL)
+    {
+        printf("Error: main: compilerOutput could not be opened!\n");
+        exit(EXIT_FAILURE);
+    }
+
+
+
+
+    // test
+
+    code(OpDiv);
+    writeCodeToFile();
+
+
+
+
+
     
     // init lexer one time only
     read();
@@ -191,7 +217,10 @@ int main (int argc, char* argv[])
     printf("Parser result: %i\n", parserReturn);
 
     free(constArray);
+
+    // close files
     fclose(file);
+    fclose(outputFile);
     return 0;
 }
 
