@@ -3,6 +3,7 @@
 #include <string.h>
 #include "namelist.h"
 #include "types.h"
+#include "codeGen.h"
 
 static MORPHEM morph;
 static int constArraySize;
@@ -608,12 +609,10 @@ int blockAcceptProcedure() {
 // bl5
 int blockEndOfProcedureDescription(void) {
 	printf("blockEndOfProcedureDescription\n");
-	/*
-		Codegenerierung:
-		// retProc
-		// renew the codeLength
-		// codeLength = new codeLength (cause in the beginning you don't know how long the proc is gonna be)
-	*/
+	
+	// Codegenerierung:
+	// code(retProc);
+	writeCodeToFile();
 
 	// delete list of current procedure
 	deleteList(currentProcedure->pList);
@@ -633,14 +632,12 @@ int blockEndOfProcedureDescription(void) {
 // bl6
 int startStatement(void){
 	printf("startStatement\n");
+
 	// initialize write code buffer
 	// code generation:
-	// entryProc(codeLen, indexProc, varLength)
-	// => entryProc(codeLength (with 0 cause you will update it later), currentProcedure->Index, currentProcedure->variableCounter)
+	// code(entryProc, 0, currentProcedure->procedureIndex, currentProcedure->variableCounter);
 
-	// für codeLength muss noch Lösung gefunden werden, am besten trägt man die relative Adresse ein, 
-	// so dass man später einfach über diese wieder darauf zugreifen kann um nach dem durchlaufen der
-	// Procedur beschreibung die wirkliche Länge einzutragen.
+	printf("\nvarCounter: %i\n\n", currentProcedure->variableCounter);
 
 	return 1;
 }
@@ -674,16 +671,23 @@ int st1(void){
 	// code generation:
 		// depends on where it was found - correct?
 		// "found in main" could be checked with checking the index of procedure found in
+		/*
+		if(tmpNode->prodecureIndex == 0)
+			// code(puAdrVrMain, tmpNode->pName);
+		else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
+			// code(puAdrVrLocl, tmpNode->pName);
+		else
+			// code(puAdrVrGlob, tmpNode->pName, tmpNode->prodecureIndex);
+		*/
 
-		// PushAdrVarLocal
-		// PushAdrVarMain
-		// PushAdrVarGlobal
 	return 1;
 }
 
 int st2(void){
 	printf("st2\n");
+
 	// code generation: store value
+	// code(storeVal);
 
 	return 1;
 }
@@ -775,7 +779,10 @@ int st8(void){
 		return -1;
 	}
 
+	namelistProcedure *tmpProcedure = tmpNode->pObject;
+
 	// codegeneration: call procedurenumber
+	// code(call, tmpProcedure->procedureIndex);
 
 	return 1;
 }
@@ -807,12 +814,17 @@ int st9(void) {
 	// code generation:		
 		// depends on where it was found - correct?
 		// "found in main" could be checked with checking the index of procedure found in
-		
-		// PushAdrVarLocal
-		// PushAdrVarMain
-		// PushAdrVarGlobal
-	
+		/*
+		if(tmpNode->prodecureIndex == 0)
+			// code(puAdrVrMain);
+		else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
+			// code(puAdrVrLocl);
+		else
+			// code(puAdrVrGlob);
+		*/
+
 		// getVal
+		// code(getVal);
 
 	return 1;
 }
@@ -820,6 +832,7 @@ int st9(void) {
 int st10(void){
 	printf("st10\n");
 	// code generation: putVal
+	// code(putVal);
 
 	return 1;
 }
@@ -828,6 +841,7 @@ int st10(void){
 int ex1(void){
 	printf("ex1\n");
 	// code generation: vzMinus
+	// code(vzMinus);
 
 	return 1;
 }
@@ -835,6 +849,7 @@ int ex1(void){
 int ex2(void){
 	printf("ex2\n");
 	// code generation: opAdd
+	// code(OpAdd);
 
 	return 1;
 }
@@ -842,6 +857,7 @@ int ex2(void){
 int ex3(void){
 	printf("ex3\n");
 	// code generation: opSub
+	// code(OpSub);
 
 	return 1;
 }
@@ -850,6 +866,7 @@ int ex3(void){
 int te1(void){
 	printf("te1\n");
 	// code generation: opMul
+	// code(OpMult);
 
 	return 1;
 }
@@ -857,6 +874,7 @@ int te1(void){
 int te2(void){
 	printf("te2\n");
 	// code generation: opDiv
+	// code(OpDiv);
 
 	return 1;
 }
@@ -897,9 +915,11 @@ int fa1(void){
 
 		// add constant to the array
 		constArray[constArraySize-1] = value;
+		i = constArraySize - 1;
 	}
 
 	// code generation: putConst(ConstIndex)
+	// code(puConst, i);
 
 	return 1;
 }
@@ -930,16 +950,30 @@ int fa2(void){
 	}
 
 	// code generation:
-	// if(tmpNode->id == variable)
+	if(tmpNode->id == variable){
 		// depends on where it was found - correct?
 		// "found in main" could be checked with checking the index of procedure found in
 
 		// puValVrLocl(displ)
+		/*
+		if(tmpNode->prodecureIndex == 0)
+			// code(puAdrVrMain, tmpNode->pName);
+		
 		// puValVrMain(displ)
+		else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
+			// code(puAdrVrLocl, tmpNode->pName);
+
 		// puValVrGlob(displ, ProcedureNr)
+		else
+			// code(puAdrVrGlob, tmpNode->pName, tmpNode->prodecureIndex);
+		*/
+
+	}
 	
-	// if(tmpNode->id == constant)
+	if(tmpNode->id == constant){
 		// puConst(index)
+		// code(puConst);
+	}		
 
 	return 1;
 }
@@ -950,6 +984,7 @@ int co1(void){
 	printf("co1\n");
 
 	// code generation: odd
+	// code(odd);
 
 	return 1;
 }
@@ -1017,48 +1052,38 @@ int co7(void){
 int co8(void){
 	printf("co8\n");
 
-	// code generation: compare operator (before saved)	
+	// code generation: compare operator (before saved)
+	printf("\ncomparCase: %i\n\n", compareCase);
+	
 	switch(compareCase){
 		case 2:
 			// code(cmpEQ);
-
 			break;
 
 		case 3:		
 			// code(cmpNE);
-
 			break;
 
 		case 4:		
 			// code(cmpLT);
-
 			break;
 
 		case 5:		
 			// code(cmpLE);
-
 			break;
 
-		case 6:		
+		case 6:
 			// code(cmpGT);
-
 			break;
 
 		case 7:		
 			// code(cmpGE);
-
 			break;
 		
 		default:
 			printf("Error: condition: no legal compareCase!\n");
 			exit(EXIT_FAILURE);
 	}
-
-
-
-
-
-
 
 	return 1;
 }

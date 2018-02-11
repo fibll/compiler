@@ -20,7 +20,7 @@ static FILE* outputFile;
 // extra
 static int indexCodeOutput;
 static int indexProcedure;
-static int codeOutputLength;
+static int codeMemoryRange;
 static char* codeStartAdress;
 static char* pCode;
 
@@ -143,8 +143,8 @@ edge condition[] = {
 /* 3*/  {edgeSymbol   , {(unsigned long)'='}           , co2  ,   9 ,  4 },
 /* 4*/  {edgeSymbol   , {(unsigned long)'#'}           , co3  ,   9 ,  5 },
 /* 5*/  {edgeSymbol   , {(unsigned long)'<'}           , co4  ,   9 ,  6 },
-/* 6*/  {edgeSymbol   , {(unsigned long)'>'}           , co5  ,   9 ,  7 },
-/* 7*/  {edgeSymbol   , {(unsigned long)128}/*<=*/     , co6  ,   9 ,  8 },
+/* 6*/  {edgeSymbol   , {(unsigned long)'>'}           , co6  ,   9 ,  7 },
+/* 7*/  {edgeSymbol   , {(unsigned long)128}/*<=*/     , co5  ,   9 ,  8 },
 /* 8*/  {edgeSymbol   , {(unsigned long)129}/*>=*/     , co7  ,   9 ,  0 },
 /* 9*/  {edgeGraph    , {(unsigned long)expression}    , co8  ,   0 ,  0 },
 };
@@ -159,8 +159,8 @@ int main (int argc, char* argv[])
     constArray = (long*) malloc(constArraySize * sizeof(long));
 
     // init memory, codepointer, and codeLength
-    codeOutputLength = 1024;
-    pCode = malloc(sizeof(char) * codeOutputLength);
+    codeMemoryRange = 1024;
+    pCode = malloc(sizeof(char) * codeMemoryRange);
     codeStartAdress = pCode;
 
     // create base procedure
@@ -197,10 +197,11 @@ int main (int argc, char* argv[])
 
 
     // test
-
+    /*
+    code(entryProc, 0, 1, 4);
     code(OpDiv);
     writeCodeToFile();
-
+    */
 
 
 

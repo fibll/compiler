@@ -11,7 +11,7 @@ static namelistProcedure *currentProcedure;
 // extra
 static int indexCodeOutput;
 static int indexProcedure;
-static int codeOutputLength;
+static int codeMemoryRange;
 static char* codeStartAdress;
 static char* pCode;
 static FILE* outputFile;
@@ -23,8 +23,13 @@ static FILE* outputFile;
 // writeCodeToFile
 int writeCodeToFile(){
 
-    // calculate codeOutputLength correctly (not in steps of 1024)
-    codeOutputLength = pCode - codeStartAdress;
+    // calculate codeOutputLength
+    short codeOutputLength = pCode - codeStartAdress;
+
+    printf("%i", codeOutputLength);
+
+    // update the procedure length at the front (initialized with 0)
+    writeToCodeAtPosition(codeOutputLength, codeStartAdress + 1);
 
     // check if file open
     if(outputFile == NULL){
@@ -38,10 +43,11 @@ int writeCodeToFile(){
         exit(EXIT_FAILURE);
     }
 
-    // reset code pointer (pCode) to the start of the memory (codeStartAdress)
-    //pCode = codeStartAdress;
+    // clear the memory
+    pCode++;
+    codeStartAdress = pCode;
 
-    // reset codeOutputLength
+    // reset codeMemoryRange
 
     return 1;
 }
@@ -64,24 +70,10 @@ int code(tCode virtualCommand, ...){
     short currentArgument;
 
     // check if memory space is not enough
+    if(pCode - (codeStartAdress + MAX_LEN_OF_CODE) >= codeMemoryRange){
 
-    // in the first place:
-    // ... - (... + 81) >= ...
-    if(pCode == NULL){
-        printf("pCode is NULL\n");
-    }
-    if(codeStartAdress == NULL){
-        printf("codeStartAdress is NULL\n");
-    }
-    printf("codeOutputLength = %i\n", codeOutputLength);
-
-
-
-    // ...
-    if(pCode - (codeStartAdress + MAX_LEN_OF_CODE) >= codeOutputLength){
-
-        // add 1024 to codeOutputLength
-        char* pTemp = realloc(codeStartAdress, (codeOutputLength += 1024));
+        // add 1024 to codeMemoryRange
+        char* pTemp = realloc(codeStartAdress, (codeMemoryRange += 1024));
         if(pTemp == NULL){
             printf("Error: CodeGeneration: Was not possible to realloc memory for codeStartAdress\n");
             exit(EXIT_FAILURE);
