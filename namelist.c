@@ -7,7 +7,7 @@
 
 static MORPHEM morph;
 static int constArraySize;
-static long *constArray;
+static int32_t *constArray;
 static namelistProcedure *currentProcedure;
 static short codeLength;
 static labellist *labelList;
@@ -235,7 +235,7 @@ namelistNode *createNamelistNode(char *nodeName, int inputId)
 	return pNode;
 }
 
-namelistConst *createNamelistConst(long value)
+namelistConst *createNamelistConst(int32_t value)
 {
 	// create space for new const with size of struct
 	namelistConst *pConst = malloc(sizeof(namelistConst));
@@ -268,7 +268,7 @@ namelistConst *createNamelistConst(long value)
 	// new item for constArray current length is on index 0
 	// update length of array in item 0
 	constArraySize++;
-	long* tmpArray = (long* )realloc(constArray, constArraySize * sizeof(long));
+	int32_t* tmpArray = (int32_t* )realloc(constArray, constArraySize * sizeof(int32_t));
 
 	if(tmpArray == NULL){
 		printf("\n\n\nfailure\n\n\n");
@@ -333,7 +333,7 @@ namelistProcedure *createNamelistProcedure(namelistProcedure *pParentProcedure)
 	return	pProcedure;
 }
 
-namelistConst *searchConst(long value, list *pList)
+namelistConst *searchConst(int32_t value, list *pList)
 {
 	// init first list node
 	if(getFirst(pList) == NULL)

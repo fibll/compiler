@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 static int constArraySize;
-static long *constArray;
+static int32_t *constArray;
 static namelistProcedure *currentProcedure;
 
 // extra
@@ -22,7 +22,7 @@ static FILE* outputFile;
 // openFile
 // writeCodeToFile
 int writeCodeToFile(){
-    
+
     // check if file open
     if(outputFile == NULL){
         printf("Error: writeToFile: output file is not open!\n");

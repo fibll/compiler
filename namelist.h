@@ -1,6 +1,8 @@
 #ifndef NAMELIST_H
 #define NAMELIST_H
 
+#include <stdlib.h>
+
 // namelist node aka tBez
 typedef struct{
     int id;
@@ -19,7 +21,7 @@ typedef struct{
 // namelist constant
 typedef struct{
     int id;
-    long value;
+    int32_t value;
     int index;
 }namelistConst;
 
@@ -98,11 +100,11 @@ tLabel *getNextLabel(labellist *pList);
 
 // namelist functions
 namelistNode *createNamelistNode(char *nodeName, int inputId);
-namelistConst *createNamelistConst(long value);
+namelistConst *createNamelistConst(int32_t value);
 namelistVariable *createNamelistVariable(namelistProcedure *pProcedure);
 namelistProcedure *createNamelistProcedure(namelistProcedure *pParentProcedure);
 
-namelistConst *searchConst(long value, list *pList);
+namelistConst *searchConst(int32_t value, list *pList);
 namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName);
 namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *nodeName);
 

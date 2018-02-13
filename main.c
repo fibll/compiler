@@ -12,7 +12,7 @@
 // global stuff
 static MORPHEM morph;
 static int constArraySize = 0;
-static long *constArray;
+static int32_t *constArray;
 static namelistProcedure *currentProcedure;
 static short codeLength;
 static labellist *labelList;
@@ -158,7 +158,7 @@ int main (int argc, char* argv[])
 {
     // Initialization
     // declare global constArray
-    constArray = (long*) malloc(constArraySize * sizeof(long));
+    constArray = (int32_t*) malloc(constArraySize * sizeof(long));
 
     // init memory, codepointer, and codeLength
     codeMemoryRange = 1024;
@@ -228,7 +228,7 @@ int main (int argc, char* argv[])
     // set filePointer to the end
     fseek(outputFile, 0, SEEK_END);
     if(constArraySize > 0){
-        ret = fwrite(constArray, sizeof(long), constArraySize, outputFile);
+        ret = fwrite(constArray, sizeof(int32_t), constArraySize, outputFile);
     }
 
 
