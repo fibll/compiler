@@ -17,6 +17,7 @@ static namelistProcedure *currentProcedure;
 static short codeLength;
 static labellist *labelList;
 static FILE* outputFile;
+static short procedureCounter;
 
 // extra
 static int indexCodeOutput;
@@ -160,6 +161,9 @@ int main (int argc, char* argv[])
     // declare global constArray
     constArray = (int32_t*) malloc(constArraySize * sizeof(long));
 
+    // set procedureCounter to 0
+    procedureCounter = 0;
+
     // init memory, codepointer, and codeLength
     codeMemoryRange = 1024;
     pCode = malloc(sizeof(char) * codeMemoryRange);
@@ -216,13 +220,6 @@ int main (int argc, char* argv[])
 
     // close output file ---
     int ret = -1;
-
-    // print const array
-    int i = 0;
-    printf("\n\nconstArray:\n");
-    for(i = 0; i < constArraySize; i++){
-        printf("ConstArray[%i]= %ld\n", i, constArray[i]);
-    }
 
     // write const block
     // set filePointer to the end

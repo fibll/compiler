@@ -5,7 +5,7 @@
 #include "types.h"
 #include "codeGen.h"
 
-static int debugSMR = 0;
+static int debugSMR = 1;
 
 static MORPHEM morph;
 static int constArraySize;
@@ -69,13 +69,6 @@ int blockAcceptConstantValue() {
 		printf("Error: Constant couldn't be created!\n");
 		exit(EXIT_FAILURE);
 	}
-
-    // print const array
-    int i = 0;
-    printf("\n\nconstArray:\n");
-    for(i = 0; i < constArraySize; i++){
-        printf("ConstArray[%i]= %ld\n", i, constArray[i]);
-    }
 
 	// cause success should be 1 if everything worked good
 	return 1;
@@ -148,8 +141,6 @@ int blockAcceptProcedure() {
 	}
 
 	// write pointer of procedureNode into node
-    printf("createProcedure with parent: %i\n", currentProcedure->procedureIndex);
-
 	currentProcedure->pList->current->item->pObject = createNamelistProcedure(currentProcedure);
 	if(currentProcedure->pList->current->item->pObject == NULL){
 		printf("Error: Procedure couldn't be created!\n");
@@ -160,14 +151,15 @@ int blockAcceptProcedure() {
 	currentProcedure = currentProcedure->pList->current->item->pObject;
 
    
-    // print whole list
+    // print whole list=================
     list *pList = mainProcedure->pList;
-	printf("\n\n\n=== main List:\n");
+	printf("\n=== main List:\n");
 	getFirst(pList);
 	do{
-		printf("name: %s\nid: %i\n", pList->current->item->pName, pList->current->item->id);
-		getNext(pList);
+		printf("->%s", pList->current->item->pName, pList->current->item->id);
 	}while(getNext(pList) != NULL);
+    printf("\n\n");
+    //==================================
    
 
 	// cause success should be 1 if everything worked good
@@ -191,7 +183,7 @@ int blockEndOfProcedureDescription(void) {
 		currentProcedure = currentProcedure->pParentProcedure;
 	}
 	else {
-		printf("Error: Already at top procedure!\n");
+		printf("Warning: Already at top procedure!\n");
 	}
 
 	// cause success should be 1 if everything worked good

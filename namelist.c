@@ -11,6 +11,7 @@ static int32_t *constArray;
 static namelistProcedure *currentProcedure;
 static short codeLength;
 static labellist *labelList;
+static short procedureCounter;
 
 static namelistProcedure *mainProcedure;
 
@@ -318,11 +319,12 @@ namelistProcedure *createNamelistProcedure(namelistProcedure *pParentProcedure)
 	pProcedure->id = procedure;
 	
 	if(pParentProcedure == NULL){
-		pProcedure->procedureIndex = 0;
+		pProcedure->procedureIndex = procedureCounter;
 		pProcedure->pParentProcedure = NULL;
 	}
 	else{
-		pProcedure->procedureIndex = pParentProcedure->procedureIndex + 1;
+		procedureCounter++;
+		pProcedure->procedureIndex = procedureCounter; //pParentProcedure->procedureIndex + 1;
 		pProcedure->pParentProcedure = pParentProcedure;
 	}
 
