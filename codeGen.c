@@ -22,18 +22,18 @@ static FILE* outputFile;
 // openFile
 // writeCodeToFile
 int writeCodeToFile(){
-
-    // calculate codeOutputLength
-    short codeOutputLength = pCode - codeStartAdress;
-
-    // update the procedure length at the front (initialized with 0)
-    writeToCodeAtPosition(codeOutputLength, codeStartAdress + 1);
-
+    
     // check if file open
     if(outputFile == NULL){
         printf("Error: writeToFile: output file is not open!\n");
         exit(EXIT_FAILURE);
     }
+
+    // calculate codeOutputLength
+    unsigned short codeOutputLength = pCode - codeStartAdress;
+
+    // update the procedure length at the front (initialized with 0)
+    writeToCodeAtPosition((short) codeOutputLength, codeStartAdress + 1);
 
     // write code
     if(fwrite(codeStartAdress, sizeof(char), codeOutputLength, outputFile) != codeOutputLength){
@@ -45,7 +45,7 @@ int writeCodeToFile(){
     pCode++;
     codeStartAdress = pCode;
 
-    // reset codeMemoryRange
+    // FIX:reset codeMemoryRange?
 
     return 1;
 }

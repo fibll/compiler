@@ -26,6 +26,7 @@ static char* codeStartAdress;
 static char* pCode;
 
 //int debugParser = 1;
+static namelistProcedure *mainProcedure;
 
 // graph arrays
 edge block[];
@@ -167,6 +168,7 @@ int main (int argc, char* argv[])
     // create base procedure
     namelistProcedure *pProcedure = createNamelistProcedure(NULL);
     currentProcedure = pProcedure;
+    mainProcedure = pProcedure;
 
     // create labelList
     labelList = createLabellist();
@@ -187,11 +189,16 @@ int main (int argc, char* argv[])
     }
 
     // open file to write
-    outputFile = fopen("compilerOutput.pl0", "w");
+    outputFile = fopen("compilerOutput.cl0", "w");
     if(outputFile == NULL)
     {
         printf("Error: main: compilerOutput could not be opened!\n");
         exit(EXIT_FAILURE);
+    }
+    // fill output file with 0s
+    else{
+        long x = 0L;
+        fwrite(&x,sizeof(int32_t),1,outputFile);
     }
     
     // init lexer one time only
@@ -204,11 +211,48 @@ int main (int argc, char* argv[])
     int parserReturn = parser(programm);
     printf("Parser result: %i\n", parserReturn);
 
-    free(constArray);
-
     // close files
     fclose(file);
+
+    // close output file ---
+    int ret = -1;
+
+    // print const array
+    int i = 0;
+    printf("\n\nconstArray:\n");
+    for(i = 0; i < constArraySize; i++){
+        printf("ConstArray[%i]= %ld\n", i, constArray[i]);
+    }
+
+    // write const block
+    // set filePointer to the end
+    fseek(outputFile, 0, SEEK_END);
+    if(constArraySize > 0){
+        ret = fwrite(constArray, sizeof(long), constArraySize, outputFile);
+    }
+
+
+    // create buffer for procedure Index with size of 2 (little Endian)
+    char bufProcedureIndex[2];
+
+    /*
+    // set filePointer to the beginning
+    fseek(outputFile, 0, SEEK_SET);
+    writeToCodeAtPosition(currentProcedure->procedureIndex, bufProcedureIndex);
+
+    ret = fwrite(bufProcedureIndex, 2, 1, outputFile);
+    if(ret != 2){
+        printf("Error: main: Could not write procedure index into file");
+        exit(EXIT_FAILURE);
+    }
+    */
+
     fclose(outputFile);
+
+    free(constArray);
+
+    free(currentProcedure);
+    
     return 0;
 }
 

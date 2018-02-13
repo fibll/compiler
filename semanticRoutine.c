@@ -15,6 +15,8 @@ static short codeLength;
 static labellist *labelList;
 static int compareCase = 0;
 
+static namelistProcedure *mainProcedure;
+
 
 void debugPrintSMR(char* message){
     if(debugSMR > 0)
@@ -67,6 +69,13 @@ int blockAcceptConstantValue() {
 		printf("Error: Constant couldn't be created!\n");
 		exit(EXIT_FAILURE);
 	}
+
+    // print const array
+    int i = 0;
+    printf("\n\nconstArray:\n");
+    for(i = 0; i < constArraySize; i++){
+        printf("ConstArray[%i]= %ld\n", i, constArray[i]);
+    }
 
 	// cause success should be 1 if everything worked good
 	return 1;
@@ -139,6 +148,8 @@ int blockAcceptProcedure() {
 	}
 
 	// write pointer of procedureNode into node
+    printf("createProcedure with parent: %i\n", currentProcedure->procedureIndex);
+
 	currentProcedure->pList->current->item->pObject = createNamelistProcedure(currentProcedure);
 	if(currentProcedure->pList->current->item->pObject == NULL){
 		printf("Error: Procedure couldn't be created!\n");
@@ -148,6 +159,17 @@ int blockAcceptProcedure() {
 	// new procedure is now current procedure
 	currentProcedure = currentProcedure->pList->current->item->pObject;
 
+   
+    // print whole list
+    list *pList = mainProcedure->pList;
+	printf("\n\n\n=== main List:\n");
+	getFirst(pList);
+	do{
+		printf("name: %s\nid: %i\n", pList->current->item->pName, pList->current->item->id);
+		getNext(pList);
+	}while(getNext(pList) != NULL);
+   
+   
 	// cause success should be 1 if everything worked good
 	return 1;
 }
@@ -157,7 +179,7 @@ int blockEndOfProcedureDescription(void) {
 	debugPrintSMR("blockEndOfProcedureDescription\n");
 	
 	// Codegenerierung:
-	//code(retProc);
+	code(retProc);
 	writeCodeToFile();
     printf("writeToCodeFile\n");
 
@@ -217,14 +239,14 @@ int st1(void){
 	// code generation:
 		// depends on where it was found - correct?
 		// "found in main" could be checked with checking the index of procedure found in
-		/*
+		
 		if(tmpNode->prodecureIndex == 0)
-			// code(puAdrVrMain, tmpNode->pName);
+			code(puAdrVrMain, tmpNode->pName);
 		else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
-			// code(puAdrVrLocl, tmpNode->pName);
+			code(puAdrVrLocl, tmpNode->pName);
 		else
-			// code(puAdrVrGlob, tmpNode->pName, tmpNode->prodecureIndex);
-		*/
+			code(puAdrVrGlob, tmpNode->pName, tmpNode->prodecureIndex);
+		
 
 	return 1;
 }
@@ -233,7 +255,7 @@ int st2(void){
 	debugPrintSMR("st2\n");
 
 	// code generation: store value
-	// code(storeVal);
+	code(storeVal);
 
 	return 1;
 }
@@ -328,7 +350,7 @@ int st8(void){
 	namelistProcedure *tmpProcedure = tmpNode->pObject;
 
 	// codegeneration: call procedurenumber
-	// code(call, tmpProcedure->procedureIndex);
+	code(call, tmpProcedure->procedureIndex);
 
 	return 1;
 }
@@ -360,17 +382,16 @@ int st9(void) {
 	// code generation:		
 		// depends on where it was found - correct?
 		// "found in main" could be checked with checking the index of procedure found in
-		/*
 		if(tmpNode->prodecureIndex == 0)
-			// code(puAdrVrMain);
+			code(puAdrVrMain);
 		else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
-			// code(puAdrVrLocl);
+			code(puAdrVrLocl);
 		else
-			// code(puAdrVrGlob);
-		*/
+			code(puAdrVrGlob);
+		
 
 		// getVal
-		// code(getVal);
+		code(getVal);
 
 	return 1;
 }
@@ -378,7 +399,7 @@ int st9(void) {
 int st10(void){
 	debugPrintSMR("st10\n");
 	// code generation: putVal
-	// code(putVal);
+	code(putVal);
 
 	return 1;
 }
@@ -387,7 +408,7 @@ int st10(void){
 int ex1(void){
 	debugPrintSMR("ex1\n");
 	// code generation: vzMinus
-	// code(vzMinus);
+	code(vzMinus);
 
 	return 1;
 }
@@ -395,7 +416,7 @@ int ex1(void){
 int ex2(void){
 	debugPrintSMR("ex2\n");
 	// code generation: opAdd
-	// code(OpAdd);
+	code(OpAdd);
 
 	return 1;
 }
@@ -403,7 +424,7 @@ int ex2(void){
 int ex3(void){
 	debugPrintSMR("ex3\n");
 	// code generation: opSub
-	// code(OpSub);
+	code(OpSub);
 
 	return 1;
 }
@@ -412,7 +433,7 @@ int ex3(void){
 int te1(void){
 	debugPrintSMR("te1\n");
 	// code generation: opMul
-	// code(OpMult);
+	code(OpMult);
 
 	return 1;
 }
@@ -420,7 +441,7 @@ int te1(void){
 int te2(void){
 	debugPrintSMR("te2\n");
 	// code generation: opDiv
-	// code(OpDiv);
+	code(OpDiv);
 
 	return 1;
 }
@@ -465,7 +486,7 @@ int fa1(void){
 	}
 
 	// code generation: putConst(ConstIndex)
-	// code(puConst, i);
+	code(puConst, i);
 
 	return 1;
 }
@@ -501,24 +522,23 @@ int fa2(void){
 		// "found in main" could be checked with checking the index of procedure found in
 
 		// puValVrLocl(displ)
-		/*
 		if(tmpNode->prodecureIndex == 0)
-			// code(puAdrVrMain, tmpNode->pName);
+			code(puAdrVrMain, tmpNode->pName);
 		
 		// puValVrMain(displ)
 		else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
-			// code(puAdrVrLocl, tmpNode->pName);
+			code(puAdrVrLocl, tmpNode->pName);
 
 		// puValVrGlob(displ, ProcedureNr)
 		else
-			// code(puAdrVrGlob, tmpNode->pName, tmpNode->prodecureIndex);
-		*/
+			code(puAdrVrGlob, tmpNode->pName, tmpNode->prodecureIndex);
+		
 
 	}
 	
 	if(tmpNode->id == constant){
 		// puConst(index)
-		// code(puConst);
+		code(puConst);
 	}		
 
 	return 1;
@@ -530,7 +550,7 @@ int co1(void){
 	debugPrintSMR("co1\n");
 
 	// code generation: odd
-	// code(odd);
+	code(odd);
 
 	return 1;
 }
@@ -601,27 +621,27 @@ int co8(void){
 	// code generation: compare operator (before saved)	
 	switch(compareCase){
 		case 2:
-			// code(cmpEQ);
+			code(cmpEQ);
 			break;
 
 		case 3:		
-			// code(cmpNE);
+			code(cmpNE);
 			break;
 
 		case 4:		
-			// code(cmpLT);
+			code(cmpLT);
 			break;
 
 		case 5:		
-			// code(cmpLE);
+			code(cmpLE);
 			break;
 
 		case 6:
-			// code(cmpGT);
+			code(cmpGT);
 			break;
 
 		case 7:		
-			// code(cmpGE);
+			code(cmpGE);
 			break;
 		
 		default:
