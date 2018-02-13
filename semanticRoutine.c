@@ -231,13 +231,15 @@ int st1(void){
 	// code generation:
 		// depends on where it was found - correct?
 		// "found in main" could be checked with checking the index of procedure found in
-		
-		if(tmpNode->prodecureIndex == 0)
-			code(puAdrVrMain, tmpNode->pName);
-		else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
-			code(puAdrVrLocl, tmpNode->pName);
-		else
-			code(puAdrVrGlob, tmpNode->pName, tmpNode->prodecureIndex);
+    // get Variable out of node->pObject
+    namelistVariable *tmpVariable = tmpNode->pObject;
+
+    if(tmpNode->prodecureIndex == 0)
+        code(puAdrVrMain, tmpVariable->offset);
+    else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
+        code(puAdrVrLocl, tmpVariable->offset);
+    else
+        code(puAdrVrGlob, tmpVariable->offset, tmpNode->prodecureIndex);
 		
 
 	return 1;
@@ -374,12 +376,15 @@ int st9(void) {
 	// code generation:		
 		// depends on where it was found - correct?
 		// "found in main" could be checked with checking the index of procedure found in
-		if(tmpNode->prodecureIndex == 0)
-			code(puAdrVrMain);
-		else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
-			code(puAdrVrLocl);
-		else
-			code(puAdrVrGlob);
+    // get Variable out of node->pObject
+    namelistVariable *tmpVariable = tmpNode->pObject;
+
+    if(tmpNode->prodecureIndex == 0)
+        code(puAdrVrMain, tmpVariable->offset);
+    else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
+        code(puAdrVrLocl, tmpVariable->offset);
+    else
+        code(puAdrVrGlob, tmpVariable->offset, tmpNode->prodecureIndex);
 		
 
 		// getVal
@@ -513,18 +518,15 @@ int fa2(void){
 		// depends on where it was found - correct?
 		// "found in main" could be checked with checking the index of procedure found in
 
-		// puValVrLocl(displ)
-		if(tmpNode->prodecureIndex == 0)
-			code(puAdrVrMain, tmpNode->pName);
-		
-		// puValVrMain(displ)
-		else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
-			code(puAdrVrLocl, tmpNode->pName);
+        // get Variable out of node->pObject
+        namelistVariable *tmpVariable = tmpNode->pObject;
 
-		// puValVrGlob(displ, ProcedureNr)
-		else
-			code(puAdrVrGlob, tmpNode->pName, tmpNode->prodecureIndex);
-		
+        if(tmpNode->prodecureIndex == 0)
+            code(puAdrVrMain, tmpVariable->offset);
+        else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
+            code(puAdrVrLocl, tmpVariable->offset);
+        else
+            code(puAdrVrGlob, tmpVariable->offset, tmpNode->prodecureIndex);
 
 	}
 	
