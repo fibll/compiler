@@ -14,6 +14,8 @@ static namelistProcedure *currentProcedure;
 static short codeLength;
 static labellist *labelList;
 static int compareCase = 0;
+static char* pCode;
+static char* codeStartAdress;
 
 static namelistProcedure *mainProcedure;
 
@@ -148,19 +150,7 @@ int blockAcceptProcedure() {
 	}
 	
 	// new procedure is now current procedure
-	currentProcedure = currentProcedure->pList->current->item->pObject;
-
-   
-    // print whole list=================
-    list *pList = mainProcedure->pList;
-	printf("\n=== main List:\n");
-	getFirst(pList);
-	do{
-		printf("->%s", pList->current->item->pName, pList->current->item->id);
-	}while(getNext(pList) != NULL);
-    printf("\n\n");
-    //==================================
-   
+	currentProcedure = currentProcedure->pList->current->item->pObject;   
 
 	// cause success should be 1 if everything worked good
 	return 1;
@@ -259,9 +249,10 @@ int st3(void){
 	debugPrintSMR("st3\n");
 
 	// create label				  iJmp is index of jmp command
-	// pushLabel(labelList, label, iJmp);
+	pushLabel(labelList, label, (pCode + 1) - codeStartAdress);
 
 	// code generation: jnot mit vorläufiger Relativadresse 0
+    code(jnot, 0);
 
 	return 1;
 }
@@ -270,9 +261,13 @@ int st3(void){
 int st4(void){
 	debugPrintSMR("st4\n");
 
-	//long tmp = popLabel(labelList);
+	long jumpNotStartOffset = popLabel(labelList);
 	
 	// calculate relative adress
+    long jumpWidth = (pCode - codeStartAdress) - jumpNotStartOffset;
+
+    // update the jump not width
+    writeToCodeAtPosition(jumpWidth, codeStartAdress + jumpNotStartOffset);
 
 	return 1;
 }
@@ -281,9 +276,8 @@ int st4(void){
 int st5(void){
 	debugPrintSMR("st5\n");
 
-	//pushLabel(labelList, 0, iJmp);
-	
 	// calculate relative adress
+    pushLabel(labelList, label, pCode - codeStartAdress);
 
 	return 1;
 }
@@ -291,9 +285,11 @@ int st5(void){
 // while nach condition
 int st6(void){
 	debugPrintSMR("st6\n");
-	//pushLabel(labelList, 0, iJmp);
+    
+	pushLabel(labelList, label, (pCode + 1) - codeStartAdress);
 	
 	// code generation: jnot mit vorläufiger Relativadresse 0
+    code(jnot, 0);
 
 	return 1;
 }
@@ -302,14 +298,27 @@ int st6(void){
 // while nach statement
 int st7(void){
 	debugPrintSMR("st7\n");
-	//popLabel(labelList);
+	
+    // get jump not label
+    long jumpNotStartOffset = popLabel(labelList);
+    
+    // calculate relative adress + 3 extra bytes for the jmp-command
+    long jumpNotWidth = (pCode - codeStartAdress) - jumpNotStartOffset + 3;
 
-	// calculate relative adress + 3 extra bytes for the jmp-command
+    // update jump not width
+    writeToCodeAtPosition(jumpNotWidth, codeStartAdress + jumpNotStartOffset);
 
-	// pop second label
-	//popLabel(labelList);
 
-	// calculate relative adress, so that jmp after the first command gets to condition
+
+    // ---
+	// pop condition label
+    long conditionStartOffset = popLabel(labelList);
+
+    // calculate relative adress, so that jmp at end of while gets to first command of condition
+    long conditionWidth = (pCode - codeStartAdress) - conditionStartOffset + 1;
+
+    // write jump with correct jump width
+    code(jmp, -conditionWidth);
 
 	return 1;
 }
@@ -531,8 +540,11 @@ int fa2(void){
 	}
 	
 	if(tmpNode->id == constant){
-		// puConst(index)
-		code(puConst);
+        // get Variable out of node->pObject
+        namelistConst *tmpConst = tmpNode->pObject;
+		
+        // puConst(index)
+		code(puConst, tmpConst->index);
 	}		
 
 	return 1;
@@ -645,3 +657,17 @@ int co8(void){
 
 	return 1;
 }
+
+
+   
+    /*
+    // print whole list=================
+    list *pList = mainProcedure->pList;
+	printf("\n=== main List:\n");
+	getFirst(pList);
+	do{
+		printf("->%s", pList->current->item->pName, pList->current->item->id);
+	}while(getNext(pList) != NULL);
+    printf("\n\n");
+    //==================================
+    */
