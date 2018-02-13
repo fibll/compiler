@@ -227,10 +227,11 @@ namelistNode *createNamelistNode(char *nodeName, int inputId)
 	if(pNode == NULL)
 		return NULL;
 
-	// initialize id (input id: what it really is), name (nodeName)
+	// initialize id (input id: what it really is), name (nodeName), procedureIndex
 	pNode->id = inputId;
 	pNode->pName = malloc(sizeof(char) * strlen(nodeName));
 	strcpy(pNode->pName, nodeName);
+	pNode->prodecureIndex = currentProcedure->procedureIndex;
 
 	// return node
 	return pNode;
@@ -438,20 +439,7 @@ long popLabel(labellist *listOfLabels){
 // delete functions --
 int deleteNamelistNode(namelistNode *pNode){
 
-	// Don't need it anymore, cause procedure->lists will be deleted in bl5 after the description is done!!!
-	/*
-	if(pNode->id == procedure){
-		// delete namelist in Procedure
-		namelistProcedure *tmpProcedure = pNode->pObject;
-		printf("id is procedure\n");
-
-		// FIX: check if the pProcedure->pList is already free;
-		deleteList(tmpProcedure->pList);
-		printf("deleted list\n");
-	}
-	else {*/
-		free(pNode->pObject);
-	//}
+	free(pNode->pObject);
 	free(pNode);
 
 	// cause success should be 1 if everything worked good
@@ -459,17 +447,6 @@ int deleteNamelistNode(namelistNode *pNode){
 }
 
 int deleteList(list *pList){
-
-	/*
-	// print main list
-	list *tmpList = mainProcedure->pList;
-	printf("\n\n\nmain List:\n");
-	getFirst(tmpList);
-	do{
-		printf("name: %s\nid: %i\n", tmpList->current->item->pName, tmpList->current->item->id);
-	}while(getNext(tmpList) != NULL);
-	*/
-
 
 	// set first item of list as current
 	getFirst(pList);

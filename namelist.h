@@ -119,4 +119,10 @@ int blockAcceptVariable(void); // aus morphem holen
 int blockAcceptProcedure(void); // aus morphem holen
 int blockEndOfProcedureDescription(void);
 
+// label functions
+int pushLabel(labellist *listOfLabels, int id, long iJmp);
+long popLabel(labellist *listOfLabels);
+int deleteNamelistNode(namelistNode *pNode);
+int deleteList(list *pList);
+
 #endif
