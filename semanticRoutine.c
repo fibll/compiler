@@ -263,11 +263,11 @@ int st4(void){
 
 	long jumpNotStartOffset = popLabel(labelList);
 	
-	// calculate relative adress
-    long jumpWidth = (pCode - codeStartAdress) - jumpNotStartOffset;
+	// calculate relative adress                                    2 xx Byte of jmp not
+    long jumpNotWidth = (pCode - codeStartAdress) - jumpNotStartOffset - 2;
 
     // update the jump not width
-    writeToCodeAtPosition(jumpWidth, codeStartAdress + jumpNotStartOffset);
+    writeToCodeAtPosition(jumpNotWidth, codeStartAdress + jumpNotStartOffset);
 
 	return 1;
 }
@@ -302,8 +302,8 @@ int st7(void){
     // get jump not label
     long jumpNotStartOffset = popLabel(labelList);
     
-    // calculate relative adress + 3 extra bytes for the jmp-command
-    long jumpNotWidth = (pCode - codeStartAdress) - jumpNotStartOffset + 3;
+    // calculate relative adress + 3 extra bytes for the jmp-command || +3 jmp Byte || -2 jnot Byte   
+    long jumpNotWidth = (pCode - codeStartAdress) - jumpNotStartOffset + 3 - 2;
 
     // update jump not width
     writeToCodeAtPosition(jumpNotWidth, codeStartAdress + jumpNotStartOffset);
@@ -315,7 +315,8 @@ int st7(void){
     long conditionStartOffset = popLabel(labelList);
 
     // calculate relative adress, so that jmp at end of while gets to first command of condition
-    long conditionWidth = (pCode - codeStartAdress) - conditionStartOffset + 1;
+                                                    // +1 to get to first cmd  || +2 cause of the 2 jmp bytes
+    long conditionWidth = (pCode - codeStartAdress) - conditionStartOffset + 1 + 2;
 
     // write jump with correct jump width
     code(jmp, -conditionWidth);
