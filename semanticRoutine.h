@@ -7,7 +7,7 @@ int blockAcceptConstantValue() ;
 int blockAcceptVariable() ;
 int blockAcceptProcedure() ;
 int blockEndOfProcedureDescription(void) ;
-int startStatement(void);
+int blockstartStatement(void);
 int st1(void);
 int st2(void);
 int st3(void);

@@ -28,6 +28,7 @@ static char* pCode;
 
 //int debugParser = 1;
 static namelistProcedure *mainProcedure;
+static size_t lineCounter;
 
 // graph arrays
 edge block[];
@@ -65,7 +66,7 @@ edge block[] = {
 /*14*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  15 ,  0 },
 /*15*/  {edgeGraph  , {(unsigned long)block}         , NULL  ,  16 ,  0 },
 /*16*/  {edgeSymbol , {(unsigned long)';'}           , NULL  ,  12 ,  0 },
-/*17*/  {edgeNil    , {(unsigned long)0}             , startStatement  ,  18 ,  0 },
+/*17*/  {edgeNil    , {(unsigned long)0}             , blockstartStatement  ,  18 ,  0 },
 /*18*/  {edgeGraph  , {(unsigned long)statement}     , blockEndOfProcedureDescription  ,   0 ,  0 },
 };
 
@@ -158,6 +159,7 @@ int parser(edge* graph);
 int main (int argc, char* argv[])
 {
     // Initialization
+    lineCounter = 1;
     // declare global constArray
     constArray = (int32_t*) malloc(constArraySize * sizeof(long));
 
@@ -205,6 +207,8 @@ int main (int argc, char* argv[])
         fwrite(&x,sizeof(int32_t),1,outputFile);
     }
     
+    printf("compile .");
+
     // init lexer one time only
     read();
 
@@ -213,7 +217,13 @@ int main (int argc, char* argv[])
 
     // parse tokens
     int parserReturn = parser(programm);
-    printf("Parser result: %i\n", parserReturn);
+    if(parserReturn != 1){
+        printf("\n\nError: parser: Illegal pl0 statement, arround: %ld\n\n", morph.lineNumber);
+    }
+    else
+        printf("\n\ndone\n");
+    
+    // printf("Parser result: %i\n", parserReturn);
 
     // close files
     fclose(file);
@@ -231,18 +241,6 @@ int main (int argc, char* argv[])
 
     // create buffer for procedure Index with size of 2 (little Endian)
     char bufProcedureIndex[2];
-
-    /*
-    // set filePointer to the beginning
-    fseek(outputFile, 0, SEEK_SET);
-    writeToCodeAtPosition(currentProcedure->procedureIndex, bufProcedureIndex);
-
-    ret = fwrite(bufProcedureIndex, 2, 1, outputFile);
-    if(ret != 2){
-        printf("Error: main: Could not write procedure index into file");
-        exit(EXIT_FAILURE);
-    }
-    */
 
     fclose(outputFile);
 
@@ -325,6 +323,7 @@ int parser(edge* graph)
             {
                 morph = lexer(file);
                 debugPrintParser("get new token: ");
+                // printf("Line: %ld\n", lineCounter);
         
                 switch(morph.id)
                 {

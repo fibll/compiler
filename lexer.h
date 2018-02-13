@@ -9,6 +9,7 @@
 // global stuff
 int debug = 0;
 int debugParser = 0;
+static size_t lineCounter;
 
 
 static MORPHEM morph;
@@ -172,8 +173,18 @@ void nextInstruction(int state, int class)
 int read()
 {
     //debugPrint("read\n");
-    
+    printf(".");
+
     input = fgetc(file);
+
+
+    // printf("input: %i\n", input);
+
+    // if input = LF increase lineCounter
+    if(input == 10){
+        lineCounter++;
+        // printf("\n\nLINE %i ===\n", lineCounter);
+    }
     
     return getCharClass();
 }
@@ -308,6 +319,9 @@ void saveMorph(int id)
                 }
                 else
                     morph.symbol = tokenBuffer[0];
+
+        // set line number
+        morph.lineNumber = lineCounter;
     }
 
     debugPrint("Saved in morph\n");

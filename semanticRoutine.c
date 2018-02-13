@@ -5,7 +5,7 @@
 #include "types.h"
 #include "codeGen.h"
 
-static int debugSMR = 1;
+static int debugSMR = 0;
 
 static MORPHEM morph;
 static int constArraySize;
@@ -41,7 +41,8 @@ int blockAcceptConstantIdentifier() {
 
 	if(tmpNode != NULL){
 		// return failure
-		printf("Error: Const:Identifier exists already\n");
+		printf("\n\nError: bl1: Identifier exists already\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 	else {
@@ -51,7 +52,8 @@ int blockAcceptConstantIdentifier() {
 		// insert the new node into the list of the current procedure list
 		ret = insertTail(currentProcedure->pList, tmpNode);
 		if(ret == -1){
-			printf("Error: Insert did not work!\n");
+			printf("\n\nError: bl1: Insert did not work!\n");
+            printf("Somewhere around line: %ld\n", morph.lineNumber);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -68,7 +70,8 @@ int blockAcceptConstantValue() {
 	// write pointer of constNode into node
 	currentProcedure->pList->current->item->pObject = createNamelistConst(value);
 	if(currentProcedure->pList->current->item->pObject == NULL){
-		printf("Error: Constant couldn't be created!\n");
+		printf("\n\nError: bl2: Constant couldn't be created!\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 
@@ -89,7 +92,8 @@ int blockAcceptVariable() {
 
 	if(tmpNode != NULL){
 		// return failure
-		printf("Error: Var:Identifier exists already\n");
+		printf("\n\nError: bl3: Var:Identifier exists already\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 	else{
@@ -99,7 +103,8 @@ int blockAcceptVariable() {
 		// add tmpNode to list
 		ret = insertTail(currentProcedure->pList, tmpNode);
 		if(ret == -1){
-			printf("Error: Insert did not work!\n");
+			printf("\n\nError: bl3: Insert did not work!\n");
+            printf("Somewhere around line: %ld\n", morph.lineNumber);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -107,7 +112,8 @@ int blockAcceptVariable() {
 	// write pointer of varNode into node
 	currentProcedure->pList->current->item->pObject = createNamelistVariable(currentProcedure);
 	if(currentProcedure->pList->current->item->pObject == NULL){
-		printf("Error: Variable couldn't be created!\n");
+		printf("\n\nError: bl3: Variable couldn't be created!\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 
@@ -127,7 +133,8 @@ int blockAcceptProcedure() {
 	
 	if(tmpNode != NULL){
 		// return failure
-		printf("Error: Proc:Identifier exists already\n");
+		printf("\n\nError: bl4: Identifier exists already\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 	else{
@@ -137,7 +144,7 @@ int blockAcceptProcedure() {
 		// add tmpNode to list
 		ret = insertTail(currentProcedure->pList, tmpNode);
 		if(ret == -1){
-			printf("Error: Insert did not work!\n");
+			printf("\n\nError: bl4: Insert did not work!\n");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -145,7 +152,8 @@ int blockAcceptProcedure() {
 	// write pointer of procedureNode into node
 	currentProcedure->pList->current->item->pObject = createNamelistProcedure(currentProcedure);
 	if(currentProcedure->pList->current->item->pObject == NULL){
-		printf("Error: Procedure couldn't be created!\n");
+		printf("\n\nError: bl4: Procedure couldn't be created!\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 	
@@ -163,7 +171,6 @@ int blockEndOfProcedureDescription(void) {
 	// Codegenerierung:
 	code(retProc);
 	writeCodeToFile();
-    printf("writeToCodeFile\n");
 
 	// delete list of current procedure
 	deleteList(currentProcedure->pList);
@@ -173,7 +180,7 @@ int blockEndOfProcedureDescription(void) {
 		currentProcedure = currentProcedure->pParentProcedure;
 	}
 	else {
-		printf("Warning: Already at top procedure!\n");
+		//printf("Warning: Already at top procedure!\n");
 	}
 
 	// cause success should be 1 if everything worked good
@@ -181,12 +188,11 @@ int blockEndOfProcedureDescription(void) {
 }
 
 // bl6
-int startStatement(void){
+int blockstartStatement(void){
 	debugPrintSMR("startStatement\n");
 
 	// initialize write code buffer
 	// code generation:
-    printf("entryProc\n");
 	code(entryProc, 0, currentProcedure->procedureIndex, currentProcedure->variableCounter);
 	
     return 1;
@@ -207,14 +213,16 @@ int st1(void){
 	// not found
 	if(tmpNode == NULL){
 		// Error handling
-		printf("Error: Identifier does not exist global!\n");
+		printf("\n\nError: st1: Identifier does not exist global!\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 	
 	// node is variable?
 	if(tmpNode->id != variable){
 		// Error handling
-		printf("Error: Identifier is not of type variable!\n");
+		printf("\n\nError: st1: Identifier is not of type variable!\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 	
@@ -337,14 +345,16 @@ int st8(void){
 	// not found
 	if(tmpNode == NULL){
 		// Error handling
-		printf("Error: Identifier does not exist global!\n");
+		printf("\n\nError: st8: Identifier does not exist global!\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 	
 	// node is variable?
 	if(tmpNode->id != procedure){
 		// Error handling
-		printf("Error: Identifier is not of type procedure!\n");
+		printf("\n\nError: st8: Identifier is not of type procedure!\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 
 		// return
@@ -372,14 +382,16 @@ int st9(void) {
 	// not found
 	if(tmpNode == NULL){
 		// Error handling
-		printf("Error: Identifier does not exist global!\n");
+		printf("\n\nError: st9: Identifier does not exist global!\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 	
 	// node is variable?
 	if(tmpNode->id != variable){
 		// Error handling
-		printf("Error: Identifier is not of type variable!\n");
+		printf("\n\nError: st9: Identifier is not of type variable!\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 	
@@ -512,14 +524,16 @@ int fa2(void){
 	// not found
 	if(tmpNode == NULL){
 		// Error handling
-		printf("Error: Identifier does not exist global!\n");
+		printf("\n\nError: fa1: Identifier does not exist global!\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 	
 	// node is variable or constant?	
 	if(tmpNode->id != variable && tmpNode->id != constant){
 		// Error handling
-		printf("Error: Identifier is not of type variable or constant!\n");
+		printf("\n\nError: fa2: Identifier is not of type variable or constant!\n");
+        printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
 
@@ -652,7 +666,8 @@ int co8(void){
 			break;
 		
 		default:
-			printf("Error: condition: no legal compareCase!\n");
+			printf("\n\nError: co8: condition: no legal compareCase!\n");
+            printf("Somewhere around line: %ld\n", morph.lineNumber);
 			exit(EXIT_FAILURE);
 	}
 

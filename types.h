@@ -1,6 +1,8 @@
 #ifndef TYPES_H 
 #define TYPES_H 
 
+#include <stdlib.h>
+
 // lexer types ---
 // morphem
 typedef struct morph
@@ -9,6 +11,7 @@ typedef struct morph
     char word[30];
     int symbol;
     int number;
+    size_t lineNumber;
 }MORPHEM;
 
 // symbols enum
