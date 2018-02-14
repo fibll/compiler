@@ -1,34 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "parser.h"
 #include "lexer.h"
-#include "namelist.c"
-#include "codeGen.c"
-#include "semanticRoutine.c"
+#include "namelist.h"
+#include "labellist.h"
+#include "semanticRoutine.h"
+#include "codeGen.h"
 
 // fix: MORPHEM.word don't stuck to 1024 chars (malloc and realloc)
 // fix: all these global variables 
 
 // global stuff
-static MORPHEM morph;
-static int constArraySize = 0;
-static int32_t *constArray;
-static namelistProcedure *currentProcedure;
-static short codeLength;
-static labellist *labelList;
-static FILE* outputFile;
-static short procedureCounter;
+MORPHEM morph;
+size_t lineCounter;
 
-// extra
-static int indexCodeOutput;
-static int indexProcedure;
-static int codeMemoryRange;
-static char* codeStartAdress;
-static char* pCode;
+// const array
+int constArraySize = 0;
+int32_t *constArray;
 
-//int debugParser = 1;
-static namelistProcedure *mainProcedure;
-static size_t lineCounter;
+// procedure
+namelistProcedure *currentProcedure;
+namelistProcedure *mainProcedure;
+short procedureCounter;
+
+// files
+FILE* file;
+FILE* outputFile;
+
+// debug
+int debugParser = 0;
+int debugLexer = 0;
+int debugSMR = 0;
+
+// codegeneration
+int codeMemoryRange;
+char* codeStartAdress;
+char* pCode;
+labellist *labelList;
 
 // graph arrays
 edge block[];
@@ -153,9 +163,6 @@ edge condition[] = {
 /* 9*/  {edgeGraph    , {(unsigned long)expression}    , co8  ,   0 ,  0 },
 };
 
-
-int parser(edge* graph);
-
 int main (int argc, char* argv[])
 {
     // Initialization
@@ -166,7 +173,7 @@ int main (int argc, char* argv[])
     // set procedureCounter to 0
     procedureCounter = 0;
 
-    // init memory, codepointer, and codeLength
+    // init memory, codepointer
     codeMemoryRange = 1024;
     pCode = malloc(sizeof(char) * codeMemoryRange);
     codeStartAdress = pCode;
@@ -243,7 +250,20 @@ int main (int argc, char* argv[])
     fclose(file);
 
     // close output file ---
-    int ret = -1;
+
+    // set filePointer to the beginning
+    fseek(outputFile, 0, SEEK_SET);
+
+    // write number of procedures into temp procedure counter buffer
+    char bufProcedureCounter[2];
+    writeToCodeAtPosition(procedureCounter + 1, bufProcedureCounter);
+
+    // write procedure counter buffer into file
+    int ret = fwrite(bufProcedureCounter, sizeof(char)*2, 1, outputFile);
+    /*
+    if(ret != 2)
+        printf("could not write into file\n");
+    */
 
     // write const block
     // set filePointer to the end
@@ -251,10 +271,9 @@ int main (int argc, char* argv[])
     if(constArraySize > 0){
         ret = fwrite(constArray, sizeof(int32_t), constArraySize, outputFile);
     }
-
-
-    // create buffer for procedure Index with size of 2 (little Endian)
-    char bufProcedureIndex[2];
+    
+    if(ret != constArraySize)
+        printf("could not write into file\n");
 
     fclose(outputFile);
 
@@ -368,69 +387,12 @@ int parser(edge* graph)
         if(morph.id == -1)
             return success;
     }
-
-    // nil edge (0):
-        // always success
-    
-    // Symbol edge (1):
-        // check if the symbol is equal to the morph.Symbol
-        // success = true;
-        // success = false;
-
-    // Morphem edge(2):
-        // check if the morphem code (ident or number) is equal to morph.id of the token
-        // success = true;
-        // success = false;
-        // clear the token, so the next parser action can get it's own new next token
-
-    // Graph edge (3):
-        // success is the return value of the parse function with the given graph 
-        // success = parse(graph)
-
-    // Graph End edge (4):
-        // return success
-
-    // find out what action to do
-    // if null, success = 1, else success is defined by action
-
-    // is success true?
-        //no: if alternative edge is not 0 (otherwise exit without success)
-            // try alternative edge
-
-        //yes: go further with the next edge
 }
 
-/*
-void debugPrintParser(char* message)
-{
+void debugPrintParser(char* message){
     if(debugParser > 0)
     {
         printf("%s", message);
     }
     return;
 }
-*/
-
-    /*
-    // stop executing lexer if return value.id = -1
-    while(morph.id != -1)
-    {
-        switch(morph.id)
-        {
-            case 0:
-                printf("morph.word = %s\n", morph.word);
-                break;
-            case 1:
-                printf("morph.allSymbol = %i\n", morph.symbol);
-                break;
-            case 2:
-                printf("morph.number = %i\n", morph.number);
-                break;
-            default:
-                printf("ERROR!");
-                exit(0);
-
-        }
-        morph = lexer(file);
-    }
-    */

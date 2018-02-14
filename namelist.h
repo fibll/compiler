@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-// namelist node aka tBez
+// namelist item node (aka tBez)
 typedef struct{
     int id;
     short prodecureIndex;
@@ -13,61 +13,35 @@ typedef struct{
     size_t lineNumber;
 }namelistNode;
 
-// namelist variable
+// namelist item variable
 typedef struct{
     int id;
     int offset;
 }namelistVariable;
 
-// namelist constant
+// namelist item constant
 typedef struct{
     int id;
     int32_t value;
     int index;
 }namelistConst;
 
-// labels for codegeneration
-typedef struct tLABEL
-{
-    int id;
-    long iJmp;
-}tLabel;
-
-
-// Basic list types ---
-// namelist node
+// basic list node
 typedef struct NODE
 {
     struct NODE *next;
     namelistNode *item;	
 }pNode;
 
-// namelist
-typedef struct
+// basic list
+typedef struct LIST
 {
     pNode *first;
     pNode *last;
     pNode *current;
 }list;
 
-// label list ---
-typedef struct LABELNODE
-{
-    struct LABELNODE *next;
-    tLabel *item;	
-}pLabelNode;
-
-// namelist
-typedef struct
-{
-    pLabelNode *first;
-    pLabelNode *last;
-    pLabelNode *current;
-}labellist;
-// End Basic list types ---
-
-
-// namelist procedure
+// namelist item procedure
 typedef struct NAME_LIST_PROCEDURE{
     int id;
     short procedureIndex;
@@ -75,7 +49,6 @@ typedef struct NAME_LIST_PROCEDURE{
     list *pList;
     int variableCounter;
 }namelistProcedure;
-
 
 // id enum
 enum {
@@ -92,13 +65,6 @@ int insertTail(list *pList, namelistNode *itemIns);
 namelistNode *getFirst (list *pList);
 namelistNode *getNext(list *pList);
 
-// labellist
-labellist *createLabellist(void);
-int pushTailLabel(labellist *pList, tLabel *itemIns);
-tLabel *popHeadLabel(labellist *pList);
-tLabel *getFirstLabel(labellist *pList);
-tLabel *getNextLabel(labellist *pList);
-
 // namelist functions
 namelistNode *createNamelistNode(char *nodeName, int inputId);
 namelistConst *createNamelistConst(int32_t value);
@@ -110,19 +76,6 @@ namelistNode *searchNamelistNode(namelistProcedure *pProcedure, char *nodeName);
 namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *nodeName);
 
 // delete functions
-int deleteNamelistNode(namelistNode *pNode);
-int deleteList(list *pList);
-
-// block functions
-int blockAcceptConstantIdentifier(void); // aus morphem holen
-int blockAcceptConstantValue(void); // aus morphem holen
-int blockAcceptVariable(void); // aus morphem holen
-int blockAcceptProcedure(void); // aus morphem holen
-int blockEndOfProcedureDescription(void);
-
-// label functions
-int pushLabel(labellist *listOfLabels, int id, long iJmp);
-long popLabel(labellist *listOfLabels);
 int deleteNamelistNode(namelistNode *pNode);
 int deleteList(list *pList);
 

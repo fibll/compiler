@@ -1,19 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "namelist.h"
 #include "types.h"
 #include "codeGen.h"
 
-static MORPHEM morph;
-static int constArraySize;
-static int32_t *constArray;
-static namelistProcedure *currentProcedure;
-static short codeLength;
-static labellist *labelList;
-static short procedureCounter;
+// morphem
+MORPHEM morph;
 
-static namelistProcedure *mainProcedure;
+// Procedure
+namelistProcedure *currentProcedure;
+short procedureCounter;
+
+// constArray
+int constArraySize;
+int32_t *constArray;
 
 
 // Basic List Functions ---
@@ -51,37 +53,9 @@ int insertTail(list *pList, namelistNode *itemIns)
 	else{
 		return -1;
 	}
-	return (int)pTmp;
+	// return (int)pTmp;
+	return 1;
 }
-
-/*
-int insertHead(list *pList, namelistNode *itemIns)
-{
-	pNode *pTmp = malloc(sizeof(pNode));
-	pTmp->next = NULL;
-
-	if(pTmp)
-	{
-		pTmp->item = itemIns;
-		if(pList->first == NULL)
-		{
-			// Liste ist noch Leer
-			pList->first = pList->last = pTmp;
-		}
-		else
-		{
-			// Liste enthält schon etwas
-			pTmp->next = pList->first;
-			pList->first = pTmp;
-		}
-		pList->current = pTmp;
-	}
-	else{
-		return -1;
-	}
-	return (int)pTmp;
-}
-*/
 
 namelistNode *getFirst (list *pList)
 {
@@ -118,108 +92,7 @@ namelistNode *getNext(list *pList)
 }
 
 
-// label list Functions ---
-// Basic List Functions ---
-labellist *createLabellist(void)
-{
-	labellist *pTmp;
-	pTmp = malloc(sizeof(list));
-	if(pTmp != NULL)
-	{
-		pTmp->first = pTmp->last = pTmp->current = NULL;
-	}
-	return pTmp;
-}
-
-int pushHeadLabel(labellist *pList, tLabel *itemIns)
-{
-	pLabelNode *pTmp = malloc(sizeof(pLabelNode));
-	pTmp->next = NULL;
-
-	if(pTmp)
-	{
-		pTmp->item = itemIns;
-		if(pList->first == NULL)
-		{
-			// Liste ist noch Leer
-			pList->first = pList->last = pTmp;
-		}
-		else
-		{
-			// Liste enthält schon etwas
-			pTmp->next = pList->first;
-			pList->first = pTmp;
-		}
-		pList->current = pTmp;
-	}
-	else{
-		return -1;
-	}
-	return (int)pTmp;
-}
-
-tLabel *popHeadLabel(labellist *pList)
-{
-	// if list is null
-	if(pList == NULL || pList->first == NULL)
-		return NULL;
-
-	// init pTmp with first
-	pLabelNode *pTmp = pList->first;
-
-	// change list pointer
-	// if list got second
-	if(pList->first->next == NULL){
-		pList->first = NULL;
-		pList->current = NULL;
-		pList->last = NULL;
-	}
-	// else set list->first to second
-	else
-		pList->first = pList->first->next;
-	
-	// return pTmp
-	tLabel *tmpLabel = pTmp->item;
-	free(pTmp);
-	return tmpLabel;
-}
-
-tLabel *getFirstLabel(labellist *pList)
-{
-	pLabelNode *pTmp;
-	pTmp = pList->first;
-	if(pTmp)
-	{
-		pList->current = pTmp;
-		return pTmp->item;	
-	}
-	else
-	{
-		return NULL;
-	}
-}
-
-tLabel *getNextLabel(labellist *pList)
-{
-	pLabelNode *pTmp;
-	pTmp = pList->current;
-	if(pTmp)
-	{
-		if(pTmp == pList->last)
-		{
-			return 0;
-		}
-		else
-		{
-			pList->current = pTmp->next;
-			return pList->current->item;
-		}
-	}
-	return NULL;
-}
-
-
-// Namelist Functions ---
+// Namelist Node Functions ---
 namelistNode *createNamelistNode(char *nodeName, int inputId)
 {
 	// create space for new node with size of struct
@@ -417,23 +290,6 @@ namelistNode *searchNamelistNodeGlobal(namelistProcedure *pProcedure, char *node
 	
 	// node not found
 	return NULL;
-}
-
-// label function --
-int pushLabel(labellist *listOfLabels, int id, long iJmp){
-	tLabel *pTmp = malloc(sizeof(tLabel));
-	pTmp->id = id;
-	pTmp->iJmp = iJmp;
-
-	return pushHeadLabel(listOfLabels, pTmp);
-}
-
-long popLabel(labellist *listOfLabels){
-	tLabel *pTmp = popHeadLabel(listOfLabels);
-	long iJump = pTmp->iJmp;
-	free(pTmp);
-
-	return iJump;
 }
 
 // delete functions --

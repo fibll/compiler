@@ -1,23 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "namelist.h"
+#include "labellist.h"
 #include "types.h"
 #include "codeGen.h"
 
-static int debugSMR = 0;
+// global
+MORPHEM morph;
 
-static MORPHEM morph;
-static int constArraySize;
-static int32_t *constArray;
-static namelistProcedure *currentProcedure;
-static short codeLength;
-static labellist *labelList;
-static int compareCase = 0;
-static char* pCode;
-static char* codeStartAdress;
+// const array
+int constArraySize;
+int32_t *constArray;
 
-static namelistProcedure *mainProcedure;
+// procedure
+namelistProcedure *currentProcedure;
+namelistProcedure *mainProcedure;
+
+// code generation
+labellist *labelList;
+char* pCode;
+char* codeStartAdress;
+
+// smr specific
+int compareCase = 0;
+int debugSMR;
 
 
 void debugPrintSMR(char* message){
@@ -32,7 +40,7 @@ void debugPrintSMR(char* message){
 // bl1
 int blockAcceptConstantIdentifier() {
 	debugPrintSMR("blockAcceptConstantIdentifier\n");
-	int ret;
+	int ret = -1;
 	char nodeName[strlen(morph.word)];
 	strcpy(nodeName, morph.word);
 
@@ -123,7 +131,7 @@ int blockAcceptVariable() {
 // bl4
 int blockAcceptProcedure() {
 	debugPrintSMR("blockAcceptProcedure\n");
-	int ret;
+	int ret = -1;
 	char nodeName[strlen(morph.word)];
 	strcpy(nodeName, morph.word);
 
@@ -202,7 +210,6 @@ int blockstartStatement(void){
 int st1(void){
 	debugPrintSMR("st1\n");
 
-	int ret = 0;
 	char nodeName[strlen(morph.word)];
 	strcpy(nodeName, morph.word);
 
@@ -235,9 +242,9 @@ int st1(void){
         code(puAdrVrMain, tmpVariable->offset);
     else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
         code(puAdrVrLocl, tmpVariable->offset);
-    else
+    else{
         code(puAdrVrGlob, tmpVariable->offset, tmpNode->prodecureIndex);
-		
+	}
 
 	return 1;
 }
@@ -334,7 +341,6 @@ int st7(void){
 // while nach statement
 int st8(void){
 	debugPrintSMR("st8\n");
-	int ret = 0;
 	char nodeName[strlen(morph.word)];
 	strcpy(nodeName, morph.word);
 
@@ -371,7 +377,6 @@ int st8(void){
 
 int st9(void) {
 	debugPrintSMR("st9\n");
-	int ret = 0;
 	char nodeName[strlen(morph.word)];
 	strcpy(nodeName, morph.word);
 
@@ -513,7 +518,6 @@ int fa2(void){
 	debugPrintSMR("fa2\n");
 	// Ident
 
-	int ret = 0;
 	char nodeName[strlen(morph.word)];
 	strcpy(nodeName, morph.word);
 
@@ -545,11 +549,11 @@ int fa2(void){
         namelistVariable *tmpVariable = tmpNode->pObject;
 
         if(tmpNode->prodecureIndex == 0)
-            code(puAdrVrMain, tmpVariable->offset);
+            code(puValVrMain, tmpVariable->offset);
         else if(tmpNode->prodecureIndex == currentProcedure->procedureIndex)
-            code(puAdrVrLocl, tmpVariable->offset);
+            code(puValVrLocl, tmpVariable->offset);
         else
-            code(puAdrVrGlob, tmpVariable->offset, tmpNode->prodecureIndex);
+            code(puValVrGlob, tmpVariable->offset, tmpNode->prodecureIndex);
 
 	}
 	

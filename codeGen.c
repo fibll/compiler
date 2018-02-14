@@ -1,20 +1,18 @@
-#include "codeGen.h"
-#include "namelist.h"
-#include "stdarg.h"
 #include <stdlib.h>
 #include <stdio.h>
 
-static int constArraySize;
-static int32_t *constArray;
-static namelistProcedure *currentProcedure;
+#include "codeGen.h"
+#include "namelist.h"
+#include "stdarg.h"
 
-// extra
-static int indexCodeOutput;
-static int indexProcedure;
-static int codeMemoryRange;
-static char* codeStartAdress;
-static char* pCode;
-static FILE* outputFile;
+// global
+// files
+FILE* outputFile;
+
+// codeGen specific
+int codeMemoryRange;
+char* codeStartAdress;
+char* pCode;
 
 
 
@@ -55,16 +53,16 @@ int writeCodeToFile(){
 void writeToCode(short input){
 
     // write input into "2 bytes"
-    *pCode++=(unsigned char)(input & 0xff);
+    *pCode++ = (unsigned char)(input & 0xff);
 
     // shift the data 8 places to the right
-    *pCode++=(unsigned char)(input >> 8);
+    *pCode++ = (unsigned char)(input >> 8);
 }
 
 void writeToCodeAtPosition(short input, char *pPosition){
 
     // write input into "2 bytes"
-    * pPosition      = (unsigned char)(input & 0xff);
+    * pPosition = (unsigned char)(input & 0xff);
 
     // shift the data 8 places to the right
     *(pPosition + 1) = (unsigned char)(input >> 8);
