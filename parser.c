@@ -265,9 +265,6 @@ int main (int argc, char* argv[])
     if(constArraySize > 0){
         ret = fwrite(constArray, sizeof(int32_t), constArraySize, outputFile);
     }
-    
-    if(ret != constArraySize)
-        printf("could not write into file\n");
 
     fclose(outputFile);
 
