@@ -3,3 +3,6 @@ tests
 compilerOutput.cl0
 compilerOutput.pl0
 simple.pl0
+*.cl0
+cpl0
+outCl0

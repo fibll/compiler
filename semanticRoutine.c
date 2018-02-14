@@ -41,7 +41,7 @@ int blockAcceptConstantIdentifier() {
 
 	if(tmpNode != NULL){
 		// return failure
-		printf("\n\nError: bl1: Identifier exists already\n");
+		printf("\n\nError: bl1: Identifier '%s' exists already\n", nodeName);
         printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
@@ -81,7 +81,6 @@ int blockAcceptConstantValue() {
 
 // bl3
 int blockAcceptVariable() {
-	
 	debugPrintSMR("blockAcceptVariable----------\n");
 	int ret;
 	char nodeName[strlen(morph.word)];
@@ -92,7 +91,7 @@ int blockAcceptVariable() {
 
 	if(tmpNode != NULL){
 		// return failure
-		printf("\n\nError: bl3: Var:Identifier exists already\n");
+		printf("\n\nError: bl3: Identifier '%s' exists already\n", nodeName);
         printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
@@ -133,7 +132,7 @@ int blockAcceptProcedure() {
 	
 	if(tmpNode != NULL){
 		// return failure
-		printf("\n\nError: bl4: Identifier exists already\n");
+		printf("\n\nError: bl4: Identifier '%s' exists already\n", nodeName);
         printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
@@ -189,7 +188,7 @@ int blockEndOfProcedureDescription(void) {
 
 // bl6
 int blockstartStatement(void){
-	debugPrintSMR("startStatement\n");
+	debugPrintSMR("blockStartStatement\n");
 
 	// initialize write code buffer
 	// code generation:
@@ -213,7 +212,7 @@ int st1(void){
 	// not found
 	if(tmpNode == NULL){
 		// Error handling
-		printf("\n\nError: st1: Identifier does not exist global!\n");
+		printf("\n\nError: st1: Identifier %s does not exist global!\n", nodeName);
         printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
@@ -345,7 +344,7 @@ int st8(void){
 	// not found
 	if(tmpNode == NULL){
 		// Error handling
-		printf("\n\nError: st8: Identifier does not exist global!\n");
+		printf("\n\nError: st8: Identifier %s does not exist global!\n", nodeName);
         printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
@@ -382,7 +381,7 @@ int st9(void) {
 	// not found
 	if(tmpNode == NULL){
 		// Error handling
-		printf("\n\nError: st9: Identifier does not exist global!\n");
+		printf("\n\nError: st9: Identifier %s does not exist global!\n", nodeName);
         printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}
@@ -524,7 +523,7 @@ int fa2(void){
 	// not found
 	if(tmpNode == NULL){
 		// Error handling
-		printf("\n\nError: fa1: Identifier does not exist global!\n");
+		printf("\n\nError: fa1: Identifier %s does not exist global!\n", nodeName);
         printf("Somewhere around line: %ld\n", morph.lineNumber);
 		exit(EXIT_FAILURE);
 	}

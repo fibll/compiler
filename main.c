@@ -182,7 +182,16 @@ int main (int argc, char* argv[])
     // is there an argument?
     if(argc < 2)
     {
-        printf("Fehlendes Argument: PL0 Datei!\n");
+        printf("Missing argument: PL0 file!\n");
+        exit(-1);
+    }
+
+    // check on file type
+    char fileType[4];
+    strcpy(fileType, argv[1] + strlen(argv[1])-4);
+
+    if(strlen(argv[1]) < 4 || strcmp(".pl0", fileType) != 0){
+        printf("Wrong file type: '.pl0' file!\n");
         exit(-1);
     }
 
@@ -194,8 +203,13 @@ int main (int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
+    // create new file name
+    char outputFileName[strlen(argv[1])];
+    strcpy(outputFileName, argv[1]);
+    outputFileName[strlen(outputFileName)-1-2] = 'c';
+        
     // open file to write
-    outputFile = fopen("compilerOutput.cl0", "w");
+    outputFile = fopen(outputFileName, "w");
     if(outputFile == NULL)
     {
         printf("Error: main: compilerOutput could not be opened!\n");
@@ -207,7 +221,7 @@ int main (int argc, char* argv[])
         fwrite(&x,sizeof(int32_t),1,outputFile);
     }
     
-    printf("compile .");
+    printf("compile");
 
     // init lexer one time only
     read();

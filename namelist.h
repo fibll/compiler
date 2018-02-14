@@ -10,6 +10,7 @@ typedef struct{
     void *pObject;
     int length;
     char *pName;
+    size_t lineNumber;
 }namelistNode;
 
 // namelist variable

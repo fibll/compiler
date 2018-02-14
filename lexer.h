@@ -177,7 +177,6 @@ int read()
 
     input = fgetc(file);
 
-
     // printf("input: %i\n", input);
 
     // if input = LF increase lineCounter
@@ -245,6 +244,9 @@ void saveMorph(int id)
         input = -1;
         return;
     }
+
+    // set line number
+    morph.lineNumber = lineCounter;
 
     switch(id)
     {
@@ -319,9 +321,6 @@ void saveMorph(int id)
                 }
                 else
                     morph.symbol = tokenBuffer[0];
-
-        // set line number
-        morph.lineNumber = lineCounter;
     }
 
     debugPrint("Saved in morph\n");

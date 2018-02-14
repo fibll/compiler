@@ -53,13 +53,21 @@ int writeCodeToFile(){
 
 
 void writeToCode(short input){
+
+    // write input into "2 bytes"
     *pCode++=(unsigned char)(input & 0xff);
+
+    // shift the data 8 places to the right
     *pCode++=(unsigned char)(input >> 8);
 }
 
 void writeToCodeAtPosition(short input, char *pPosition){
-  * pPosition      = (unsigned char)(input & 0xff);
-  *(pPosition + 1) = (unsigned char)(input >> 8);
+
+    // write input into "2 bytes"
+    * pPosition      = (unsigned char)(input & 0xff);
+
+    // shift the data 8 places to the right
+    *(pPosition + 1) = (unsigned char)(input >> 8);
 }
 
 int code(tCode virtualCommand, ...){
