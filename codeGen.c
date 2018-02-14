@@ -17,8 +17,6 @@ char* pCode;
 
 
 // Functions ===========================================================
-// openFile
-// writeCodeToFile
 int writeCodeToFile(){
 
     // check if file open
@@ -42,8 +40,6 @@ int writeCodeToFile(){
     // clear the memory
     pCode++;
     codeStartAdress = pCode;
-
-    // FIX:reset codeMemoryRange?
 
     return 1;
 }

@@ -320,8 +320,6 @@ int deleteList(list *pList){
 		// free node
 		free(pTmp);
 	}
-	// free list
-	//free(pList);
 
 	return 0;
 }

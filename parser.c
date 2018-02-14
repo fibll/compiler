@@ -9,8 +9,6 @@
 #include "semanticRoutine.h"
 #include "codeGen.h"
 
-// fix: MORPHEM.word don't stuck to 1024 chars (malloc and realloc)
-// fix: all these global variables 
 
 // global stuff
 MORPHEM morph;
@@ -260,10 +258,6 @@ int main (int argc, char* argv[])
 
     // write procedure counter buffer into file
     int ret = fwrite(bufProcedureCounter, sizeof(char)*2, 1, outputFile);
-    /*
-    if(ret != 2)
-        printf("could not write into file\n");
-    */
 
     // write const block
     // set filePointer to the end
