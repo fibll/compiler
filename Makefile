@@ -1,2 +1,2 @@
 all:
-	gcc main.c namelist.c
+	gcc main.c 
